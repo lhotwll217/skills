@@ -1,11 +1,9 @@
 ---
 name: updating-prompts
-description: Change an existing prompt — fix a behavior, add a rule, or compress. Use when editing system prompts, agent prompts, tool descriptions, or other LLM instructions, or when reviewing such a change.
+description: Ship the smallest delta to an existing prompt — fix a behavior, add a rule, or compress. Use when editing or reviewing system prompts, agent prompts, tool descriptions, or other LLM instructions.
 ---
 
-A prompt change ships the smallest **delta** that holds: validate the direction, find the decision fork the model is missing, then reduce the edit until it is the smallest version that still fixes the behavior — at the layer that owns it.
-
-Prompt wording is executable semantics. Every token carries decision-relevant information, and every word sets a trigger, a scope, or a distinction — compression that blurs one has changed the rule.
+A prompt change ships the smallest **delta** that holds — the least edit that still fixes the behavior.
 
 ## 1. Find the fork
 
@@ -42,9 +40,9 @@ A rule the model already receives at another layer is a duplicate: leverage that
 
 ## 4. Compress meaning-safe
 
-Trim no-ops — words removable with zero information loss. Triggers, scope nouns, and distinctions are the information: "challenge complexity", not "challenge it"; "when applying fixes to prompts", not "when changing prompts".
+Prompt wording is executable semantics. Trim no-ops — words removable with no behavior change. Triggers, scope nouns, and distinctions are where behavior lives: "challenge complexity", not "challenge it"; "when applying fixes to prompts", not "when changing prompts".
 
-**Done when:** removing any remaining word would change a trigger, a scope, or a distinction.
+**Done when:** removing any remaining word would change behavior.
 
 ## 5. Validate the agent, then minimize
 

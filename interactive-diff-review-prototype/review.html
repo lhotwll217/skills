@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PROTOTYPE — Interactive diff review</title>
+<style>
+/* Luke's house theme — shadcn stone, radius 0, mono headings (tweakcn preset b3s6qKr7Ls) */
+:root{--background:oklch(1 0 0);--foreground:oklch(.147 .004 49.25);--card:oklch(1 0 0);--card-foreground:oklch(.147 .004 49.25);--primary:oklch(.216 .006 56.043);--primary-foreground:oklch(.985 .001 106.423);--secondary:oklch(.97 .001 106.424);--secondary-foreground:oklch(.216 .006 56.043);--muted:oklch(.97 .001 106.424);--muted-foreground:oklch(.553 .013 58.071);--accent:oklch(.97 .001 106.424);--accent-foreground:oklch(.216 .006 56.043);--destructive:oklch(.577 .245 27.325);--positive:oklch(.627 .17 149);--border:oklch(.923 .003 48.717);--input:oklch(.923 .003 48.717);--ring:oklch(.709 .01 56.259);--chart-1:oklch(.869 .005 56.366);--chart-2:oklch(.553 .013 58.071);--chart-3:oklch(.444 .011 73.639);--chart-4:oklch(.374 .01 67.558);--chart-5:oklch(.268 .007 34.298);--terminal-bronze:#b98a4b;--terminal-blue:#81a2be;--terminal-green:#b5bd68;--terminal-red:#cc6666;--terminal-yellow:#e0af68;--terminal-purple:#b294bb;--terminal-teal:#4EC9B0;--radius:0;--font-sans:Inter,"Helvetica Neue",system-ui,-apple-system,sans-serif;--font-heading:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace}
+.dark,:root[data-theme=dark]{--background:oklch(.147 .004 49.25);--foreground:oklch(.985 .001 106.423);--card:oklch(.216 .006 56.043);--card-foreground:oklch(.985 .001 106.423);--primary:oklch(.923 .003 48.717);--primary-foreground:oklch(.216 .006 56.043);--secondary:oklch(.268 .007 34.298);--secondary-foreground:oklch(.985 .001 106.423);--muted:oklch(.268 .007 34.298);--muted-foreground:oklch(.709 .01 56.259);--accent:oklch(.268 .007 34.298);--accent-foreground:oklch(.985 .001 106.423);--destructive:oklch(.704 .191 22.216);--positive:oklch(.72 .17 149);--border:oklch(1 0 0/10%);--input:oklch(1 0 0/15%);--ring:oklch(.553 .013 58.071)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}*{box-sizing:border-box;border-color:var(--border)}body{margin:0;background:var(--background);color:var(--foreground);font-family:var(--font-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}h1,h2,h3,h4,.num{font-family:var(--font-heading);font-weight:700;letter-spacing:-.02em}h1{font-size:1.5rem}h2{font-size:1.125rem}h3{font-size:1rem}.card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);padding:1.25rem}.card-title{font-family:var(--font-heading);font-weight:700;font-size:.95rem;margin:0 0 .25rem}.card-sub{color:var(--muted-foreground);font-size:.8rem;margin:0 0 1rem}.label{font-family:var(--font-heading);font-size:.6875rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground)}.stat{font-family:var(--font-heading);font-size:2rem;font-weight:700;letter-spacing:-.03em}.btn{display:inline-block;font-family:var(--font-heading);font-size:.8125rem;font-weight:500;padding:.55rem 1rem;border:1px solid transparent;border-radius:var(--radius);cursor:pointer;text-align:center}.btn-primary{background:var(--primary);color:var(--primary-foreground)}.btn-outline{background:transparent;color:var(--foreground);border-color:var(--border)}.btn-block{display:block;width:100%}.muted{color:var(--muted-foreground)}.positive{color:var(--positive)}.negative{color:var(--destructive)}input,textarea,select{font:inherit;color:var(--foreground);background:var(--background);border:1px solid var(--input);border-radius:var(--radius);padding:.5rem .75rem;width:100%}input:focus,textarea:focus,select:focus{outline:2px solid var(--ring);outline-offset:0}hr{border:0;border-top:1px solid var(--border)}a{color:var(--foreground)}code,pre{font-family:var(--font-heading);font-size:.85em;background:var(--muted)}
+/* Prototype-specific layout, using theme variables only. */
+body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--background);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.title{margin:0;font-size:15px}.meta{font-family:var(--font-heading);font-size:11px;color:var(--muted-foreground)}.prototype{color:var(--destructive)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 66px)}.main{padding:20px;min-width:0}.sidebar{border-left:1px solid var(--border);padding:16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}.file-head{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-bottom:0;padding:10px 12px;font-family:var(--font-heading)}.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);overflow:hidden}.side+.side{border-left:1px solid var(--border)}.side-title{padding:7px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-family:var(--font-heading);font-size:11px}.line{display:grid;grid-template-columns:46px minmax(0,1fr);min-height:29px;border-bottom:1px solid var(--border)}.line:last-child{border-bottom:0}.line-no{padding:5px 8px;text-align:right;background:var(--muted);color:var(--muted-foreground);font:11px var(--font-heading);user-select:none}.code{padding:5px 10px;white-space:pre;overflow:hidden;text-overflow:ellipsis;font:12px/18px var(--font-heading);cursor:text}.line.add .code{background:color-mix(in oklch,var(--terminal-green) 18%,var(--background))}.line.remove .code{background:color-mix(in oklch,var(--terminal-red) 15%,var(--background))}.line.annotated .code{outline:2px solid var(--terminal-bronze);outline-offset:-2px}.badge{float:right;background:var(--terminal-bronze);color:var(--primary-foreground);padding:0 5px;font-size:10px}.selection-help{padding:10px 12px;border:1px solid var(--border);border-top:0;color:var(--muted-foreground);font-size:12px}.composer{display:none;background:var(--card);border:1px solid var(--border);padding:12px;z-index:30}.composer.visible{display:block}.composer blockquote{margin:8px 0;padding:8px;border-left:3px solid var(--terminal-bronze);background:var(--muted);font:11px var(--font-heading);max-height:90px;overflow:auto}.composer textarea{min-height:80px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.comment{border-top:1px solid var(--border);padding:12px 0}.comment:first-child{border-top:0}.comment.resolved{opacity:.58}.quote{font:11px var(--font-heading);padding:6px;background:var(--muted);margin:6px 0;white-space:pre-wrap}.comment-actions{display:flex;gap:10px}.link-button{border:0;background:none;padding:0;color:var(--muted-foreground);font:11px var(--font-heading);text-decoration:underline;cursor:pointer}.save-status{font:11px var(--font-heading)}.state{margin-top:18px}.state pre{font-size:10px;max-height:240px;white-space:pre-wrap}.variant-bar{position:fixed;z-index:50;bottom:14px;left:50%;transform:translateX(-50%);display:flex;background:var(--background);border:1px solid var(--border);padding:5px}.variant-bar a{text-decoration:none;padding:6px 10px;font:11px var(--font-heading)}.variant-bar a.active{background:var(--primary);color:var(--primary-foreground)}body.variant-popover .composer{position:fixed;width:330px}body.variant-inline .composer{margin-top:10px}body.variant-inline .sidebar-composer-slot{display:none}.empty{color:var(--muted-foreground);font-size:12px;padding:12px 0}@media(max-width:900px){.layout{display:block}.sidebar{position:static;height:auto;border-left:0;border-top:1px solid var(--border)}.diff{grid-template-columns:1fr}.side+.side{border-left:0;border-top:1px solid var(--border)}.topbar{align-items:flex-start}.meta{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><div class="label prototype">Throwaway prototype</div><h1 class="title">src/catalog.ts · targeted review</h1></div>
+  <div class="meta">34018237 → d33665cc · JSON: <span id="path"></span></div>
+  <div class="save-status" id="save-status">Loading…</div>
+</header>
+<div class="layout">
+  <main class="main">
+    <div class="file-head"><span>src/catalog.ts</span><span class="muted">+4 −3</span></div>
+    <div class="diff" id="diff"></div>
+    <div class="selection-help">Highlight changed text, then add a comment. Try each composer placement with the switcher below.</div>
+    <div id="inline-slot"></div>
+  </main>
+  <aside class="sidebar">
+    <div class="sidebar-composer-slot" id="sidebar-slot"></div>
+    <section><div class="label">Findings · <span id="open-count">0</span> open</div><div id="comments"></div></section>
+    <section class="state"><div class="label">Persisted state</div><pre id="state-json"></pre></section>
+  </aside>
+</div>
+<div class="composer" id="composer">
+  <div class="label">Comment on selection</div>
+  <blockquote id="selected-quote"></blockquote>
+  <textarea id="comment-text" placeholder="What should the AI understand or change?"></textarea>
+  <div class="actions"><button class="btn btn-outline" id="cancel">Cancel</button><button class="btn btn-primary" id="add">Add comment</button></div>
+</div>
+<nav class="variant-bar" aria-label="Prototype variants">
+  <a data-variant="sidebar" href="?variant=sidebar">Sidebar</a>
+  <a data-variant="popover" href="?variant=popover">Popover</a>
+  <a data-variant="inline" href="?variant=inline">Below diff</a>
+</nav>
+<script>
+const reviewPath = __REVIEW_PATH_JSON__;
+const variant = new URLSearchParams(location.search).get("variant") || "sidebar";
+document.body.classList.add(`variant-${variant}`);
+document.querySelector(`[data-variant="${variant}"]`).classList.add("active");
+document.querySelector("#path").textContent = reviewPath;
+
+const rows = [
+  {old:44,new:44,kind:"same",left:"export function resolveCatalog(model: Model) {",right:"export function resolveCatalog(model: Model) {"},
+  {old:45,new:null,kind:"remove",left:"  const scope = model.parentId ?? model.id",right:""},
+  {old:46,new:null,kind:"remove",left:"  return findEntries(scope, model.kind)",right:""},
+  {old:null,new:45,kind:"add",left:"",right:"  const scope = resolveInitiativeScope(model)"},
+  {old:null,new:46,kind:"add",left:"",right:"  const entries = findEntries(scope, model.kind)"},
+  {old:null,new:47,kind:"add",left:"",right:"  return entries.filter(entry => entry.visible)"},
+  {old:47,new:48,kind:"same",left:"}",right:"}"},
+];
+let state;
+let pendingSelection = null;
+const composer = document.querySelector("#composer");
+
+function escapeHtml(value){const node=document.createElement("div");node.textContent=value;return node.innerHTML}
+function renderDiff(){
+  const sides = ["old","new"].map(side => {
+    const lines = rows.map(row => {
+      const line = side === "old" ? row.old : row.new;
+      const text = side === "old" ? row.left : row.right;
+      const relevantKind = line == null ? "same" : row.kind;
+      const count = state?.comments.filter(c => c.side === side && c.startLine <= line && c.endLine >= line).length || 0;
+      return `<div class="line ${relevantKind} ${count ? "annotated" : ""}"><div class="line-no">${line ?? ""}</div><div class="code" data-file="src/catalog.ts" data-side="${side}" data-line="${line ?? ""}">${escapeHtml(text)}${count ? `<span class="badge">${count}</span>` : ""}</div></div>`;
+    }).join("");
+    return `<section class="side"><div class="side-title">${side === "old" ? "OLD · 34018237" : "NEW · d33665cc"}</div>${lines}</section>`;
+  });
+  document.querySelector("#diff").innerHTML = sides.join("");
+}
+function render(){
+  renderDiff();
+  const comments = document.querySelector("#comments");
+  comments.innerHTML = state.comments.length ? state.comments.map(comment => `<article class="comment ${comment.status === "resolved" ? "resolved" : ""}"><div class="label">${escapeHtml(comment.file)}:${comment.startLine} · ${comment.side}</div><div class="quote">${escapeHtml(comment.selectedText)}</div><div>${escapeHtml(comment.comment)}</div><div class="comment-actions"><button class="link-button" data-action="toggle" data-id="${comment.id}">${comment.status === "open" ? "Resolve" : "Reopen"}</button><button class="link-button" data-action="edit" data-id="${comment.id}">Edit</button><button class="link-button" data-action="delete" data-id="${comment.id}">Delete</button></div></article>`).join("") : `<div class="empty">No comments yet.</div>`;
+  document.querySelector("#open-count").textContent = state.comments.filter(c => c.status === "open").length;
+  document.querySelector("#state-json").textContent = JSON.stringify(state, null, 2);
+}
+async function save(){
+  document.querySelector("#save-status").textContent = "Saving…";
+  const response = await fetch("/review.json",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(state)});
+  document.querySelector("#save-status").textContent = response.ok ? "Saved" : "Save failed";
+  render();
+}
+function closestCode(node){return node?.nodeType === Node.TEXT_NODE ? node.parentElement?.closest(".code") : node?.closest?.(".code")}
+function placeComposer(rect){
+  if(variant === "sidebar") document.querySelector("#sidebar-slot").prepend(composer);
+  if(variant === "inline") document.querySelector("#inline-slot").append(composer);
+  if(variant === "popover"){
+    document.body.append(composer);
+    composer.style.left = `${Math.min(innerWidth - 350, Math.max(12, rect.left))}px`;
+    composer.style.top = `${Math.min(innerHeight - 220, rect.bottom + 8)}px`;
+  }
+  composer.classList.add("visible");
+  document.querySelector("#selected-quote").textContent = pendingSelection.selectedText;
+  document.querySelector("#comment-text").focus();
+}
+document.querySelector("#diff").addEventListener("mouseup", async () => {
+  const selection = getSelection();
+  const text = selection.toString().trim();
+  if(!text) return;
+  const start = closestCode(selection.anchorNode);
+  const end = closestCode(selection.focusNode);
+  if(!start || !end || start.dataset.side !== end.dataset.side || !start.dataset.line || !end.dataset.line) return;
+  const range = selection.getRangeAt(0);
+  const lines = [Number(start.dataset.line),Number(end.dataset.line)].sort((a,b)=>a-b);
+  const context = `${start.textContent}|${end.textContent}`;
+  const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(context)))).map(v=>v.toString(16).padStart(2,"0")).join("");
+  pendingSelection = {file:start.dataset.file,side:start.dataset.side,startLine:lines[0],endLine:lines[1],selectedText:text,prefix:start.textContent.slice(0,40),suffix:end.textContent.slice(-40),contentHash:hash};
+  placeComposer(range.getBoundingClientRect());
+});
+document.querySelector("#cancel").onclick=()=>{composer.classList.remove("visible");pendingSelection=null};
+document.querySelector("#add").onclick=async()=>{
+  const comment=document.querySelector("#comment-text").value.trim();if(!pendingSelection||!comment)return;
+  state.comments.push({id:crypto.randomUUID(),...pendingSelection,status:"open",comment});
+  document.querySelector("#comment-text").value="";composer.classList.remove("visible");pendingSelection=null;await save();
+};
+document.querySelector("#comments").onclick=async event=>{
+  const button=event.target.closest("button[data-id]");if(!button)return;
+  const index=state.comments.findIndex(c=>c.id===button.dataset.id);if(index<0)return;
+  if(button.dataset.action==="toggle")state.comments[index].status=state.comments[index].status==="open"?"resolved":"open";
+  if(button.dataset.action==="delete")state.comments.splice(index,1);
+  if(button.dataset.action==="edit"){const next=prompt("Edit comment",state.comments[index].comment);if(next!==null&&next.trim())state.comments[index].comment=next.trim()}
+  await save();
+};
+fetch("/review.json").then(r=>r.json()).then(data=>{state=data;render();document.querySelector("#save-status").textContent="Saved"});
+</script>
+</body>
+</html>

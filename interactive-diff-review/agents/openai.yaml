@@ -1,0 +1,4 @@
+interface:
+  display_name: "Interactive Diff Review"
+  short_description: "Review targeted Git diffs with Comments"
+  default_prompt: "Use $interactive-diff-review to open a targeted Git diff and collect my anchored Comments."

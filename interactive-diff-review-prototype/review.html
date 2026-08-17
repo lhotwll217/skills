@@ -194,10 +194,14 @@ let editingCommentId = null;
 const composer = document.querySelector("#composer");
 
 function escapeHtml(value){const node=document.createElement("div");node.textContent=value;return node.innerHTML}
+function statsHtml(stats){
+  const [additions,deletions]=stats.split(" ");
+  return `<span class="positive">${escapeHtml(additions)}</span> <span class="negative">${escapeHtml(deletions)}</span>`;
+}
 function lineId(file,side,line){return `line-${files.findIndex(item=>item.path===file)}-${side}-${line}`}
 function fileId(index){return `file-${index}`}
 function renderFileNavigation(){
-  document.querySelector("#file-nav").innerHTML=files.map((file,index)=>`<button class="btn btn-outline" data-file-index="${index}">${escapeHtml(file.path)} <span class="muted">${file.stats}</span></button>`).join("");
+  document.querySelector("#file-nav").innerHTML=files.map((file,index)=>`<button class="btn btn-outline" data-file-index="${index}">${escapeHtml(file.path)} <span class="muted">${statsHtml(file.stats)}</span></button>`).join("");
   document.querySelector(".title").textContent=`${files.length} files · targeted review`;
 }
 function renderDiff(){
@@ -212,7 +216,7 @@ function renderDiff(){
       }).join("");
       return `<section class="side"><div class="side-title">${side==="old"?"OLD · 34018237":"NEW · d33665cc"}</div>${lines}</section>`;
     }).join("");
-    return `<section class="file-review" id="${fileId(fileIndex)}"><div class="file-head"><span>${escapeHtml(file.path)}</span><span class="muted">${file.stats}</span></div><div class="diff">${sides}</div></section>`;
+    return `<section class="file-review" id="${fileId(fileIndex)}"><div class="file-head"><span>${escapeHtml(file.path)}</span><span>${statsHtml(file.stats)}</span></div><div class="diff">${sides}</div></section>`;
   }).join("");
 }
 function renderComments(){

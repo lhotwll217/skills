@@ -6,11 +6,7 @@
 
 What is the lightest useful interaction for selecting changed text, attaching a comment, and making the resulting JSON obvious to the owner and agent?
 
-Three composer placements are available from the bottom switcher:
-
-- Sidebar
-- Popover beside the selection
-- Below the diff
+The chosen interaction is a popover placed directly beside the highlighted text, so writing a comment does not require moving to a separate panel.
 
 ## Run
 
@@ -25,7 +21,7 @@ Stop it with **Ctrl-C**. Delete `.prototype-review.json` to reset it.
 ## Review prompt
 
 1. Highlight text on either side of the diff.
-2. Add, edit, resolve, reopen, and delete a comment.
-3. Refresh and confirm state survives.
-4. Switch among the three composer placements.
+2. Confirm the composer opens directly beside the selection and keeps it visibly highlighted.
+3. Add, edit, resolve, reopen, and delete a comment.
+4. Refresh and confirm state survives.
 5. Decide whether the visible JSON path plus “I'm done; please look” feels sufficient without a Finish button.

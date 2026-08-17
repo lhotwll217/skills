@@ -77,7 +77,7 @@ const server = http.createServer(async (request, response) => {
 
 server.listen(0, "127.0.0.1", () => {
   const address = server.address();
-  const url = `http://127.0.0.1:${address.port}/?variant=sidebar`;
+  const url = `http://127.0.0.1:${address.port}/`;
   console.log(`\nInteractive diff-review prototype\n${url}\nJSON: ${reviewPath}\nStop: Ctrl-C\n`);
   spawn("open", [url], { detached: true, stdio: "ignore" }).unref();
 });

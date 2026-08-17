@@ -39,7 +39,8 @@ function send(response, status, type, body) {
 
 const server = http.createServer(async (request, response) => {
   try {
-    if (request.method === "GET" && request.url === "/") {
+    const pathname = new URL(request.url, "http://127.0.0.1").pathname;
+    if (request.method === "GET" && pathname === "/") {
       const html = (await readFile(htmlPath, "utf8")).replace(
         "__REVIEW_PATH_JSON__",
         JSON.stringify(reviewPath),
@@ -48,12 +49,12 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
-    if (request.method === "GET" && request.url === "/review.json") {
+    if (request.method === "GET" && pathname === "/review.json") {
       send(response, 200, "application/json; charset=utf-8", await readFile(reviewPath));
       return;
     }
 
-    if (request.method === "POST" && request.url === "/review.json") {
+    if (request.method === "POST" && pathname === "/review.json") {
       let body = "";
       for await (const chunk of request) {
         body += chunk;

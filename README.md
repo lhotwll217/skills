@@ -20,5 +20,7 @@ npx skills add lhotwll217/skills --skill writing-great-evals
 
 | Skill | Purpose |
 |---|---|
+| [html-theme](html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |
+| [workstream-retro](workstream-retro/SKILL.md) | Reconstruct concurrent work as an interactive orchestration map with human checkpoints, delegated runs, reviews, reroutes, and outcomes. |
 | [writing-great-evals](writing-great-evals/SKILL.md) | Write and review eval definitions — one contract per eval, choose the grading seam, keep the grader lean, grade against a 0–4 scale. |
 | [updating-prompts](updating-prompts/SKILL.md) | Change an existing prompt — find the decision fork, choose the owning layer, ship the smallest delta that holds, validate the whole agent. |

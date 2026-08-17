@@ -126,7 +126,7 @@ a { color: var(--foreground); }
 code, pre { font-family: var(--font-heading); font-size: 0.85em; background: var(--muted); }
 pre { padding: 0.75rem 1rem; overflow-x: auto; }
 /* Prototype-specific layout, using theme variables only. */
-body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--background);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.title{margin:0;font-size:15px}.meta{font-family:var(--font-heading);font-size:11px;color:var(--muted-foreground)}.prototype{color:var(--destructive)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 66px)}.main{padding:20px;min-width:0}.sidebar{border-left:1px solid var(--border);padding:16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}.file-nav{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-bottom:10px}.file-nav select{font-family:var(--font-heading);font-size:12px}.file-head{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-bottom:0;padding:10px 12px;font-family:var(--font-heading)}.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);overflow:hidden}.side+.side{border-left:1px solid var(--border)}.side-title{padding:7px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-family:var(--font-heading);font-size:11px}.line{display:grid;grid-template-columns:46px minmax(0,1fr);min-height:29px;border-bottom:1px solid var(--border)}.line:last-child{border-bottom:0}.line-no{padding:5px 8px;text-align:right;background:var(--muted);color:var(--muted-foreground);font:11px var(--font-heading);user-select:none}.code{padding:5px 10px;white-space:pre;overflow:hidden;text-overflow:ellipsis;font:12px/18px var(--font-heading);cursor:text}.line.add .code{background:color-mix(in oklch,var(--terminal-green) 18%,var(--background))}.line.remove .code{background:color-mix(in oklch,var(--terminal-red) 15%,var(--background))}.line.annotated .code{outline:2px solid var(--terminal-bronze);outline-offset:-2px}.badge{float:right;background:var(--terminal-bronze);color:var(--primary-foreground);padding:0 5px;font-size:10px}.selection-help{padding:10px 12px;border:1px solid var(--border);border-top:0;color:var(--muted-foreground);font-size:12px}.composer{display:none;position:fixed;width:min(360px,calc(100vw - 24px));background:var(--card);border:1px solid var(--border);padding:12px;z-index:30}.composer.visible{display:block}.composer blockquote{margin:8px 0;padding:8px;border-left:3px solid var(--terminal-bronze);background:var(--muted);font:11px var(--font-heading);max-height:90px;overflow:auto}.composer textarea{min-height:80px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.comment{border-top:1px solid var(--border);padding:12px 0;cursor:pointer}.comment:first-child{border-top:0}.comment:hover{background:var(--accent)}.quote{font:11px var(--font-heading);padding:6px;background:var(--muted);margin:6px 0;white-space:pre-wrap}.comment-actions{display:flex;gap:10px}.link-button{border:0;background:none;padding:0;color:var(--muted-foreground);font:11px var(--font-heading);text-decoration:underline;cursor:pointer}.save-status{font:11px var(--font-heading)}.empty{color:var(--muted-foreground);font-size:12px;padding:12px 0}::highlight(review-selection){background:var(--terminal-bronze);color:var(--primary-foreground)}@media(max-width:900px){.layout{display:block}.sidebar{position:static;height:auto;border-left:0;border-top:1px solid var(--border)}.diff{grid-template-columns:1fr}.side+.side{border-left:0;border-top:1px solid var(--border)}.topbar{align-items:flex-start}.meta{display:none}}
+body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--background);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.title{margin:0;font-size:15px}.meta{font-family:var(--font-heading);font-size:11px;color:var(--muted-foreground)}.prototype{color:var(--destructive)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 66px)}.main{padding:0 20px 20px;min-width:0}.sidebar{border-left:1px solid var(--border);padding:16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}.file-nav{position:sticky;top:66px;z-index:15;display:flex;gap:0;overflow-x:auto;background:var(--background);border-bottom:1px solid var(--border);margin:0 -20px 20px;padding:10px 20px}.file-nav button{white-space:nowrap;border-right:0}.file-nav button:last-child{border-right:1px solid var(--border)}.file-review{scroll-margin-top:126px;margin-bottom:24px}.file-head{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-bottom:0;padding:10px 12px;font-family:var(--font-heading)}.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);overflow:hidden}.side+.side{border-left:1px solid var(--border)}.side-title{padding:7px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-family:var(--font-heading);font-size:11px}.line{display:grid;grid-template-columns:46px minmax(0,1fr);min-height:29px;border-bottom:1px solid var(--border)}.line:last-child{border-bottom:0}.line-no{padding:5px 8px;text-align:right;background:var(--muted);color:var(--muted-foreground);font:11px var(--font-heading);user-select:none}.code{padding:5px 10px;white-space:pre;overflow:hidden;text-overflow:ellipsis;font:12px/18px var(--font-heading);cursor:text}.line.add .code{background:color-mix(in oklch,var(--terminal-green) 18%,var(--background))}.line.remove .code{background:color-mix(in oklch,var(--terminal-red) 15%,var(--background))}.line.annotated .code{outline:2px solid var(--terminal-bronze);outline-offset:-2px}.badge{float:right;background:var(--terminal-bronze);color:var(--primary-foreground);padding:0 5px;font-size:10px}.selection-help{padding:10px 12px;border:1px solid var(--border);border-top:0;color:var(--muted-foreground);font-size:12px}.composer{display:none;position:fixed;width:min(360px,calc(100vw - 24px));background:var(--card);border:1px solid var(--border);padding:12px;z-index:30}.composer.visible{display:block}.composer blockquote{margin:8px 0;padding:8px;border-left:3px solid var(--terminal-bronze);background:var(--muted);font:11px var(--font-heading);max-height:90px;overflow:auto}.composer textarea{min-height:80px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.comment{border-top:1px solid var(--border);padding:12px 0;cursor:pointer}.comment:first-child{border-top:0}.comment:hover{background:var(--accent)}.quote{font:11px var(--font-heading);padding:6px;background:var(--muted);margin:6px 0;white-space:pre-wrap}.comment-actions{display:flex;gap:10px}.link-button{border:0;background:none;padding:0;color:var(--muted-foreground);font:11px var(--font-heading);text-decoration:underline;cursor:pointer}.save-status{font:11px var(--font-heading)}.empty{color:var(--muted-foreground);font-size:12px;padding:12px 0}::highlight(review-selection){background:var(--terminal-bronze);color:var(--primary-foreground)}@media(max-width:900px){.layout{display:block}.sidebar{position:static;height:auto;border-left:0;border-top:1px solid var(--border)}.diff{grid-template-columns:1fr}.side+.side{border-left:0;border-top:1px solid var(--border)}.topbar{align-items:flex-start}.meta{display:none}}
 </style>
 </head>
 <body>
@@ -137,13 +137,8 @@ body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--
 </header>
 <div class="layout">
   <main class="main">
-    <nav class="file-nav" aria-label="Changed files">
-      <button class="btn btn-outline" id="previous-file" aria-label="Previous file">←</button>
-      <select id="file-select" aria-label="Current file"></select>
-      <button class="btn btn-outline" id="next-file" aria-label="Next file">→</button>
-    </nav>
-    <div class="file-head"><span id="file-name"></span><span class="muted" id="file-stats"></span></div>
-    <div class="diff" id="diff"></div>
+    <nav class="file-nav" id="file-nav" aria-label="Changed files"></nav>
+    <div id="files"></div>
     <div class="selection-help">Highlight changed text. The comment box opens beside the selection and autosaves when added.</div>
   </main>
   <aside class="sidebar">
@@ -194,41 +189,35 @@ const files = [
 ];
 
 let state;
-let currentFileIndex = 0;
 let pendingSelection = null;
 let editingCommentId = null;
 const composer = document.querySelector("#composer");
 
 function escapeHtml(value){const node=document.createElement("div");node.textContent=value;return node.innerHTML}
-function currentFile(){return files[currentFileIndex]}
 function lineId(file,side,line){return `line-${files.findIndex(item=>item.path===file)}-${side}-${line}`}
+function fileId(index){return `file-${index}`}
 function renderFileNavigation(){
-  const select=document.querySelector("#file-select");
-  select.innerHTML=files.map((file,index)=>`<option value="${index}">${index+1} / ${files.length} · ${escapeHtml(file.path)} · ${file.stats}</option>`).join("");
-  select.value=String(currentFileIndex);
-  document.querySelector("#previous-file").disabled=currentFileIndex===0;
-  document.querySelector("#next-file").disabled=currentFileIndex===files.length-1;
-  document.querySelector("#file-name").textContent=currentFile().path;
-  document.querySelector("#file-stats").textContent=currentFile().stats;
-  document.querySelector(".title").textContent=`${currentFile().path} · targeted review`;
+  document.querySelector("#file-nav").innerHTML=files.map((file,index)=>`<button class="btn btn-outline" data-file-index="${index}">${escapeHtml(file.path)} <span class="muted">${file.stats}</span></button>`).join("");
+  document.querySelector(".title").textContent=`${files.length} files · targeted review`;
 }
 function renderDiff(){
-  const file=currentFile();
-  const sides=["old","new"].map(side=>{
-    const lines=file.rows.map(row=>{
-      const line=side==="old"?row.old:row.new;
-      const text=side==="old"?row.left:row.right;
-      const relevantKind=line==null?"same":row.kind;
-      const count=state?.comments.filter(c=>c.file===file.path&&c.side===side&&c.startLine<=line&&c.endLine>=line).length||0;
-      return `<div class="line ${relevantKind} ${count?"annotated":""}" id="${line==null?"":lineId(file.path,side,line)}"><div class="line-no">${line??""}</div><div class="code" data-file="${escapeHtml(file.path)}" data-side="${side}" data-line="${line??""}">${escapeHtml(text)}${count?`<span class="badge">${count}</span>`:""}</div></div>`;
+  document.querySelector("#files").innerHTML=files.map((file,fileIndex)=>{
+    const sides=["old","new"].map(side=>{
+      const lines=file.rows.map(row=>{
+        const line=side==="old"?row.old:row.new;
+        const text=side==="old"?row.left:row.right;
+        const relevantKind=line==null?"same":row.kind;
+        const count=state?.comments.filter(c=>c.file===file.path&&c.side===side&&c.startLine<=line&&c.endLine>=line).length||0;
+        return `<div class="line ${relevantKind} ${count?"annotated":""}" id="${line==null?"":lineId(file.path,side,line)}"><div class="line-no">${line??""}</div><div class="code" data-file="${escapeHtml(file.path)}" data-side="${side}" data-line="${line??""}">${escapeHtml(text)}${count?`<span class="badge">${count}</span>`:""}</div></div>`;
+      }).join("");
+      return `<section class="side"><div class="side-title">${side==="old"?"OLD · 34018237":"NEW · d33665cc"}</div>${lines}</section>`;
     }).join("");
-    return `<section class="side"><div class="side-title">${side==="old"?"OLD · 34018237":"NEW · d33665cc"}</div>${lines}</section>`;
-  });
-  document.querySelector("#diff").innerHTML=sides.join("");
+    return `<section class="file-review" id="${fileId(fileIndex)}"><div class="file-head"><span>${escapeHtml(file.path)}</span><span class="muted">${file.stats}</span></div><div class="diff">${sides}</div></section>`;
+  }).join("");
 }
 function renderComments(){
   const comments=document.querySelector("#comments");
-  comments.innerHTML=state.comments.length?state.comments.map(comment=>`<article class="comment" data-comment-id="${comment.id}" tabindex="0"><div class="label">${escapeHtml(comment.file)}:${comment.startLine} · ${comment.side}</div><div class="quote">${escapeHtml(comment.selectedText)}</div><div>${escapeHtml(comment.comment)}</div><div class="comment-actions"><button class="link-button" data-action="delete" data-id="${comment.id}">Delete</button></div></article>`).join(""):`<div class="empty">No comments yet.</div>`;
+  comments.innerHTML=state.comments.length?state.comments.map(comment=>`<article class="comment" data-comment-id="${comment.id}" tabindex="0"><div class="label">${escapeHtml(comment.file)}:${comment.startLine}</div><div class="quote">${escapeHtml(comment.selectedText)}</div><div>${escapeHtml(comment.comment)}</div><div class="comment-actions"><button class="link-button" data-action="edit" data-id="${comment.id}">Edit</button><button class="link-button" data-action="delete" data-id="${comment.id}">Delete</button></div></article>`).join(""):`<div class="empty">No comments yet.</div>`;
   document.querySelector("#comment-count").textContent=state.comments.length;
 }
 function render(){renderFileNavigation();renderDiff();renderComments()}
@@ -261,29 +250,29 @@ function closeComposer(){
   document.querySelector("#composer-title").textContent="Comment on selection";
   document.querySelector("#save-comment").textContent="Add comment";
 }
-function showFile(index){currentFileIndex=Math.max(0,Math.min(files.length-1,index));closeComposer();render()}
+function showFile(index){
+  const section=document.getElementById(fileId(index));
+  if(section)section.scrollIntoView({behavior:"smooth",block:"start"});
+}
 function openExistingComment(comment){
   const targetFileIndex=files.findIndex(file=>file.path===comment.file);
   if(targetFileIndex<0)return;
-  currentFileIndex=targetFileIndex;
-  render();
-  requestAnimationFrame(()=>{
-    const line=document.getElementById(lineId(comment.file,comment.side,comment.startLine));
-    if(!line)return;
-    line.scrollIntoView({behavior:"smooth",block:"center"});
-    pendingSelection={...comment};
-    editingCommentId=comment.id;
-    document.querySelector("#comment-text").value=comment.comment;
-    document.querySelector("#composer-title").textContent="Edit comment";
-    document.querySelector("#save-comment").textContent="Save comment";
-    placeComposer(line.querySelector(".code").getBoundingClientRect());
-  });
+  const line=document.getElementById(lineId(comment.file,comment.side,comment.startLine));
+  if(!line)return;
+  line.scrollIntoView({behavior:"smooth",block:"center"});
+  pendingSelection={...comment};
+  editingCommentId=comment.id;
+  document.querySelector("#comment-text").value=comment.comment;
+  document.querySelector("#composer-title").textContent="Edit comment";
+  document.querySelector("#save-comment").textContent="Save comment";
+  requestAnimationFrame(()=>placeComposer(line.querySelector(".code").getBoundingClientRect()));
 }
 
-document.querySelector("#file-select").onchange=event=>showFile(Number(event.target.value));
-document.querySelector("#previous-file").onclick=()=>showFile(currentFileIndex-1);
-document.querySelector("#next-file").onclick=()=>showFile(currentFileIndex+1);
-document.querySelector("#diff").addEventListener("mouseup",async()=>{
+document.querySelector("#file-nav").onclick=event=>{
+  const button=event.target.closest("button[data-file-index]");
+  if(button)showFile(Number(button.dataset.fileIndex));
+};
+document.querySelector("#files").addEventListener("mouseup",async()=>{
   const selection=getSelection();
   const text=selection.toString().trim();
   if(!text)return;
@@ -315,6 +304,13 @@ document.querySelector("#save-comment").onclick=async()=>{
   await save();
 };
 document.querySelector("#comments").onclick=async event=>{
+  const editButton=event.target.closest("button[data-action=edit]");
+  if(editButton){
+    event.stopPropagation();
+    const comment=state.comments.find(item=>item.id===editButton.dataset.id);
+    if(comment)openExistingComment(comment);
+    return;
+  }
   const deleteButton=event.target.closest("button[data-action=delete]");
   if(deleteButton){
     event.stopPropagation();

@@ -10,9 +10,11 @@
 
 **Targeted run** — any subset of cases at any repeat count, for iteration. Demands nothing from git; never publishes.
 
-**Full run** — the whole suite; the only run kind that may publish. Repeat 3 recommended: a case failing all three repeats is deterministically broken; failing once is flaky — different priorities.
+**Full run** — the whole case set, every suite; the only run kind that may publish. Repeat 3 recommended: a case failing all three repeats is deterministically broken; failing once is flaky — different priorities.
 
 **Suite** — a category of cases sharing one behavior area; one file per suite under `cases/`; the natural unit of a targeted run.
+
+**Campaign** — one improvement effort: a batch of targeted iteration runs culminating in the full run that publishes. Failed campaigns publish too.
 
 **Blast radius** — hand-picked cases from other suites where a change could plausibly regress, run together as one regular targeted run whose label carries the `:blast-radius` tag. A smoke check during iteration: catch likely regressions before the full run spends the tokens. Judgment, not mandate.
 
@@ -30,4 +32,4 @@
 
 **Protocol doc** — the eval harness's drive instructions, shipped in-repo and versioned with it.
 
-**Harness tests** — LLM-free tests of the eval harness's own invariants. They document the contract and catch drift.
+**Harness tests** — LLM-free tests of the eval harness's own invariants.

@@ -21,7 +21,7 @@ eval/
 │           ├── trajectory.ndjson   # ordered tool calls with arguments and results
 │           └── stderr.txt
 ├── history.jsonl              # local append-only record of every run
-├── eval_stat_log.json         # committed ledger — full runs only
+├── ledger.jsonl               # committed ledger — full runs only
 └── PROTOCOL.md                # this harness's drive instructions
 ```
 
@@ -43,7 +43,7 @@ grep -n "429\|retry\|Traceback" eval/runs/latest/backend.log
 
 ## What the engine already records
 
-Check the engine's results file before building any capture; custom capture exists only for what the engine cannot record. Promptfoo records per case: `vars`, `response.output`, `success` and `score`, judge rationale in `gradingResult.reason` and `componentResults[].reason`, `latencyMs`, `cost`, `namedScores`, and `tokenUsage` when the provider reports it. No engine records tool-call trajectories, stderr, or runtime logs — those are the only custom captures, and trajectory capture earns its build only for agentic subjects where the route is diagnostic.
+Check the engine's results file before building any capture; custom capture exists only for what the engine cannot record. Promptfoo records per case: `vars`, `response.output`, `success` and `score`, judge rationale in `gradingResult.reason` and `componentResults[].reason`, `latencyMs`, `cost`, `namedScores`, and `tokenUsage` when the provider reports it. The engine cannot see inside a subject invoked through its product surface — trajectories, stderr, and runtime logs are the only custom captures, and trajectory capture earns its build only for agentic subjects where the route is diagnostic.
 
 Lean on the engine before writing code. The promptfoo binding covers:
 
@@ -51,21 +51,27 @@ Lean on the engine before writing code. The promptfoo binding covers:
 - Failure-driven reruns: `--filter-failing <evalId>`, `--filter-errors-only`, `--retry-errors`, `--resume`
 - Storage and addressing: `promptfoo list evals`, `show`, `export eval <id>` — `runs/` is a greppable projection, not a second source of truth
 - Repeats, concurrency, grader override
+- One decoupling: promptfoo exits nonzero when tests fail; the runner sets `PROMPTFOO_PASS_RATE_THRESHOLD=0` so a completed run with failures is never read as a crashed one — the run always finishes, and the gate decides downstream
 
 ## The four contracts
 
-1. **Case** — id + input vars + one concise rubric + plain metadata tags. Cases group into categorical files under `cases/`: the file is the suite, so targeted runs, diffs, and case review all stay local to one behavior area. Shape, with an illustrative schema:
+1. **Case** — id + input vars + one concise rubric + plain tags. Cases group into categorical files under `cases/`: the file is the suite, so targeted runs, diffs, and case review all stay local to one behavior area. Shape, with an illustrative schema:
 
    ```yaml
    # cases/retrieval.yaml — the retrieval suite
    - id: empty-results-fallback
      vars: { question: "Find the meeting notes from last spring" }
      rubric: "Offers the broader-window fallback search when nothing matches."
+     tags: [fallback]
    ```
 
-2. **Adapter result** — normalized output + telemetry: latency always; tokens and cost when the surface reports them; trajectory when routes matter. The subject is invoked through its real product surface, and the adapter propagates the correlation id into it — a header, an env var, or a per-case conversation recorded in `run.json` — so runtime log lines join back to the case that caused them.
-3. **Ledger entry** — one diff-friendly line per full run: subject, scope, repeat, scores, distributions, and dual git identity — the commit when it ran, plus the durable commit backfilled later. Validity gating covers infra validity, meaning grader errors and incomplete runs, not scores: failed campaigns stay in the ledger. For field sets, point at the code that builds the entry; docs that enumerate fields go stale.
+2. **Adapter result** — normalized output + telemetry: latency always; tokens and cost when the surface reports them; trajectory when routes matter. The subject is invoked through its real product surface, and the adapter propagates the correlation id into it, recorded in `run.json`, so runtime log lines join back to the case.
+3. **Ledger entry** — one diff-friendly line per full run: subject, scope, repeat, scores, distributions, and dual git identity — the commit when it ran, plus the durable commit backfilled later. Validity checks cover infra validity, meaning grader errors and incomplete runs, not scores: failed campaigns stay in the ledger. For field sets, point at the code that builds the entry; docs that enumerate fields go stale.
 4. **Gate** — compare two runs paired per case; report unpaired cases; exit nonzero on regression; print comparability caveats when model, grader, or repeat differ. Replay is free — persisted results re-compare with zero model calls; replay before buying another run.
+
+## Grader wiring
+
+The judge is pinned and cheap, and it is isolated: it never runs as the subject, and the subject's env never reaches it. Judge failures are marked, not scored — with the promptfoo binding a judge error surfaces as an ERROR result, in `error` and `failureReason`, distinct from a failed assertion; `--filter-errors-only` and `--retry-errors` target them directly. Stats count judge errors separately from subject failures, and enough of them invalidates publication.
 
 ## Runtime lifecycle
 
@@ -79,7 +85,7 @@ Provider rate limits bound concurrency long before CPU does. Sharding pays only 
 
 The drive procedure ships with the harness — for example `eval/PROTOCOL.md` — versioned with the code it governs. Required coverage:
 
-- **The flow, by example** — workflow, not law, and spelled with the repo's own commands. The shape, with an illustrative runner; the real targets are case ids, a suite file, a tag, and the whole set. Every run logs its artifacts; only the evidence run reaches the ledger:
+- **The flow, by example** — workflow, not law, and spelled with the repo's own commands. The shape, with an illustrative runner; the real targets are case ids, a suite file, and the whole set. Every run logs its artifacts; only the full run reaches the ledger:
 
   ```bash
   # one change is in — target the case it should fix (ids accept more than one):
@@ -97,17 +103,17 @@ The drive procedure ships with the harness — for example `eval/PROTOCOL.md` �
     --label "fix-empty-results :blast-radius"
 
   # next change, same rhythm. once satisfied with the accumulated batch:
-  eval run --full --repeat 3 --label fix-empty-results-campaign   # the evidence run
+  eval run --full --repeat 3 --label fix-empty-results-campaign   # the full run that publishes
   eval compare <before> <after> --gate                            # keep or revert, as an exit code
   eval publish <run>                                              # ledger line; backfill the commit later
   ```
 
-- **Blast radius** — a regular targeted run over hand-picked cases from other suites where this change could plausibly regress: permission scoping after a prompt change, safety guardrails after a tool change. The run's label carries the colon-prefixed tag — `"<change> :blast-radius"` — so `grep ":blast-radius" history.jsonl` finds every such check. The point is token economics: a cheap, well-distributed sample catches most regressions during iteration, so the full run confirms instead of discovers. Whether to smoke-check, run a whole suite, or skip straight to full is a judgment on downstream risk.
-- **Classification before repair** — every failure is a real regression, a behavior difference, or an eval/rubric/infra issue; repair code first, prompts second, assertions third. Fold in the repeat signal: failing all repeats is deterministic breakage, failing once is flakiness, and the two carry different priorities.
+- **Blast radius** — the run's label carries the colon-prefixed tag — `"<change> :blast-radius"` — so `grep ":blast-radius" history.jsonl` finds every such check. Typical picks: permission scoping after a prompt change, safety guardrails after a tool change. The point is token economics: a cheap, well-distributed sample catches most regressions during iteration, so the full run confirms instead of discovers. Smoke-check, run a whole suite, or skip straight to full — a judgment on downstream risk.
+- **Classification before repair** — every failure is a real regression, a behavior difference, or an eval/rubric/infra issue; repair code first, prompts second, assertions third. Fold in the repeat signal.
 - **Gate semantics** — which comparison decides keep/revert, and the command that runs it.
 - **Inspection** — this repo's equivalents of the jq/grep lines above, including the correlation-id join from runtime log to case.
-- **Multi-suite campaigns** — a living review doc ordering the suites, updated after every pass.
+- **When campaigns span suites** — how the pass is ordered and reviewed; a living review doc works.
 
 ## Harness tests
 
-Highly recommended — they document the contract and catch drift. LLM-free and fast: fixture isolation so subjects can't read answer keys, stats math, gate logic against synthetic results, adapter result shape.
+Highly recommended. LLM-free and fast: fixture isolation so subjects can't read answer keys, stats math, gate logic against synthetic results, adapter result shape.

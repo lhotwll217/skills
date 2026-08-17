@@ -2,10 +2,11 @@
 
 import { execFileSync, spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rename, writeFile } from "node:fs/promises";
+import { realpathSync } from "node:fs";
+import { mkdir, mkdtemp, readFile, realpath, rename, writeFile } from "node:fs/promises";
 import http from "node:http";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
@@ -187,7 +188,7 @@ export function collectReviewModel({ repo, base, candidate, paths = [] }) {
   const requestedRepository = resolve(repo ?? process.cwd());
   let repository;
   try {
-    repository = git(requestedRepository, ["rev-parse", "--show-toplevel"]).trim();
+    repository = realpathSync(git(requestedRepository, ["rev-parse", "--show-toplevel"]).trim());
   } catch {
     throw new Error(`Not a Git repository: ${requestedRepository}`);
   }
@@ -422,7 +423,7 @@ async function readRequestJson(request) {
   return JSON.parse(Buffer.concat(chunks).toString("utf8"));
 }
 
-export async function startReviewServer({ html, reviewPath, model }) {
+export async function startReviewServer({ html, reviewPath, model, persistReviewState = atomicWriteJson }) {
   let existing = null;
   try {
     existing = JSON.parse(await readFile(reviewPath, "utf8"));
@@ -430,7 +431,8 @@ export async function startReviewServer({ html, reviewPath, model }) {
     if (error.code !== "ENOENT") throw error;
   }
   let state = reconcileState(existing, model);
-  await atomicWriteJson(reviewPath, state);
+  await persistReviewState(reviewPath, state);
+  let mutationQueue = Promise.resolve();
 
   const server = http.createServer(async (request, response) => {
     try {
@@ -444,10 +446,17 @@ export async function startReviewServer({ html, reviewPath, model }) {
         return;
       }
       if (request.method === "POST" && pathname === "/review.json") {
-        const submitted = await readRequestJson(request);
-        state = reconcileState({ review: state.review, comments: submitted?.comments }, model);
-        await atomicWriteJson(reviewPath, state);
-        send(response, 200, "application/json; charset=utf-8", `${JSON.stringify(state)}\n`);
+        const submitted = readRequestJson(request);
+        const mutation = mutationQueue.then(async () => {
+          const input = await submitted;
+          const nextState = reconcileState({ review: state.review, comments: input?.comments }, model);
+          await persistReviewState(reviewPath, nextState);
+          state = nextState;
+          return nextState;
+        });
+        mutationQueue = mutation.then(() => undefined, () => undefined);
+        const committedState = await mutation;
+        send(response, 200, "application/json; charset=utf-8", `${JSON.stringify(committedState)}\n`);
         return;
       }
       send(response, 404, "text/plain; charset=utf-8", "Not found");
@@ -545,6 +554,24 @@ function openBrowser(url) {
   child.unref();
 }
 
+async function canonicalPath(path) {
+  const absolutePath = resolve(path);
+  try {
+    return await realpath(absolutePath);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    const parent = dirname(absolutePath);
+    if (parent === absolutePath) throw error;
+    return join(await canonicalPath(parent), basename(absolutePath));
+  }
+}
+
+function isInside(repository, path) {
+  const repositoryRelativePath = relative(repository, path);
+  return repositoryRelativePath === "" ||
+    (repositoryRelativePath !== ".." && !repositoryRelativePath.startsWith(`..${sep}`) && !isAbsolute(repositoryRelativePath));
+}
+
 async function runCli(arguments_) {
   const options = parseArguments(arguments_);
   if (options.help) {
@@ -552,9 +579,13 @@ async function runCli(arguments_) {
     return;
   }
   const model = collectReviewModel(options);
-  const outputDirectory = options.outputDirectory
+  const requestedOutputDirectory = options.outputDirectory
     ? resolve(options.outputDirectory)
     : await mkdtemp(join(tmpdir(), "interactive-diff-review-"));
+  const outputDirectory = await canonicalPath(requestedOutputDirectory);
+  if (isInside(model.repository, outputDirectory)) {
+    throw new Error("The output directory must be outside the reviewed repository");
+  }
   await mkdir(outputDirectory, { recursive: true });
   const reviewPath = join(outputDirectory, "review.json");
   const htmlPath = join(outputDirectory, "review.html");

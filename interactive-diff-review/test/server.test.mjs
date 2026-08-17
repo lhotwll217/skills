@@ -147,3 +147,60 @@ test("POST atomically autosaves only the minimal review schema and survives rest
   const reloaded = await (await fetch(`${session.url}review.json`)).json();
   assert.equal(reloaded.comments[0].comment, comment.comment);
 });
+
+test("overlapping POSTs cannot persist an older review state after a newer mutation", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "interactive-diff-overlap-"));
+  const reviewPath = join(directory, "review.json");
+  let signalOlderPersistence;
+  let signalNewerPersisted;
+  const olderPersistenceStarted = new Promise((resolve) => { signalOlderPersistence = resolve; });
+  const newerPersisted = new Promise((resolve) => { signalNewerPersisted = resolve; });
+  const persistReviewState = async (path, nextState) => {
+    const mutation = nextState.comments[0]?.comment;
+    if (mutation === "older mutation") {
+      signalOlderPersistence();
+      await Promise.race([
+        newerPersisted,
+        new Promise((resolve) => setTimeout(resolve, 100)),
+      ]);
+    }
+    await writeFile(path, `${JSON.stringify(nextState, null, 2)}\n`);
+    if (mutation === "newer mutation") signalNewerPersisted();
+  };
+  const session = await startReviewServer({
+    html: "<!doctype html><p>review</p>",
+    reviewPath,
+    model: reviewModel(),
+    persistReviewState,
+  });
+  t.after(() => session.close());
+  const comment = {
+    ...movedComment(),
+    id: "comment-overlap",
+    startLine: 20,
+    endLine: 20,
+  };
+
+  const olderRequest = fetch(`${session.url}review.json`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ comments: [{ ...comment, comment: "older mutation" }] }),
+  });
+  const persistenceWasControlled = await Promise.race([
+    olderPersistenceStarted.then(() => true),
+    new Promise((resolve) => setTimeout(() => resolve(false), 100)),
+  ]);
+  assert.equal(persistenceWasControlled, true, "server did not use the controlled persistence boundary");
+  const newerRequest = fetch(`${session.url}review.json`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ comments: [{ ...comment, comment: "newer mutation" }] }),
+  });
+
+  const responses = await Promise.all([olderRequest, newerRequest]);
+  assert.deepEqual(responses.map((response) => response.status), [200, 200]);
+  const diskState = JSON.parse(await readFile(reviewPath, "utf8"));
+  const servedState = await (await fetch(`${session.url}review.json`)).json();
+  assert.equal(diskState.comments[0].comment, "newer mutation");
+  assert.equal(servedState.comments[0].comment, "newer mutation");
+});

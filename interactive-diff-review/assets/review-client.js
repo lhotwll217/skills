@@ -168,14 +168,28 @@ function textOffset(node, container, offset) {
   return before.toString().length;
 }
 
+function composerPosition(rect, bounds, viewport) {
+  const margin = 12;
+  const gap = 8;
+  const preferredLeft = rect.right + gap;
+  const candidateLeft = preferredLeft + bounds.width <= viewport.width - margin
+    ? preferredLeft
+    : rect.left - bounds.width - gap;
+  const preferredTop = rect.bottom + gap;
+  const candidateTop = preferredTop + bounds.height <= viewport.height - margin
+    ? preferredTop
+    : rect.top - bounds.height - gap;
+  return {
+    left: Math.min(Math.max(margin, candidateLeft), Math.max(margin, viewport.width - bounds.width - margin)),
+    top: Math.min(Math.max(margin, candidateTop), Math.max(margin, viewport.height - bounds.height - margin)),
+  };
+}
+
 function placeComposer(rect) {
   composer.classList.add("visible");
   $("#selected-quote").textContent = pendingSelection.selectedText;
   const bounds = composer.getBoundingClientRect();
-  const preferredLeft = rect.right + 8;
-  const left = preferredLeft + bounds.width <= innerWidth - 12 ? preferredLeft : Math.max(12, rect.left - bounds.width - 8);
-  const preferredTop = rect.bottom + 8;
-  const top = preferredTop + bounds.height <= innerHeight - 12 ? preferredTop : Math.max(12, rect.top - bounds.height - 8);
+  const { left, top } = composerPosition(rect, bounds, { width: innerWidth, height: innerHeight });
   composer.style.left = `${left}px`;
   composer.style.top = `${top}px`;
   $("#comment-text").focus();
@@ -199,7 +213,7 @@ function openExistingComment(comment, fallbackTarget) {
   const nearby = target?.querySelector(".code") ?? fallbackTarget;
   if (!nearby) return;
   const scrollTarget = target ?? (file ? document.getElementById(internalFileAnchor(file)) : null);
-  scrollTarget?.scrollIntoView({ behavior: "smooth", block: "center" });
+  scrollTarget?.scrollIntoView({ behavior: "instant", block: "center" });
   pendingSelection = { ...comment };
   editingCommentId = comment.id;
   $("#comment-text").value = comment.comment;

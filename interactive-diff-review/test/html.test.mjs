@@ -8,6 +8,7 @@ import { generateReviewHtml } from "../scripts/review.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const themePath = join(here, "..", "..", "html-theme", "theme.css");
+const clientPath = join(here, "..", "assets", "review-client.js");
 
 const model = {
   repository: "/tmp/repo <unsafe>",
@@ -66,4 +67,34 @@ test("renders continuous sticky file navigation and narrow comment controls", as
   assert.match(html, /\$\{comment\.file\}:\$\{comment\.startLine\}/);
   assert.doesNotMatch(html, /Finish review|raw state|Resolve|Resolved|Open comment/i);
   assert.doesNotMatch(html, /comment\.side.*textContent|textContent.*comment\.side/);
+});
+
+test("comment navigation measures after instant scrolling and clamps the composer to every viewport edge", async () => {
+  const client = await readFile(clientPath, "utf8");
+  const positionStart = client.indexOf("function composerPosition(");
+  const positionEnd = client.indexOf("\nfunction placeComposer(", positionStart);
+  assert.notEqual(positionStart, -1);
+  assert.notEqual(positionEnd, -1);
+  const composerPosition = Function(`${client.slice(positionStart, positionEnd)}\nreturn composerPosition;`)();
+
+  assert.deepEqual(
+    composerPosition(
+      { left: 900, right: 1000, top: -200, bottom: -180 },
+      { width: 360, height: 300 },
+      { width: 800, height: 600 },
+    ),
+    { left: 428, top: 12 },
+  );
+  assert.deepEqual(
+    composerPosition(
+      { left: -100, right: -100, top: 650, bottom: 670 },
+      { width: 360, height: 300 },
+      { width: 800, height: 600 },
+    ),
+    { left: 12, top: 288 },
+  );
+  assert.match(
+    client,
+    /scrollIntoView\(\{ behavior: "instant", block: "center" \}\);[\s\S]*requestAnimationFrame\(\(\) => placeComposer\(nearby\.getBoundingClientRect\(\)\)\);/,
+  );
 });

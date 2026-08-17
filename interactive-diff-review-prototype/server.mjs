@@ -15,7 +15,7 @@ const initialState = {
     repository: "/example/acme-catalog",
     base: "34018237",
     candidate: "d33665cc",
-    paths: ["src/catalog.ts"],
+    paths: ["src/catalog.ts", "src/scope.ts", "test/catalog.test.ts"],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },

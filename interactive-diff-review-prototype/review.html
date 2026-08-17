@@ -126,7 +126,7 @@ a { color: var(--foreground); }
 code, pre { font-family: var(--font-heading); font-size: 0.85em; background: var(--muted); }
 pre { padding: 0.75rem 1rem; overflow-x: auto; }
 /* Prototype-specific layout, using theme variables only. */
-body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--background);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.title{margin:0;font-size:15px}.meta{font-family:var(--font-heading);font-size:11px;color:var(--muted-foreground)}.prototype{color:var(--destructive)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 66px)}.main{padding:20px;min-width:0}.sidebar{border-left:1px solid var(--border);padding:16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}.file-head{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-bottom:0;padding:10px 12px;font-family:var(--font-heading)}.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);overflow:hidden}.side+.side{border-left:1px solid var(--border)}.side-title{padding:7px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-family:var(--font-heading);font-size:11px}.line{display:grid;grid-template-columns:46px minmax(0,1fr);min-height:29px;border-bottom:1px solid var(--border)}.line:last-child{border-bottom:0}.line-no{padding:5px 8px;text-align:right;background:var(--muted);color:var(--muted-foreground);font:11px var(--font-heading);user-select:none}.code{padding:5px 10px;white-space:pre;overflow:hidden;text-overflow:ellipsis;font:12px/18px var(--font-heading);cursor:text}.line.add .code{background:color-mix(in oklch,var(--terminal-green) 18%,var(--background))}.line.remove .code{background:color-mix(in oklch,var(--terminal-red) 15%,var(--background))}.line.annotated .code{outline:2px solid var(--terminal-bronze);outline-offset:-2px}.badge{float:right;background:var(--terminal-bronze);color:var(--primary-foreground);padding:0 5px;font-size:10px}.selection-help{padding:10px 12px;border:1px solid var(--border);border-top:0;color:var(--muted-foreground);font-size:12px}.composer{display:none;position:fixed;width:min(360px,calc(100vw - 24px));background:var(--card);border:1px solid var(--border);padding:12px;z-index:30}.composer.visible{display:block}.composer blockquote{margin:8px 0;padding:8px;border-left:3px solid var(--terminal-bronze);background:var(--muted);font:11px var(--font-heading);max-height:90px;overflow:auto}.composer textarea{min-height:80px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.comment{border-top:1px solid var(--border);padding:12px 0}.comment:first-child{border-top:0}.comment.resolved{opacity:.58}.quote{font:11px var(--font-heading);padding:6px;background:var(--muted);margin:6px 0;white-space:pre-wrap}.comment-actions{display:flex;gap:10px}.link-button{border:0;background:none;padding:0;color:var(--muted-foreground);font:11px var(--font-heading);text-decoration:underline;cursor:pointer}.save-status{font:11px var(--font-heading)}.state{margin-top:18px}.state pre{font-size:10px;max-height:240px;white-space:pre-wrap}.empty{color:var(--muted-foreground);font-size:12px;padding:12px 0}::highlight(review-selection){background:var(--terminal-bronze);color:var(--primary-foreground)}@media(max-width:900px){.layout{display:block}.sidebar{position:static;height:auto;border-left:0;border-top:1px solid var(--border)}.diff{grid-template-columns:1fr}.side+.side{border-left:0;border-top:1px solid var(--border)}.topbar{align-items:flex-start}.meta{display:none}}
+body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--background);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.title{margin:0;font-size:15px}.meta{font-family:var(--font-heading);font-size:11px;color:var(--muted-foreground)}.prototype{color:var(--destructive)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 66px)}.main{padding:20px;min-width:0}.sidebar{border-left:1px solid var(--border);padding:16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}.file-nav{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-bottom:10px}.file-nav select{font-family:var(--font-heading);font-size:12px}.file-head{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-bottom:0;padding:10px 12px;font-family:var(--font-heading)}.diff{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);overflow:hidden}.side+.side{border-left:1px solid var(--border)}.side-title{padding:7px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-family:var(--font-heading);font-size:11px}.line{display:grid;grid-template-columns:46px minmax(0,1fr);min-height:29px;border-bottom:1px solid var(--border)}.line:last-child{border-bottom:0}.line-no{padding:5px 8px;text-align:right;background:var(--muted);color:var(--muted-foreground);font:11px var(--font-heading);user-select:none}.code{padding:5px 10px;white-space:pre;overflow:hidden;text-overflow:ellipsis;font:12px/18px var(--font-heading);cursor:text}.line.add .code{background:color-mix(in oklch,var(--terminal-green) 18%,var(--background))}.line.remove .code{background:color-mix(in oklch,var(--terminal-red) 15%,var(--background))}.line.annotated .code{outline:2px solid var(--terminal-bronze);outline-offset:-2px}.badge{float:right;background:var(--terminal-bronze);color:var(--primary-foreground);padding:0 5px;font-size:10px}.selection-help{padding:10px 12px;border:1px solid var(--border);border-top:0;color:var(--muted-foreground);font-size:12px}.composer{display:none;position:fixed;width:min(360px,calc(100vw - 24px));background:var(--card);border:1px solid var(--border);padding:12px;z-index:30}.composer.visible{display:block}.composer blockquote{margin:8px 0;padding:8px;border-left:3px solid var(--terminal-bronze);background:var(--muted);font:11px var(--font-heading);max-height:90px;overflow:auto}.composer textarea{min-height:80px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.comment{border-top:1px solid var(--border);padding:12px 0;cursor:pointer}.comment:first-child{border-top:0}.comment:hover{background:var(--accent)}.quote{font:11px var(--font-heading);padding:6px;background:var(--muted);margin:6px 0;white-space:pre-wrap}.comment-actions{display:flex;gap:10px}.link-button{border:0;background:none;padding:0;color:var(--muted-foreground);font:11px var(--font-heading);text-decoration:underline;cursor:pointer}.save-status{font:11px var(--font-heading)}.empty{color:var(--muted-foreground);font-size:12px;padding:12px 0}::highlight(review-selection){background:var(--terminal-bronze);color:var(--primary-foreground)}@media(max-width:900px){.layout{display:block}.sidebar{position:static;height:auto;border-left:0;border-top:1px solid var(--border)}.diff{grid-template-columns:1fr}.side+.side{border-left:0;border-top:1px solid var(--border)}.topbar{align-items:flex-start}.meta{display:none}}
 </style>
 </head>
 <body>
@@ -137,109 +137,209 @@ body{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:var(--
 </header>
 <div class="layout">
   <main class="main">
-    <div class="file-head"><span>src/catalog.ts</span><span class="muted">+4 −3</span></div>
+    <nav class="file-nav" aria-label="Changed files">
+      <button class="btn btn-outline" id="previous-file" aria-label="Previous file">←</button>
+      <select id="file-select" aria-label="Current file"></select>
+      <button class="btn btn-outline" id="next-file" aria-label="Next file">→</button>
+    </nav>
+    <div class="file-head"><span id="file-name"></span><span class="muted" id="file-stats"></span></div>
     <div class="diff" id="diff"></div>
     <div class="selection-help">Highlight changed text. The comment box opens beside the selection and autosaves when added.</div>
   </main>
   <aside class="sidebar">
-    <section><div class="label">Findings · <span id="open-count">0</span> open</div><div id="comments"></div></section>
-    <section class="state"><div class="label">Persisted state</div><pre id="state-json"></pre></section>
+    <section><div class="label">Comments · <span id="comment-count">0</span></div><div id="comments"></div></section>
   </aside>
 </div>
 <div class="composer" id="composer">
-  <div class="label">Comment on selection</div>
+  <div class="label" id="composer-title">Comment on selection</div>
   <blockquote id="selected-quote"></blockquote>
   <textarea id="comment-text" placeholder="What should the AI understand or change?"></textarea>
-  <div class="actions"><button class="btn btn-outline" id="cancel">Cancel</button><button class="btn btn-primary" id="add">Add comment</button></div>
+  <div class="actions"><button class="btn btn-outline" id="cancel">Cancel</button><button class="btn btn-primary" id="save-comment">Add comment</button></div>
 </div>
 <script>
 const reviewPath = __REVIEW_PATH_JSON__;
 document.querySelector("#path").textContent = reviewPath;
 
-const rows = [
-  {old:44,new:44,kind:"same",left:"export function resolveCatalog(model: Model) {",right:"export function resolveCatalog(model: Model) {"},
-  {old:45,new:null,kind:"remove",left:"  const scope = model.parentId ?? model.id",right:""},
-  {old:46,new:null,kind:"remove",left:"  return findEntries(scope, model.kind)",right:""},
-  {old:null,new:45,kind:"add",left:"",right:"  const scope = resolveInitiativeScope(model)"},
-  {old:null,new:46,kind:"add",left:"",right:"  const entries = findEntries(scope, model.kind)"},
-  {old:null,new:47,kind:"add",left:"",right:"  return entries.filter(entry => entry.visible)"},
-  {old:47,new:48,kind:"same",left:"}",right:"}"},
+const files = [
+  {
+    path: "src/catalog.ts", stats: "+4 −3", rows: [
+      {old:44,new:44,kind:"same",left:"export function resolveCatalog(model: Model) {",right:"export function resolveCatalog(model: Model) {"},
+      {old:45,new:null,kind:"remove",left:"  const scope = model.parentId ?? model.id",right:""},
+      {old:46,new:null,kind:"remove",left:"  return findEntries(scope, model.kind)",right:""},
+      {old:null,new:45,kind:"add",left:"",right:"  const scope = resolveInitiativeScope(model)"},
+      {old:null,new:46,kind:"add",left:"",right:"  const entries = findEntries(scope, model.kind)"},
+      {old:null,new:47,kind:"add",left:"",right:"  return entries.filter(entry => entry.visible)"},
+      {old:47,new:48,kind:"same",left:"}",right:"}"},
+    ],
+  },
+  {
+    path: "src/scope.ts", stats: "+8 −0", rows: [
+      {old:null,new:1,kind:"add",left:"",right:"import type { Model } from './types'"},
+      {old:null,new:2,kind:"add",left:"",right:""},
+      {old:null,new:3,kind:"add",left:"",right:"export function resolveInitiativeScope(model: Model) {"},
+      {old:null,new:4,kind:"add",left:"",right:"  if (model.kind === 'initiative') return model.id"},
+      {old:null,new:5,kind:"add",left:"",right:"  return model.parentId ?? model.id"},
+      {old:null,new:6,kind:"add",left:"",right:"}"},
+    ],
+  },
+  {
+    path: "test/catalog.test.ts", stats: "+5 −1", rows: [
+      {old:81,new:81,kind:"same",left:"it('filters hidden entries', () => {",right:"it('filters hidden entries', () => {"},
+      {old:82,new:null,kind:"remove",left:"  expect(resolveCatalog(model)).toHaveLength(3)",right:""},
+      {old:null,new:82,kind:"add",left:"",right:"  const result = resolveCatalog(model)"},
+      {old:null,new:83,kind:"add",left:"",right:"  expect(result).toEqual([visibleEntry])"},
+      {old:83,new:84,kind:"same",left:"})",right:"}"},
+    ],
+  },
 ];
+
 let state;
+let currentFileIndex = 0;
 let pendingSelection = null;
+let editingCommentId = null;
 const composer = document.querySelector("#composer");
 
 function escapeHtml(value){const node=document.createElement("div");node.textContent=value;return node.innerHTML}
+function currentFile(){return files[currentFileIndex]}
+function lineId(file,side,line){return `line-${files.findIndex(item=>item.path===file)}-${side}-${line}`}
+function renderFileNavigation(){
+  const select=document.querySelector("#file-select");
+  select.innerHTML=files.map((file,index)=>`<option value="${index}">${index+1} / ${files.length} · ${escapeHtml(file.path)} · ${file.stats}</option>`).join("");
+  select.value=String(currentFileIndex);
+  document.querySelector("#previous-file").disabled=currentFileIndex===0;
+  document.querySelector("#next-file").disabled=currentFileIndex===files.length-1;
+  document.querySelector("#file-name").textContent=currentFile().path;
+  document.querySelector("#file-stats").textContent=currentFile().stats;
+  document.querySelector(".title").textContent=`${currentFile().path} · targeted review`;
+}
 function renderDiff(){
-  const sides = ["old","new"].map(side => {
-    const lines = rows.map(row => {
-      const line = side === "old" ? row.old : row.new;
-      const text = side === "old" ? row.left : row.right;
-      const relevantKind = line == null ? "same" : row.kind;
-      const count = state?.comments.filter(c => c.side === side && c.startLine <= line && c.endLine >= line).length || 0;
-      return `<div class="line ${relevantKind} ${count ? "annotated" : ""}"><div class="line-no">${line ?? ""}</div><div class="code" data-file="src/catalog.ts" data-side="${side}" data-line="${line ?? ""}">${escapeHtml(text)}${count ? `<span class="badge">${count}</span>` : ""}</div></div>`;
+  const file=currentFile();
+  const sides=["old","new"].map(side=>{
+    const lines=file.rows.map(row=>{
+      const line=side==="old"?row.old:row.new;
+      const text=side==="old"?row.left:row.right;
+      const relevantKind=line==null?"same":row.kind;
+      const count=state?.comments.filter(c=>c.file===file.path&&c.side===side&&c.startLine<=line&&c.endLine>=line).length||0;
+      return `<div class="line ${relevantKind} ${count?"annotated":""}" id="${line==null?"":lineId(file.path,side,line)}"><div class="line-no">${line??""}</div><div class="code" data-file="${escapeHtml(file.path)}" data-side="${side}" data-line="${line??""}">${escapeHtml(text)}${count?`<span class="badge">${count}</span>`:""}</div></div>`;
     }).join("");
-    return `<section class="side"><div class="side-title">${side === "old" ? "OLD · 34018237" : "NEW · d33665cc"}</div>${lines}</section>`;
+    return `<section class="side"><div class="side-title">${side==="old"?"OLD · 34018237":"NEW · d33665cc"}</div>${lines}</section>`;
   });
-  document.querySelector("#diff").innerHTML = sides.join("");
+  document.querySelector("#diff").innerHTML=sides.join("");
 }
-function render(){
-  renderDiff();
-  const comments = document.querySelector("#comments");
-  comments.innerHTML = state.comments.length ? state.comments.map(comment => `<article class="comment ${comment.status === "resolved" ? "resolved" : ""}"><div class="label">${escapeHtml(comment.file)}:${comment.startLine} · ${comment.side}</div><div class="quote">${escapeHtml(comment.selectedText)}</div><div>${escapeHtml(comment.comment)}</div><div class="comment-actions"><button class="link-button" data-action="toggle" data-id="${comment.id}">${comment.status === "open" ? "Resolve" : "Reopen"}</button><button class="link-button" data-action="edit" data-id="${comment.id}">Edit</button><button class="link-button" data-action="delete" data-id="${comment.id}">Delete</button></div></article>`).join("") : `<div class="empty">No comments yet.</div>`;
-  document.querySelector("#open-count").textContent = state.comments.filter(c => c.status === "open").length;
-  document.querySelector("#state-json").textContent = JSON.stringify(state, null, 2);
+function renderComments(){
+  const comments=document.querySelector("#comments");
+  comments.innerHTML=state.comments.length?state.comments.map(comment=>`<article class="comment" data-comment-id="${comment.id}" tabindex="0"><div class="label">${escapeHtml(comment.file)}:${comment.startLine} · ${comment.side}</div><div class="quote">${escapeHtml(comment.selectedText)}</div><div>${escapeHtml(comment.comment)}</div><div class="comment-actions"><button class="link-button" data-action="delete" data-id="${comment.id}">Delete</button></div></article>`).join(""):`<div class="empty">No comments yet.</div>`;
+  document.querySelector("#comment-count").textContent=state.comments.length;
 }
+function render(){renderFileNavigation();renderDiff();renderComments()}
 async function save(){
-  document.querySelector("#save-status").textContent = "Saving…";
-  const response = await fetch("/review.json",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(state)});
-  document.querySelector("#save-status").textContent = response.ok ? "Saved" : "Save failed";
+  document.querySelector("#save-status").textContent="Saving…";
+  const response=await fetch("/review.json",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(state)});
+  document.querySelector("#save-status").textContent=response.ok?"Saved":"Save failed";
   render();
 }
-function closestCode(node){return node?.nodeType === Node.TEXT_NODE ? node.parentElement?.closest(".code") : node?.closest?.(".code")}
+function closestCode(node){return node?.nodeType===Node.TEXT_NODE?node.parentElement?.closest(".code"):node?.closest?.(".code")}
 function placeComposer(rect){
   document.body.append(composer);
   composer.classList.add("visible");
-  document.querySelector("#selected-quote").textContent = pendingSelection.selectedText;
-  const bounds = composer.getBoundingClientRect();
-  const preferredLeft = rect.right + 8;
-  const left = preferredLeft + bounds.width <= innerWidth - 12 ? preferredLeft : Math.max(12, rect.left - bounds.width - 8);
-  const preferredTop = rect.bottom + 8;
-  const top = preferredTop + bounds.height <= innerHeight - 12 ? preferredTop : Math.max(12, rect.top - bounds.height - 8);
-  composer.style.left = `${left}px`;
-  composer.style.top = `${top}px`;
+  document.querySelector("#selected-quote").textContent=pendingSelection.selectedText;
+  const bounds=composer.getBoundingClientRect();
+  const preferredLeft=rect.right+8;
+  const left=preferredLeft+bounds.width<=innerWidth-12?preferredLeft:Math.max(12,rect.left-bounds.width-8);
+  const preferredTop=rect.bottom+8;
+  const top=preferredTop+bounds.height<=innerHeight-12?preferredTop:Math.max(12,rect.top-bounds.height-8);
+  composer.style.left=`${left}px`;
+  composer.style.top=`${top}px`;
   document.querySelector("#comment-text").focus();
 }
-document.querySelector("#diff").addEventListener("mouseup", async () => {
-  const selection = getSelection();
-  const text = selection.toString().trim();
-  if(!text) return;
-  const start = closestCode(selection.anchorNode);
-  const end = closestCode(selection.focusNode);
-  if(!start || !end || start.dataset.side !== end.dataset.side || !start.dataset.line || !end.dataset.line) return;
-  const range = selection.getRangeAt(0).cloneRange();
-  if(CSS.highlights) CSS.highlights.set("review-selection",new Highlight(range));
-  const lines = [Number(start.dataset.line),Number(end.dataset.line)].sort((a,b)=>a-b);
-  const context = `${start.textContent}|${end.textContent}`;
-  const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(context)))).map(v=>v.toString(16).padStart(2,"0")).join("");
-  pendingSelection = {file:start.dataset.file,side:start.dataset.side,startLine:lines[0],endLine:lines[1],selectedText:text,prefix:start.textContent.slice(0,40),suffix:end.textContent.slice(-40),contentHash:hash};
+function closeComposer(){
+  composer.classList.remove("visible");
+  CSS.highlights?.delete("review-selection");
+  pendingSelection=null;
+  editingCommentId=null;
+  document.querySelector("#comment-text").value="";
+  document.querySelector("#composer-title").textContent="Comment on selection";
+  document.querySelector("#save-comment").textContent="Add comment";
+}
+function showFile(index){currentFileIndex=Math.max(0,Math.min(files.length-1,index));closeComposer();render()}
+function openExistingComment(comment){
+  const targetFileIndex=files.findIndex(file=>file.path===comment.file);
+  if(targetFileIndex<0)return;
+  currentFileIndex=targetFileIndex;
+  render();
+  requestAnimationFrame(()=>{
+    const line=document.getElementById(lineId(comment.file,comment.side,comment.startLine));
+    if(!line)return;
+    line.scrollIntoView({behavior:"smooth",block:"center"});
+    pendingSelection={...comment};
+    editingCommentId=comment.id;
+    document.querySelector("#comment-text").value=comment.comment;
+    document.querySelector("#composer-title").textContent="Edit comment";
+    document.querySelector("#save-comment").textContent="Save comment";
+    placeComposer(line.querySelector(".code").getBoundingClientRect());
+  });
+}
+
+document.querySelector("#file-select").onchange=event=>showFile(Number(event.target.value));
+document.querySelector("#previous-file").onclick=()=>showFile(currentFileIndex-1);
+document.querySelector("#next-file").onclick=()=>showFile(currentFileIndex+1);
+document.querySelector("#diff").addEventListener("mouseup",async()=>{
+  const selection=getSelection();
+  const text=selection.toString().trim();
+  if(!text)return;
+  const start=closestCode(selection.anchorNode);
+  const end=closestCode(selection.focusNode);
+  if(!start||!end||start.dataset.side!==end.dataset.side||!start.dataset.line||!end.dataset.line)return;
+  const range=selection.getRangeAt(0).cloneRange();
+  if(CSS.highlights)CSS.highlights.set("review-selection",new Highlight(range));
+  const lines=[Number(start.dataset.line),Number(end.dataset.line)].sort((a,b)=>a-b);
+  const context=`${start.textContent}|${end.textContent}`;
+  const hash=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(context)))).map(v=>v.toString(16).padStart(2,"0")).join("");
+  pendingSelection={file:start.dataset.file,side:start.dataset.side,startLine:lines[0],endLine:lines[1],selectedText:text,prefix:start.textContent.slice(0,40),suffix:end.textContent.slice(-40),contentHash:hash};
+  editingCommentId=null;
+  document.querySelector("#composer-title").textContent="Comment on selection";
+  document.querySelector("#save-comment").textContent="Add comment";
   placeComposer(range.getBoundingClientRect());
 });
-document.querySelector("#cancel").onclick=()=>{composer.classList.remove("visible");CSS.highlights?.delete("review-selection");pendingSelection=null};
-document.querySelector("#add").onclick=async()=>{
-  const comment=document.querySelector("#comment-text").value.trim();if(!pendingSelection||!comment)return;
-  state.comments.push({id:crypto.randomUUID(),...pendingSelection,status:"open",comment});
-  document.querySelector("#comment-text").value="";composer.classList.remove("visible");CSS.highlights?.delete("review-selection");pendingSelection=null;await save();
-};
-document.querySelector("#comments").onclick=async event=>{
-  const button=event.target.closest("button[data-id]");if(!button)return;
-  const index=state.comments.findIndex(c=>c.id===button.dataset.id);if(index<0)return;
-  if(button.dataset.action==="toggle")state.comments[index].status=state.comments[index].status==="open"?"resolved":"open";
-  if(button.dataset.action==="delete")state.comments.splice(index,1);
-  if(button.dataset.action==="edit"){const next=prompt("Edit comment",state.comments[index].comment);if(next!==null&&next.trim())state.comments[index].comment=next.trim()}
+document.querySelector("#cancel").onclick=closeComposer;
+document.querySelector("#save-comment").onclick=async()=>{
+  const comment=document.querySelector("#comment-text").value.trim();
+  if(!pendingSelection||!comment)return;
+  if(editingCommentId){
+    const existing=state.comments.find(item=>item.id===editingCommentId);
+    if(existing)existing.comment=comment;
+  }else{
+    state.comments.push({id:crypto.randomUUID(),...pendingSelection,comment});
+  }
+  closeComposer();
   await save();
 };
-fetch("/review.json").then(r=>r.json()).then(data=>{state=data;render();document.querySelector("#save-status").textContent="Saved"});
+document.querySelector("#comments").onclick=async event=>{
+  const deleteButton=event.target.closest("button[data-action=delete]");
+  if(deleteButton){
+    event.stopPropagation();
+    state.comments=state.comments.filter(comment=>comment.id!==deleteButton.dataset.id);
+    await save();
+    return;
+  }
+  const card=event.target.closest(".comment[data-comment-id]");
+  if(card){
+    const comment=state.comments.find(item=>item.id===card.dataset.commentId);
+    if(comment)openExistingComment(comment);
+  }
+};
+document.querySelector("#comments").onkeydown=event=>{
+  if(event.key!=="Enter"&&event.key!==" ")return;
+  const card=event.target.closest(".comment[data-comment-id]");
+  if(card){event.preventDefault();const comment=state.comments.find(item=>item.id===card.dataset.commentId);if(comment)openExistingComment(comment)}
+};
+fetch("/review.json").then(response=>response.json()).then(data=>{
+  state=data;
+  state.review.paths=files.map(file=>file.path);
+  state.comments=state.comments.map(({status,...comment})=>comment);
+  render();
+  document.querySelector("#save-status").textContent="Saved";
+});
 </script>
 </body>
 </html>

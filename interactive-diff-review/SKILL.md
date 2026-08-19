@@ -20,9 +20,9 @@ Ask for a missing base or candidate. Preserve explicit paths exactly. With no pa
 
 The launcher validates the repository, resolves both revisions to commits, verifies every requested path at either revision, and generates the authoritative patch with `git diff --no-ext-diff`. It never writes to the reviewed repository.
 
-## 2. Load the canonical HTML theme
+## 2. Load the canonical HTML theme (optional)
 
-Load the model-invoked sibling [`html-theme`](../html-theme/SKILL.md) skill and use its canonical [`theme.css`](../html-theme/theme.css). Pass that exact stylesheet path to the launcher. It is inlined at generation time so the resulting review HTML is standalone; do not copy, fork, or substitute the palette in this skill.
+The launcher defaults to the sibling [`theme.css`](../html-theme/theme.css), so this step is optional. To review or adjust theming, load the model-invoked sibling [`html-theme`](../html-theme/SKILL.md) skill and pass its canonical `theme.css` path to the launcher. Whichever stylesheet is used, it is inlined at generation time so the resulting review HTML is standalone; do not copy, fork, or substitute the palette in this skill.
 
 ## 3. Launch the review
 
@@ -38,7 +38,7 @@ node /absolute/path/to/interactive-diff-review/scripts/review.mjs \
   --path path/to/second-file
 ```
 
-Omit `--path` for the filtered product-file default. Repeat it for every explicit file or directory. Add `--output-dir /absolute/path` only when the owner explicitly chose a durable or reusable location; otherwise the launcher creates a temporary review directory outside the repository. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
+Omit `--theme` to use the default sibling `theme.css`. Omit `--path` for the filtered product-file default. Repeat it for every explicit file or directory. Add `--output-dir /absolute/path` only when the owner explicitly chose a durable or reusable location; otherwise the launcher creates a temporary review directory outside the repository. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
 
 The launcher binds to `127.0.0.1` on OS-assigned port `0`, prints the assigned URL, and opens it as a dedicated browser artifact. Report the printed `JSON:` filesystem path to the owner exactly. Keep the foreground session alive while they review.
 

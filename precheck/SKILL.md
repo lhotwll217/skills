@@ -18,6 +18,8 @@ For each cliff:
 
 Focus on forks where the work commits to an interpretation before receiving evidence or feedback. Common forks concern the intended result, authoritative inputs, current state, audience, allowed changes, reversibility, and proof of completion.
 
+Treat ambiguity as an assumption cliff when two plausible interpretations would produce materially different work. Resolve it from context or ask before choosing one.
+
 Proceed when every material assumption cliff is verified, bounded, checkpointed, or raised to the user.
 
 Keep the precheck proportional. Resolve it silently when it does not change the plan. Surface only unresolved questions, consequential assumptions, or safeguards that materially alter execution.

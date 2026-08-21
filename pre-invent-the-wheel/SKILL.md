@@ -66,14 +66,23 @@ and this repo's own business rules are built without a sweep.
    - **Build** — the sweep found no precedent, or the need is genuinely domain-specific.
      The sweep itself is the evidence that building is justified.
 
-5. **Record the decision where this repository already keeps durable technical context.**
+5. **Bind precedent to implementation.** Research that only lists sources or extracts general
+   principles does not constrain a build. For an **adapt** decision, select one primary runnable
+   implementation, cite its exact version and files or symbols, map its seams to the local work,
+   and state the invariants to preserve, permitted deviations and their reasons. Classify other
+   precedents as corroboration or contrast instead of blending them into a new architecture. Put
+   this adaptation contract in the implementer's actual input; review must not be the first time
+   the cited code constrains the design.
+
+6. **Record the decision where this repository already keeps durable technical context.**
    Prefer an existing research note, ADR, architecture/inspiration document, or indexed decision
    log. If no home exists, follow the repository's context-placement rule (including any cold-open
    test) before creating one. Never introduce a generic hidden `pattern-roster.md` merely because
    this skill ran. Use a title that says what was evaluated and why it matters.
 
-Implementation starts only when the adopt/adapt/build decision and citations are durably recorded
-—or when "no precedent found" is backed by an actual sweep, never by assumption.
+Implementation starts only when the adopt/adapt/build decision, citations, and any adaptation
+contract are durably recorded and present in the implementation input—or when "no precedent found"
+is backed by an actual sweep, never by assumption.
 
 ## Decision record contents
 

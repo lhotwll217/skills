@@ -18,6 +18,8 @@ For each cliff:
 
 Focus on forks where the work commits to an interpretation before receiving evidence or feedback. Common forks concern the intended result, authoritative inputs, current state, audience, allowed changes, reversibility, and proof of completion.
 
+Treat likely reinvention as an assumption cliff. When substantial work would introduce code or a pattern that may already have a converged solution, load and follow the `pre-invent-the-wheel` skill before crossing that cliff. Resolve it only when the resulting borrow-or-build decision—and any adaptation contract—constrains the implementation input.
+
 Treat ambiguity as an assumption cliff when two plausible interpretations would produce materially different work. Resolve it from context or ask before choosing one.
 
 Project the whole end state, including work already in flight. For each existing change, draft, artifact, or running task that would remain after completion, determine whether the outcome incorporates it, preserves it intentionally, or needs an owner decision.

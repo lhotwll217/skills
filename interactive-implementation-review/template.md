@@ -265,7 +265,10 @@ Use Retain, Refactor first, Replace, Remove, or Prototype/investigate.
 | Detailed procedure | `<skill>` |
 | Deterministic enforcement | `<tool/code>` |
 | Behavioral validation | `<eval>` |
-**Pre-implementation review:** context size, one owner, deterministic enforcement, behavior-not-phrasing eval.  
+**Writing standard:** Apply `writing-for-agents` to every agent-consumed document; list any narrower prompt skills used.
+
+**Pre-implementation review:** context size, one owner, information hierarchy, deterministic enforcement, behavior-not-phrasing eval.
+
 **Review conclusion:** `<conclusion>`
 
 ## User journey and interface states
@@ -316,6 +319,7 @@ Use Retain, Refactor first, Replace, Remove, or Prototype/investigate.
 | Type checking | `<source>` | `<command>` |
 | Testing conventions | `<source>` | `<mechanism>` |
 | Language/framework style | `<source>` | `<mechanism>` |
+| Agent-consumed writing | `writing-for-agents` | `<review mechanism or N/A>` |
 **Established patterns:** `<patterns>`  
 **Deliberate deviations:** `<deviation/rationale or none>`  
 **Review conclusion:** `<conclusion>`

@@ -103,8 +103,11 @@ review sections, preserving their native headings, citation blocks, caveats, sea
 questions. Link each imported section to its complete research artifact and preserved sources. The
 review is a self-contained decision record; the research bundles retain the deeper source trail.
 
-The hidden reference under each numbered heading defines that section's job. Set a conditional section
-to `Not applicable` with its evidence-backed reason. Put choices awaiting the owner in Unresolved
+The hidden reference under each numbered heading defines that section's job. For prompts, tool
+descriptions, skills, or other agent-consumed documents, load and apply `writing-for-agents`; also
+apply the narrower prompt skills required by the affected file. Record those standards in both
+**Prompts and agent behavior** and **Style and repository standards**. Set a conditional section to
+`Not applicable` with its evidence-backed reason. Put choices awaiting the owner in Unresolved
 Questions. Set the document to `In review` after its preparation criterion is met.
 
 **Complete when:** every template placeholder is replaced or marked `Not applicable` with a reason;

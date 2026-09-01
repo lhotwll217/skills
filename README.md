@@ -20,6 +20,7 @@ npx skills add lhotwll217/skills --skill writing-great-evals
 
 | Skill | Purpose |
 |---|---|
+| [chain-of-context](chain-of-context/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
 | [current-system-audit](current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
 | [grill-with-docs](grill-with-docs/SKILL.md) | Grill a repository-backed plan while maintaining its glossary and durable decisions. |
 | [html-theme](html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |

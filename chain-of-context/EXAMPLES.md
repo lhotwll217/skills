@@ -36,28 +36,44 @@ Automates the weekly reporting workflow from maintained source data.
 
 The front door states purpose, current state, canonical source, and next reading step. It does not repeat the linked documents.
 
-## Agent instructions: broad at root, specific near the files
+## Folder-scoped instructions: AGENTS is canonical
 
-Root instruction file:
+```text
+project/
+├── AGENTS.md
+└── data/
+    ├── AGENTS.md
+    ├── CLAUDE.md
+    └── README.md
+```
+
+Root `AGENTS.md` carries broad project behavior:
 
 ```md
 # Agent instructions
 
-- Read `README.md` before changing project structure.
 - Preserve raw evidence and link derived documents to it.
 ```
 
-Nested instruction file beside a synchronized dataset:
+Nested `data/AGENTS.md` begins where the dataset-specific behavior becomes true:
 
 ```md
 # Dataset instructions
 
+When working in this directory or its descendants, read `README.md` first for purpose, current state, source of truth, and navigation.
+
 - Treat `current-metrics.csv` as a local copy of spreadsheet `sheet-example-42`.
 - Confirm source parity before editing the local copy.
-- Keep session IDs and sync notes in this instruction file or the daily log, not in the CSV.
+- Keep session IDs and sync notes in this file or the daily log, not in the CSV.
 ```
 
-The root carries project-wide behavior. The nested file carries only rules for its governed data.
+The same-scope `data/CLAUDE.md` is an adapter, not a second source:
+
+```md
+@AGENTS.md
+```
+
+README orients the dataset, nested AGENTS governs work in its subtree, and CLAUDE imports the canonical directions without duplicating them.
 
 ## Daily log: a short dated index
 

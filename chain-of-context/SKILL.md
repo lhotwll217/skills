@@ -74,16 +74,18 @@ When creating one of these surfaces without a healthy local example, read [surfa
 | Surface | Job |
 | --- | --- |
 | `README.md` or index | Orient a folder: purpose, current state, source of truth, and next reading step |
-| Agent instructions | State operating rules and constraints close to the files they govern; keep root guidance broad and nested guidance specific |
+| `AGENTS.md` | State operating rules and trigger pointers at the nearest directory boundary where they become true; root guidance stays broad and nested guidance becomes specific |
 | Daily log | Preserve short, dated, append-only pointers to what changed and where it lives; link outputs and transcripts instead of copying them |
 | Durable topic document | Preserve refined understanding by subject and update it when that understanding changes |
 | Source artifact | Preserve canonical or raw evidence with its exact identity |
 | Business data | Contain business data only, without process or agent metadata |
 | Agent memory | Preserve collaboration preferences outside project state and outside the repository |
 
+`README.md` and `AGENTS.md` are not interchangeable: README orients; AGENTS governs agent behavior for its directory and descendants. Use `AGENTS.md` as the canonical shared instruction source. When Claude Code must consume the same directions, add a same-scope `CLAUDE.md` containing only `@AGENTS.md`. If another host does not discover nested AGENTS files, point its loaded instruction surface to the canonical file rather than copying the directions.
+
 Use the domain's existing healthy names for these jobs. A generic `research/`, `sources/`, or `outputs/` tree is an example, not an architecture to impose.
 
-**Complete when:** each artifact has one discoverable home whose job matches its content, and no meaning is duplicated across persistence surfaces.
+**Complete when:** each artifact has one discoverable home whose job matches its content, folder-scoped behavior begins at the nearest applicable `AGENTS.md`, and no meaning is duplicated across persistence surfaces or host adapters.
 
 ## 4. Make the chain durable and verify it
 

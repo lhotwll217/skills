@@ -19,7 +19,7 @@ The current expansion supplies the stateless-agent framing, cold-open questions,
 3. The environment answers what this is, when it happened, why it matters, the source of truth, and what to read next.
 4. The three layers are descriptive folders and files, progressive discovery, and a linked source trail.
 5. Date-bound files use an ISO date prefix.
-6. README/index, agent instructions, daily log, durable topic documents, source artifacts, and memory have different jobs and are used contextually.
+6. README/index, folder-scoped agent instructions, daily log, durable topic documents, source artifacts, and memory have different jobs and are used contextually.
 7. Daily logs are short dated pointers rather than copies of artifacts.
 8. Durable topic documents are updated when understanding changes.
 9. Memory holds collaboration preferences rather than project state.
@@ -34,6 +34,16 @@ The current expansion supplies the stateless-agent framing, cold-open questions,
 5. Keep daily logs short: no full outputs, generated analysis, copied transcripts, or long explanations.
 6. Record the stable session ID when it helps a future agent find the original transcript.
 7. Include the originating session in the final cold-open audit when traceability matters.
+
+## Folder-instruction interoperability decision
+
+Primary-source research completed 2026-09-01 converged the cross-harness pattern without changing the source framework:
+
+1. `README.md` remains folder orientation.
+2. `AGENTS.md` is the canonical shared source for operating directions at the nearest directory boundary where they become true.
+3. A same-scope `CLAUDE.md` containing only `@AGENTS.md` adapts those directions for Claude Code without creating a duplicate source.
+4. Hosts that do not discover nested AGENTS files should point their loaded instruction surface to the canonical file rather than copy it.
+5. Reusable conditional procedures remain model-invoked skills rather than folder instruction payloads.
 
 ## Maintenance rule
 

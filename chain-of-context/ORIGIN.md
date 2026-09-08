@@ -1,6 +1,6 @@
 # Chain of Context origin and source lineage
 
-This is maintainer documentation for preserving Luke Otwell's original Chain of Context framework while evolving the agent skill. Runtime use is self-contained in [`SKILL.md`](SKILL.md).
+This is maintainer documentation for preserving Luke Otwell's original Chain of Context framework while evolving the agent skill. All operating rules are in [`SKILL.md`](SKILL.md); concrete examples remain in [`EXAMPLES.md`](EXAMPLES.md).
 
 ## Canonical sources
 
@@ -51,8 +51,8 @@ Before changing `SKILL.md` or `EXAMPLES.md`:
 
 1. Open both pinned gist revisions, not only the current gist landing page.
 2. Check every framework item above against the proposed text.
-3. Keep behavior every runtime branch needs in `SKILL.md`.
-4. Keep concrete shapes needed only when creating a persistence surface in `EXAMPLES.md`, behind its explicit trigger.
+3. Keep all operating rules and procedures in `SKILL.md`, with task-scoped completion criteria.
+4. Keep concrete shapes needed only when creating a persistence surface in `EXAMPLES.md`, behind its explicit trigger in `SKILL.md`.
 5. Preserve source documentation here; do not make a runtime link carry behavior that the skill itself omits.
 6. Validate the description against preservation, history/instructions, organization-change, and audit/repair prompts in a fresh model session.
 

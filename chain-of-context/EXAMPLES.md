@@ -1,6 +1,6 @@
 # Chain of Context surface examples
 
-Read this reference only when `SKILL.md` reaches one of two branches:
+Consult these examples from `SKILL.md` when:
 
 1. a README/index, agent-instruction file, daily log, durable topic document, or source package is needed but no healthy local example exists; or
 2. two organizations still satisfy the three layers and cold-open test.

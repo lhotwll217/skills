@@ -5,13 +5,80 @@ description: Build or repair a Chain of Context for durable project work. Use wh
 
 # Chain of Context
 
-Chain of Context is an operating model for making projects navigable by stateless agents. The environment becomes onboarding: a cold-start agent can land in a project, scan the filesystem, follow names and links, and reconstruct the work without requiring a person to explain it again.
+Chain of Context makes project-owned durable work navigable by stateless agents. The filesystem becomes onboarding: descriptive names, a bounded discovery path, and exact source identity let a cold-start agent pick up the work without a person re-explaining it.
 
-This file is self-contained for runtime use. Every invocation uses the cold-open test, three-layer model, persistence-surface rules, and verification procedure below.
+## Route the work
 
-## 1. Start with the cold open
+For an explicit audit request, apply the cold-open test below to the requested scope.
 
-Begin at the nearest stable parent of the material. Use `ls`, grep, the nearest README or index, applicable agent instructions, sibling names, and existing links to answer:
+For artifact placement, start at the nearest stable parent of the artifact. Read the applicable agent instructions, the shallow parent listing, and its README or index when present. Inspect only the artifact, its proposed home, and the direct discovery path needed to decide:
+
+- **Healthy home:** an established local pattern makes the artifact's purpose, owner, lifecycle, canonical source, and next reading step clear. Follow the [routine placement branch](#routine-placement).
+- **Misleading home:** existing names, placement, indexes, ownership, or source trail obscure those facts. Use the repair and audit procedure below.
+- **No home:** no established pattern governs durable material, or several related artifacts need a new domain-owned folder. Use the new-chain procedure below.
+
+Externally prescribed layouts remain authoritative. Preserve package, dependency, vendor, framework, SDK, tool, cache, profile, and package-managed configuration boundaries.
+
+Before placing anything, identify:
+
+1. the project domain that owns it;
+2. whether it is current, dated, append-only, derived, or temporary;
+3. its canonical source, copied exactly from an opened URL, ID, path, or version.
+
+## Common rules
+
+- Let domain language name folders and files. Prefix date-bound artifacts with `YYYY-MM-DD-` when the local convention does not already carry chronology.
+- Keep one canonical source. Label snapshots, downloads, cleaned transcripts, and exports as derived views and link them to that source.
+- Keep process metadata, session IDs, audit notes, and agent instructions outside canonical business data.
+- Keep ownership boundaries visible when artifacts have different owners, lifecycles, or discovery paths.
+- Add a README or index only when names and the parent listing cannot reveal what is current, where the source lives, or what to read next.
+
+## Project history and session provenance
+
+These rules apply to routine updates, repairs, and new scaffolds alike.
+
+- When a session materially informs a durable artifact, record its stable session ID near the artifact when it helps a future agent find the original transcript. Include a message range or timestamp when useful; copy identities from the actual source rather than inventing them.
+
+- When project state changes in a workspace that maintains a daily log, append a short dated entry linking the changed artifact and its source session or other authoritative record. Follow the existing logging convention; preserve earlier entries.
+
+- Establish a daily log when the request or opened records establish a continuing sequence of project changes that needs a discoverable chronology and no existing surface serves that job. For a placement or discovery repair with no existing log, keep the breadcrumb in existing artifact context; the artifacts' continued use alone does not establish a chronology need. Use dated files and short linked entries rather than copies of outputs or transcripts.
+
+- Update the canonical topic document when understanding changes. The document holds current understanding; the daily log records when it changed and where to read it.
+
+## Persistence surfaces
+
+Use only the surfaces the work needs:
+
+| Surface | Job |
+| --- | --- |
+| `README.md` or index | Orient a folder when names and listing are insufficient |
+| `AGENTS.md` | Govern agent behavior at the nearest applicable directory boundary |
+| Daily log | Preserve dated, append-only pointers to changes, artifacts, and source sessions |
+| Durable topic document | Preserve current refined understanding by subject |
+| Source artifact | Preserve canonical or raw evidence with exact identity |
+| Business data | Contain business data only |
+| Agent memory | Preserve collaboration preferences outside project state and the repository |
+
+README orients; AGENTS governs. When the request or opened artifacts establish recurring operating rules that existing context does not serve, use `AGENTS.md` as the canonical shared instruction source. When Claude Code needs the same directions at that scope, use a `CLAUDE.md` containing only `@AGENTS.md`. Point other hosts to the canonical file rather than copying directions.
+
+When a needed surface lacks a healthy local example, or two organizations remain equally valid, consult [surface examples](EXAMPLES.md). Examples are shapes, not a mandatory schema.
+
+## Routine placement
+
+When placing an artifact in a healthy home:
+
+1. Place the artifact using the established local name and copy/move convention.
+2. Update required discovery links and apply the project-history and session-provenance rules above.
+3. Verify the destination, content identity, and directly affected links. For a move, also verify updated inbound links and absence of the old path.
+4. Report the exact destination and whether the source was copied, moved, or left in place.
+
+**Complete when:** the artifact is in its established home, its canonical source remains identifiable, directly affected paths resolve, and the reported filesystem state matches the observed state. This is the complete workflow for a healthy routine placement.
+
+## Repair and audit
+
+### Cold-open test
+
+Begin at the nearest stable parent and answer from the filesystem and its links:
 
 1. What is this?
 2. What happened or changed, and when?
@@ -20,88 +87,56 @@ Begin at the nearest stable parent of the material. Use `ls`, grep, the nearest 
 5. What should I read next?
 6. Where is the originating session when auditability matters?
 
-Each answer that requires guessing is a gap in the chain. Do not automatically solve a gap with another folder or README.
+A healthy pattern answers the applicable questions through names, placement, links, and necessary front doors. A pattern is misleading when generic, process-stage, tool, or role labels hide the domain; ownership boundaries are wrong; an index duplicates rather than orients; a durable artifact lives in a temporary home; or a source is broken, invented, or ambiguous.
 
-Classify the existing organization:
+Tie every failed answer to a concrete gap before editing. The presence of a folder or README is evidence only when it passes this test.
 
-- **Healthy chain:** the names, placement, discovery path, and source links answer the questions. Extend its local pattern.
-- **Broken chain:** generic or misleading names, wrong ownership boundaries, redundant indexes, temporary homes, or unverifiable sources obstruct the answers. Repair the existing chain.
-- **No chain:** durable material has no discoverable home or pattern. Build the smallest chain that answers the questions.
+## Minimal repair
 
-Preserve layouts owned by a package, dependency, vendor, framework, SDK, or tool. Chain of Context organizes project-owned context; it does not reorganize externally prescribed trees, caches, profiles, or package-managed configuration.
+- Repair the existing chain at its owning boundary rather than layering a second organization beside it.
+- Rename for the durable subject or domain, not the process stage, time horizon, tool, or audience role.
+- Move reusable material from temporary storage into its durable domain home.
+- Preserve one canonical source and copy its exact identity from the opened source. Mark readable exports and snapshots as derived.
+- Apply the shared persistence-surface and project-history rules above.
+- Update every affected inbound and relative link. Verify created, moved, copied, renamed, and deleted paths separately, including absence of an old location when removal was intended.
 
-**Complete when:** every durable artifact in scope has a known owner, lifecycle, and source, and every failed cold-open answer is tied to a concrete gap.
+Return to the stable parent and repeat the cold-open test using only the filesystem and links.
 
-## 2. Build the three layers
+**Complete when:** all applicable cold-open answers are recoverable, every overview-to-source path resolves, the canonical source is unambiguous, and no misleading parallel or obsolete organization remains.
 
-### Descriptive folders and files
+## New chain scaffolding
 
-Names carry the first layer of context.
+## Build the smallest three-layer chain
 
-- Name the subject and artifact type so their purpose is inferable before opening them.
-- Let the project domain supply the words. Prefer `project-documents/` or `team-skill-usage/` over generic, process, tool, or role labels such as `references/`, `first-phase/`, or `role-pages/` when the domain has better language.
-- Prefix date-bound artifacts with `YYYY-MM-DD-` so listings reveal chronology.
-- Create a folder when a common pattern or multi-artifact discovery path is emerging. Let one descriptive file orient itself when no grouping is needed.
-- Keep ownership boundaries visible. A meeting and the workstream it produced, a product repository and its cross-repository planning, or shipped documentation and internal orchestration material may need separate homes because their owners and lifecycles differ.
+### 1. Descriptive folders and files
 
-### Progressive discovery
+Name the subject and artifact type so a shallow listing provides the first orientation. Create a folder when a common pattern or multi-artifact discovery path is emerging; let one descriptive file orient itself when no grouping is needed. Preserve distinct ownership and lifecycle boundaries.
 
-Organize the reading path as **overview → detail → source artifacts**.
+### 2. Progressive discovery
 
-- Let a shallow listing provide the first orientation.
-- Add a README or index only when names and listing cannot reveal what is current, where the source lives, or what to read next.
-- Keep each layer focused on its job. No single file needs to explain everything; it should link to the next useful layer.
-- Keep explanation and evidence together while they share an owner, lifecycle, and discovery path. Split them when any of those diverges.
+Organize the reading path as **overview → detail → source artifacts**. Add only the front door needed to identify purpose, current state, canonical source, and next reading step. Keep explanation and evidence together while they share an owner, lifecycle, and discovery path; split them when one diverges.
 
-### Linked source trail
+### 3. Linked source trail
 
-Links preserve trust without duplicating the source.
+Link durable notes to the artifact, transcript, issue, pull request, email, document, dataset, or canonical application record that supports them. Label local downloads, snapshots, cleaned transcripts, and Markdown exports as derived views. Apply the shared project-history and session-provenance rules above.
 
-- Maintain one canonical source and copy its exact URL, ID, path, or version from the opened source rather than memory.
-- Link summaries and durable notes to the artifact, transcript, issue, pull request, email, document, or dataset that supports them.
-- Label cleaned transcripts, downloads, snapshots, and Markdown exports as derived views and link them to the canonical source.
-- When session content informs a durable artifact, record the stable session ID and, when useful, its message index, timestamp window, or canonical record path near the artifact.
-- Keep process metadata, session IDs, audit notes, and agent instructions outside canonical business data.
+## Clean scaffold check
 
-**Complete when:** a cold-start agent can traverse from the parent listing through the useful context to the canonical source without guessing or encountering an unexplained duplicate.
+From the new folder's parent, verify:
 
-## 3. Use each persistence surface for one job
+- its name and shallow contents expose the domain and artifact roles;
+- the front door exists only when it adds necessary orientation;
+- the useful reading path reaches one unambiguous canonical source;
+- every relative link resolves;
+- operating and audit metadata sit outside canonical business data;
+- no duplicate index, empty placeholder, generic catch-all, unexplained copy, or host-instruction duplicate was created.
 
-Use only the surfaces the work needs. This table assigns responsibilities; it is not a required folder schema.
+**Complete when:** a cold-start agent can traverse from the parent listing through useful context to the canonical source without guessing, and the scaffold contains only artifacts required by that path.
 
-When creating one of these surfaces without a healthy local example, read [surface examples](EXAMPLES.md) before writing it. The same reference covers the branch where two organizations still satisfy the three layers and cold-open test.
+## Final response
 
-| Surface | Job |
-| --- | --- |
-| `README.md` or index | Orient a folder: purpose, current state, source of truth, and next reading step |
-| `AGENTS.md` | State operating rules and trigger pointers at the nearest directory boundary where they become true; root guidance stays broad and nested guidance becomes specific |
-| Daily log | Preserve short, dated, append-only pointers to what changed and where it lives; link outputs and transcripts instead of copying them |
-| Durable topic document | Preserve refined understanding by subject and update it when that understanding changes |
-| Source artifact | Preserve canonical or raw evidence with its exact identity |
-| Business data | Contain business data only, without process or agent metadata |
-| Agent memory | Preserve collaboration preferences outside project state and outside the repository |
-
-`README.md` and `AGENTS.md` are not interchangeable: README orients; AGENTS governs agent behavior for its directory and descendants. Use `AGENTS.md` as the canonical shared instruction source. When Claude Code must consume the same directions, add a same-scope `CLAUDE.md` containing only `@AGENTS.md`. If another host does not discover nested AGENTS files, point its loaded instruction surface to the canonical file rather than copying the directions.
-
-Use the domain's existing healthy names for these jobs. A generic `research/`, `sources/`, or `outputs/` tree is an example, not an architecture to impose.
-
-**Complete when:** each artifact has one discoverable home whose job matches its content, folder-scoped behavior begins at the nearest applicable `AGENTS.md`, and no meaning is duplicated across persistence surfaces or host adapters.
-
-## 4. Make the chain durable and verify it
-
-Apply the smallest change that closes the identified gaps.
-
-- Move reusable material out of temporary storage into its descriptive domain home.
-- Update every affected inbound and relative link.
-- Distinguish artifacts that were created, moved, copied, renamed, and deleted.
-- Confirm an old location is absent when removal was intended.
-- Open every affected source link and relative link.
-- Return to the parent directory and repeat the cold-open questions from step 1 using only the filesystem and its links.
-
-If two layouts still satisfy the three layers and cold-open test, present one recommendation and the meaningful tradeoff rather than inventing a universal schema.
-
-**Complete when:** all six cold-open answers are recoverable, the overview-to-source path resolves, the canonical source is identifiable, and the reported filesystem state matches the observed state.
+When you create or reorganize a folder structure, include a compact tree of the affected structure in your final response. Use observed paths and distinguish new, moved, and unchanged material where applicable; mark updates or removals when useful. Show only relevant structure and statuses supported by the filesystem and your changes. Routine single-file placement needs only the destination and copy/move status from its workflow.
 
 ## Maintaining this skill
 
-When changing this skill or auditing its fidelity to the original framework, read [origin and source lineage](ORIGIN.md) before editing. Runtime use does not require that maintainer reference.
+When changing this skill or auditing fidelity to the original framework, read [origin and source lineage](ORIGIN.md) before editing. Runtime use does not require that maintainer reference.

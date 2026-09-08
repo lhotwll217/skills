@@ -26,7 +26,7 @@ The launcher defaults to the sibling [`theme.css`](../html-theme/theme.css), so 
 
 ## 3. Launch the review
 
-Run the dependency-free Node launcher in a foreground command session:
+Use the launcher arguments below. On macOS, launch through `launchctl` as described immediately after the command; elsewhere, use a persistent foreground command session:
 
 ```bash
 node /absolute/path/to/interactive-diff-review/scripts/review.mjs \
@@ -38,9 +38,22 @@ node /absolute/path/to/interactive-diff-review/scripts/review.mjs \
   --path path/to/second-file
 ```
 
+On macOS, use the built-in supervisor directly so the review survives the tool call. Resolve Node's absolute executable path and the launcher's **real path** first (a symlinked launcher can silently exit). Choose a fresh UUID for each review and substitute literal paths and the same UUID into this command:
+
+```bash
+/bin/launchctl submit -l com.owner-operator.review.diff.UUID \
+  -o /tmp/oo-review-diff-UUID.stdout.log \
+  -e /tmp/oo-review-diff-UUID.stderr.log \
+  -- /absolute/path/to/node /real/path/to/interactive-diff-review/scripts/review.mjs LAUNCHER_ARGUMENTS
+```
+
+Replace `LAUNCHER_ARGUMENTS` with the arguments above, quoting paths with spaces. Invoke this directly, not through `nohup`, `env`, or `bash -c`: those wrappers force fresh confirmation in OO's permission gate. Do not change permission settings or broaden a rule to make a launch pass; the owner's existing allow rule is specific to the installed Node and launcher paths.
+
+Read the stdout log for the printed URL and `JSON:` path; check stderr on failure. In a **subsequent tool call**, verify the URL responds and `/bin/launchctl list com.owner-operator.review.diff.UUID` reports a live PID before reporting success. Record the exact job label with the artifact paths. Use a separate UUID for concurrent reviews; never replace another review job. After reading the owner's Comments, stop only this job with `/bin/launchctl remove com.owner-operator.review.diff.UUID`; retain the review artifacts.
+
 Omit `--theme` to use the default sibling `theme.css`. Omit `--path` for the filtered product-file default. Repeat it for every explicit file or directory. Add `--output-dir /absolute/path` only when the owner explicitly chose a durable or reusable location; otherwise the launcher creates a temporary review directory outside the repository. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
 
-The launcher binds to `127.0.0.1` on OS-assigned port `0`, prints the assigned URL, and opens it as a dedicated browser artifact. Report the printed `JSON:` filesystem path to the owner exactly. Keep the foreground session alive while they review.
+The launcher binds to `127.0.0.1` on OS-assigned port `0`, prints the assigned URL, and opens it as a dedicated browser artifact. Report the printed `JSON:` filesystem path to the owner exactly. Keep the supervised job (or non-macOS foreground session) alive while they review.
 
 ## 4. Let the owner annotate
 
@@ -52,7 +65,7 @@ Internal anchors retain old/new side and structural selectors, while visible lab
 
 When the owner says they are done, read the printed JSON path. Treat each entry in `comments` as owner feedback, including its file, line range, selected text, and Comment. A `stale: true` entry means the launcher could not reliably relocate that anchor; surface the uncertainty instead of silently applying it elsewhere.
 
-After reading the artifact, send Ctrl-C to the foreground launcher session and wait for its clean shutdown. Generate Markdown from the JSON only when useful; JSON remains the persistence source of truth.
+After reading the artifact, remove the recorded launchctl job; outside macOS, send Ctrl-C to the foreground launcher session. Verify it stopped. Generate Markdown from the JSON only when useful; JSON remains the persistence source of truth.
 
 To reload after the candidate changes, launch again with the new candidate and the same explicit `--output-dir`. Exact anchors are retained, uniquely moved anchors are relocated by their text/context selectors, and unreliable anchors are marked stale.
 

@@ -1,0 +1,15 @@
+{
+  "name": "lhotwll217-skills",
+  "owner": { "name": "Luke Otwell", "url": "https://github.com/lhotwll217" },
+  "description": "Luke Otwell's Claude Code plugins.",
+  "plugins": [
+    {
+      "name": "pstack",
+      "source": "./plugins/pstack",
+      "description": "Portable, namespaced port of Lauren Tan's pstack engineering workflows. All entry points are user-invoked: /pstack:pstack-poteto-mode and friends.",
+      "version": "0.15.0",
+      "license": "MIT",
+      "category": "workflows"
+    }
+  ]
+}

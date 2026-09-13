@@ -1,0 +1,10 @@
+{
+  "name": "pstack",
+  "displayName": "pstack",
+  "version": "0.15.0",
+  "description": "Portable, namespaced port of Lauren Tan's pstack engineering workflows (poteto-mode, tdd, interrogate, arena, principles). All entry points are user-invoked.",
+  "author": { "name": "Luke Otwell", "url": "https://github.com/lhotwll217" },
+  "repository": "https://github.com/lhotwll217/skills",
+  "license": "MIT",
+  "keywords": ["pstack", "poteto-mode", "engineering-workflows"]
+}

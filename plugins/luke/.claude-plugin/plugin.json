@@ -1,0 +1,9 @@
+{
+  "name": "luke",
+  "displayName": "Luke's skills",
+  "version": "1.0.0",
+  "description": "Luke Otwell's working skills: prior-art research, current-system audits, grilling plans, interactive reviews, eval writing, prompt updates, Chain of Context, house HTML theme, workstream retros.",
+  "author": { "name": "Luke Otwell", "url": "https://github.com/lhotwll217" },
+  "repository": "https://github.com/lhotwll217/skills",
+  "license": "MIT"
+}

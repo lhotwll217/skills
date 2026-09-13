@@ -1,8 +1,19 @@
 {
   "name": "lhotwll217-skills",
-  "owner": { "name": "Luke Otwell", "url": "https://github.com/lhotwll217" },
+  "owner": {
+    "name": "Luke Otwell",
+    "url": "https://github.com/lhotwll217"
+  },
   "description": "Luke Otwell's Claude Code plugins.",
   "plugins": [
+    {
+      "name": "luke",
+      "source": "./plugins/luke",
+      "description": "Luke Otwell's working skills: prior-art, current-system-audit, grill-with-docs, interactive reviews, writing-great-evals, updating-prompts, chain-of-context, html-theme, workstream-retro.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "category": "workflows"
+    },
     {
       "name": "pstack",
       "source": "./plugins/pstack",

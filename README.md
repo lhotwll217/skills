@@ -1,20 +1,61 @@
 # skills
 
-Standalone agent skills. Each skill is a folder with a `SKILL.md`; install them individually — the repo is not a package.
+Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhotwll217-skills`) with two plugins. Each skill is a folder with a `SKILL.md`, so the folders also install one at a time with the `skills` CLI.
+
+## Layout
+
+```text
+.claude-plugin/marketplace.json      # marketplace manifest: lists the two plugins below
+plugins/luke/                        # plugin "luke": the general skills (12)
+  .claude-plugin/plugin.json
+  skills/<name>/SKILL.md
+plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
+  .claude-plugin/plugin.json
+  skills/pstack/README.md            # index, provenance, capability notes
+  skills/pstack-<name>/SKILL.md
+deprecated/                          # unmaintained, kept for reference
+```
+
+Plugin skills load under their plugin namespace: `/luke:prior-art`, `/pstack:pstack-poteto-mode`. The pstack folders keep their `pstack-` prefix on purpose so the same folders can be symlinked flat into `~/.claude/skills/` without colliding with other `tdd`, `research`, or `teach` skills; under the plugin that yields the double prefix.
 
 ## Install
 
-List available skills:
+**As plugins (Claude Code, any machine).** Namespaced, updatable with `claude plugin update`:
+
+```bash
+claude plugin marketplace add lhotwll217/skills
+claude plugin install luke@lhotwll217-skills
+claude plugin install pstack@lhotwll217-skills
+```
+
+**One skill at a time (any agent that reads `SKILL.md`).** The `skills` CLI finds the nested folders:
 
 ```bash
 npx skills add lhotwll217/skills --list
-```
-
-Add one skill:
-
-```bash
 npx skills add lhotwll217/skills --skill writing-great-evals
 ```
+
+**Flat symlinks (unprefixed names).** For `/pstack-poteto-mode` rather than `/pstack:pstack-poteto-mode`, link the folders into a skills root; the pstack folders must move together because they cross-link as siblings:
+
+```bash
+git clone https://github.com/lhotwll217/skills.git
+for d in skills/plugins/pstack/skills/*/; do ln -sfn "$PWD/${d%/}" ~/.claude/skills/"$(basename "$d")"; done
+```
+
+## Cloud sessions
+
+Claude Code cloud sessions (claude.ai/code, routines, Desktop "Continue in cloud") start from a fresh VM and do not see `~/.claude/skills` or user-scope plugins on your machine. Plugins declared in a repo's `.claude/settings.json` are documented to auto-install in cloud sessions but currently don't (anthropics/claude-code#87497, #88214), and `/plugin` is unavailable there. The path that works is installing from the environment's **Setup script**, which runs before Claude boots (claude.ai/code → environment settings → Setup script):
+
+```bash
+export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
+claude plugin marketplace list 2>/dev/null | grep -q lhotwll217-skills || claude plugin marketplace add lhotwll217/skills || true
+claude plugin install luke@lhotwll217-skills || true
+claude plugin install pstack@lhotwll217-skills || true
+```
+
+`CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` matters: the `owner/repo` shorthand clones over SSH by default, which a cloud VM lacks. The `|| true` guards keep a network failure from blocking session start. Every pstack entry point is `disable-model-invocation: true`: you type it, Claude never auto-loads it.
+
+Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOME` on Claude Code 2.1.267: both plugins installed, 12 and 48 skills cached, and `/pstack:pstack-tdd` executed in print mode. Not yet verified inside a live cloud VM.
 
 ## Skills
 
@@ -41,18 +82,3 @@ No longer maintained; kept for reference in [deprecated/](deprecated/).
 |---|---|
 | [pre-invent-the-wheel](deprecated/pre-invent-the-wheel/SKILL.md) | Find and vet converged open-source precedent before implementing non-trivial functionality from scratch. |
 | [premortem](deprecated/premortem/SKILL.md) | Find and handle assumption cliffs before substantial work, including ambiguity and related work that could be left stranded. |
-
-## Cloud sessions
-
-Claude Code cloud sessions (claude.ai/code, routines, Desktop "Continue in cloud") start from a fresh VM and do not see `~/.claude/skills` or user-scope plugins on your machine. Plugins declared in a repo's `.claude/settings.json` are documented to auto-install in cloud sessions but currently don't (anthropics/claude-code#87497, #88214). The path that works is installing the plugin from the environment's **Setup script**, which runs before Claude boots (claude.ai/code → environment settings → Setup script):
-
-```bash
-export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
-claude plugin marketplace list 2>/dev/null | grep -q lhotwll217-skills || claude plugin marketplace add lhotwll217/skills || true
-claude plugin install luke@lhotwll217-skills || true
-claude plugin install pstack@lhotwll217-skills || true
-```
-
-Skills then surface under their plugin namespace: `/luke:prior-art`, `/pstack:pstack-poteto-mode`, and so on. The `luke` plugin holds the general skills under `plugins/luke/skills/`; `pstack` holds the pstack port. Every pstack entry point is `disable-model-invocation: true`: you invoke them by name, Claude does not auto-load them.
-
-Locally, the same two commands install the plugin, or symlink `plugins/pstack/skills/*` into `~/.claude/skills/` for unprefixed `/pstack-poteto-mode` names.

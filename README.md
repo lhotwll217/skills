@@ -6,7 +6,7 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 
 ```text
 .claude-plugin/marketplace.json      # marketplace manifest: lists the two plugins below
-plugins/luke/                        # plugin "luke": the general skills (12)
+plugins/luke/                        # plugin "luke": the general skills (13)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
@@ -70,6 +70,7 @@ Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOM
 | [interactive-implementation-review](plugins/luke/skills/interactive-implementation-review/SKILL.md) | Turn grilling and delegated research into one interactive, evidence-backed implementation review. |
 | [interactive-markdown-review](plugins/luke/skills/interactive-markdown-review/SKILL.md) | Open a Markdown file for interactive review and persist anchored Comments to JSON. |
 | [prior-art](plugins/luke/skills/prior-art/SKILL.md) | Research implementations and standards with opened, pinned, quoted, linked, credible evidence. |
+| [seo-analytics-research](plugins/luke/skills/seo-analytics-research/SKILL.md) | Research SEO questions with live DataForSEO evidence. |
 | [updating-prompts](plugins/luke/skills/updating-prompts/SKILL.md) | Change an existing prompt — find the decision fork, choose the owning layer, ship the smallest delta that holds, validate the whole agent. |
 | [workstream-retro](plugins/luke/skills/workstream-retro/SKILL.md) | Reconstruct concurrent work as an interactive orchestration map with human checkpoints, delegated runs, reviews, reroutes, and outcomes. |
 | [writing-great-evals](plugins/luke/skills/writing-great-evals/SKILL.md) | Write and review eval definitions — one contract per eval, choose the grading seam, keep the grader lean, grade against a 0–4 scale. |

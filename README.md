@@ -6,7 +6,7 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 
 ```text
 .claude-plugin/marketplace.json      # marketplace manifest: lists the two plugins below
-plugins/luke/                        # plugin "luke": the general skills (13)
+plugins/luke/                        # plugin "luke": the general skills (14)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
@@ -62,6 +62,7 @@ Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOM
 | Skill | Purpose |
 |---|---|
 | [pstack](plugins/pstack/skills/pstack/README.md) | On-demand, namespaced port of pstack's engineering workflows, with portable capability checks. |
+| [align](plugins/luke/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
 | [chain-of-context](plugins/luke/skills/chain-of-context/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
 | [current-system-audit](plugins/luke/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
 | [grill-with-docs](plugins/luke/skills/grill-with-docs/SKILL.md) | Grill a repository-backed plan while maintaining its glossary and durable decisions. |

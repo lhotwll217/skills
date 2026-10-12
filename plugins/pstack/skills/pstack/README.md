@@ -2,6 +2,8 @@
 
 Ported on 2026-09-09 from Lauren Tan’s [pstack 0.15.0](https://github.com/cursor/plugins/tree/df3fb154fb982fb83f649de8646d4af6a0cb16b3/pstack), commit `df3fb154fb982fb83f649de8646d4af6a0cb16b3`. All 47 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance.
 
+This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `054b739`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
+
 ## Use
 
 Start with `pstack-poteto-mode`, `pstack-create-verification-skill`, or `pstack-maintain-verification-skill`. In Owner Operator use `/skill:pstack-poteto-mode`; in Codex use `$pstack-poteto-mode`; in Claude Code use `/pstack-poteto-mode` (flat symlink install) or `/pstack:pstack-poteto-mode` (plugin install). `pstack` opens this index. Every upstream skill name has the `pstack-` prefix, so existing skills such as `tdd` remain separate. Prototype is a poteto-mode playbook, not a separate upstream skill.

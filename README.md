@@ -6,7 +6,7 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 
 ```text
 .claude-plugin/marketplace.json      # marketplace manifest: lists the two plugins below
-plugins/luke/                        # plugin "luke": the general skills (16)
+plugins/lotwell/                     # plugin "lotwell": the general skills (16)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
@@ -16,7 +16,7 @@ plugins/pstack/                      # plugin "pstack": the portable pstack port
 deprecated/                          # unmaintained, kept for reference
 ```
 
-Plugin skills load under their plugin namespace: `/luke:prior-art`, `/pstack:pstack-poteto-mode`. The pstack folders keep their `pstack-` prefix on purpose so the same folders can be symlinked flat into `~/.claude/skills/` without colliding with other `tdd`, `research`, or `teach` skills; under the plugin that yields the double prefix.
+Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:pstack-poteto-mode`. The pstack folders keep their `pstack-` prefix on purpose so the same folders can be symlinked flat into `~/.claude/skills/` without colliding with other `tdd`, `research`, or `teach` skills; under the plugin that yields the double prefix.
 
 ## Install
 
@@ -24,7 +24,7 @@ Plugin skills load under their plugin namespace: `/luke:prior-art`, `/pstack:pst
 
 ```bash
 claude plugin marketplace add lhotwll217/skills
-claude plugin install luke@lhotwll217-skills
+claude plugin install lotwell@lhotwll217-skills
 claude plugin install pstack@lhotwll217-skills
 ```
 
@@ -49,7 +49,7 @@ Claude Code cloud sessions (claude.ai/code, routines, Desktop "Continue in cloud
 ```bash
 export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
 claude plugin marketplace list 2>/dev/null | grep -q lhotwll217-skills || claude plugin marketplace add lhotwll217/skills || true
-claude plugin install luke@lhotwll217-skills || true
+claude plugin install lotwell@lhotwll217-skills || true
 claude plugin install pstack@lhotwll217-skills || true
 ```
 
@@ -62,21 +62,21 @@ Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOM
 | Skill | Purpose |
 |---|---|
 | [pstack](plugins/pstack/skills/pstack/README.md) | On-demand, namespaced port of pstack's engineering workflows, with portable capability checks. |
-| [align](plugins/luke/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
-| [ask-the-right-questions](plugins/luke/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
-| [chain-of-context](plugins/luke/skills/chain-of-context/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
-| [current-system-audit](plugins/luke/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
-| [grill-with-docs](plugins/luke/skills/grill-with-docs/SKILL.md) | Grill a repository-backed plan while maintaining its glossary and durable decisions. |
-| [html-theme](plugins/luke/skills/html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |
-| [interactive-diff-review](plugins/luke/skills/interactive-diff-review/SKILL.md) | Render a targeted Git diff as a local interactive review and persist anchored Comments to JSON. |
-| [interactive-implementation-review](plugins/luke/skills/interactive-implementation-review/SKILL.md) | Turn grilling and delegated research into one interactive, evidence-backed implementation review. |
-| [interactive-markdown-review](plugins/luke/skills/interactive-markdown-review/SKILL.md) | Open a Markdown file for interactive review and persist anchored Comments to JSON. |
-| [prior-art](plugins/luke/skills/prior-art/SKILL.md) | Research implementations and standards with opened, pinned, quoted, linked, credible evidence. |
-| [seo-analytics-research](plugins/luke/skills/seo-analytics-research/SKILL.md) | Research SEO questions with live DataForSEO evidence. |
-| [show-me](plugins/luke/skills/show-me/SKILL.md) | Explain the current topic visually with the smallest diagram, sketch, or HTML view. Vendored unmodified from [humanlayer/skills](https://github.com/humanlayer/skills/tree/653b6411c1f7/plugins/show-me) at `653b641` (MIT); user-invoked, and align links to it by path. |
-| [updating-prompts](plugins/luke/skills/updating-prompts/SKILL.md) | Change an existing prompt — find the decision fork, choose the owning layer, ship the smallest delta that holds, validate the whole agent. |
-| [workstream-retro](plugins/luke/skills/workstream-retro/SKILL.md) | Reconstruct concurrent work as an interactive orchestration map with human checkpoints, delegated runs, reviews, reroutes, and outcomes. |
-| [writing-great-evals](plugins/luke/skills/writing-great-evals/SKILL.md) | Write and review eval definitions — one contract per eval, choose the grading seam, keep the grader lean, grade against a 0–4 scale. |
+| [align](plugins/lotwell/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
+| [ask-the-right-questions](plugins/lotwell/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
+| [chain-of-context](plugins/lotwell/skills/chain-of-context/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
+| [current-system-audit](plugins/lotwell/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
+| [grill-with-docs](plugins/lotwell/skills/grill-with-docs/SKILL.md) | Grill a repository-backed plan while maintaining its glossary and durable decisions. |
+| [html-theme](plugins/lotwell/skills/html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |
+| [interactive-diff-review](plugins/lotwell/skills/interactive-diff-review/SKILL.md) | Render a targeted Git diff as a local interactive review and persist anchored Comments to JSON. |
+| [interactive-implementation-review](plugins/lotwell/skills/interactive-implementation-review/SKILL.md) | Turn grilling and delegated research into one interactive, evidence-backed implementation review. |
+| [interactive-markdown-review](plugins/lotwell/skills/interactive-markdown-review/SKILL.md) | Open a Markdown file for interactive review and persist anchored Comments to JSON. |
+| [prior-art](plugins/lotwell/skills/prior-art/SKILL.md) | Research implementations and standards with opened, pinned, quoted, linked, credible evidence. |
+| [seo-analytics-research](plugins/lotwell/skills/seo-analytics-research/SKILL.md) | Research SEO questions with live DataForSEO evidence. |
+| [show-me](plugins/lotwell/skills/show-me/SKILL.md) | Explain the current topic visually with the smallest diagram, sketch, or HTML view. Vendored unmodified from [humanlayer/skills](https://github.com/humanlayer/skills/tree/653b6411c1f7/plugins/show-me) at `653b641` (MIT); user-invoked, and align links to it by path. |
+| [updating-prompts](plugins/lotwell/skills/updating-prompts/SKILL.md) | Change an existing prompt — find the decision fork, choose the owning layer, ship the smallest delta that holds, validate the whole agent. |
+| [workstream-retro](plugins/lotwell/skills/workstream-retro/SKILL.md) | Reconstruct concurrent work as an interactive orchestration map with human checkpoints, delegated runs, reviews, reroutes, and outcomes. |
+| [writing-great-evals](plugins/lotwell/skills/writing-great-evals/SKILL.md) | Write and review eval definitions — one contract per eval, choose the grading seam, keep the grader lean, grade against a 0–4 scale. |
 
 ## Deprecated
 

@@ -7,10 +7,10 @@
   "description": "Luke Otwell's Claude Code plugins.",
   "plugins": [
     {
-      "name": "luke",
-      "source": "./plugins/luke",
+      "name": "lotwell",
+      "source": "./plugins/lotwell",
       "description": "Luke Otwell's working skills: align, ask-the-right-questions, research, current-system-audit, grill-with-docs, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, chain-of-context, html-theme, show-me, and workstream-retro.",
-      "version": "1.1.0",
+      "version": "2.0.0",
       "license": "MIT",
       "category": "workflows"
     },

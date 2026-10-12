@@ -5,7 +5,7 @@ description: Align before starting work, at a handoff, or when a correction or r
 
 # Align
 
-A **semantic contract** is shared understanding that preserves intent, makes the assumptions the work depends on explicit, and leaves methods to whoever owns execution. It can retain open questions.
+An **agreement** is the shared understanding work proceeds from: it preserves the requester's intent, makes the assumptions the work depends on explicit, and leaves methods to whoever owns execution. It can retain open questions.
 
 ## Establish the agreement
 
@@ -13,21 +13,16 @@ Scale the exchange with the ask's **vagueness**, how **load-bearing** each assum
 
 1. **Recover what is settled.** Read the original request, relevant sources, and subsequent decisions or corrections. Account for each load-bearing assumption: identify the evidence or decision that settles it, or mark it as open. Resolve factual questions from available evidence before asking the requester.
 
-2. **Say it back.** Present the purpose, result sought or questions still open, and each load-bearing assumption for the requester's review before execution. Preserve their meaning. When these are already settled, this restatement is sufficient alignment and the authorized work proceeds without another confirmation round.
+2. **Say it back.** Present to the requester, in their meaning:
+   - **Purpose:** what the work is for, and why.
+   - **Result:** what the work produces, or the questions it explores.
+   - **Assumptions:** each load-bearing one, with the evidence or decision that settles it, or marked open. For each open one, say whether the agreed work can explore it or it needs a decision first; ask for those decisions together, with a recommendation.
+   - **Authority:** what you decide yourself, and what returns to the requester or others.
+   - **Done when:** the evidence that makes the result usable or supports the next decision.
 
-3. **Resolve consequential gaps.** For each open assumption, establish whether the agreed work can explore it or needs a decision first. Obtain that decision from its holder before dependent work proceeds. Group independent questions when that eases the exchange, and offer recommendations when a choice is needed. Joint exploration can proceed with a shared purpose and explicitly open questions.
+   Show what is easier to see than read: follow the [show-me](../show-me/SKILL.md) skill and pick its smallest view that makes the point.
 
-## Dimensions to consider
-
-Use the dimensions relevant to the ask; the agreement's form remains conversational and adaptable.
-
-| Dimension | Establish |
-|---|---|
-| Intent | What the work is for, and why. |
-| Authority | What each participant decides independently. |
-| Context | The facts, constraints, and sources that govern the work. |
-| Coordination | What discoveries or changes require renewed alignment. |
-| Completion | What evidence will make the result usable or support the next decision. |
+3. **Get confirmation.** End the say-back by asking the requester to confirm or correct it, and start the work once they confirm. Every agreement is confirmed this way, however settled it looks. A confirmed shared purpose with explicitly open questions is enough to start joint exploration.
 
 ## Authority
 
@@ -37,12 +32,12 @@ Choose methods and local adaptations within your delegated authority. Take decis
 
 ## Changes to the agreement
 
-When a correction, consequential reframe, or change of responsibility alters the agreement, say back **what changed and what still holds**. Carry forward every unaffected requirement, and establish the revised agreement before acting on the change. Local method changes within an unchanged agreement remain yours; make consequential effects visible to affected participants.
+When a correction, consequential reframe, or change of responsibility alters the agreement, say back **what changed and what still holds** and get it confirmed as in step 3 before acting on the change. Carry forward every unaffected requirement. Local method changes within an unchanged agreement remain yours; make consequential effects visible to affected participants.
 
 ## Handoffs and durable context
 
-At a handoff, compare the receiver's intended outcome, constraints, and authority with the original request and authoritative agreement. Resolve differences that would change the work before the receiver acts on them; a restatement of the sender's brief alone cannot establish fidelity.
+At a handoff, the receiver aligns with the sender as its requester: recover the brief and its sources, say it back, and wait for the sender's confirmation before acting. The sender compares that say-back with the original request and the confirmed agreement, since a restatement of the sender's brief cannot show fidelity, and corrects differences that would change the work. Differences that change the agreement itself go back to its requester.
 
 Keep a small request's agreement in the conversation. When work spans sessions, is delegated, or carries consequential decisions, record the current agreement in its existing issue, spec, or project document and link that record and its sources from the handoff.
 
-Read [EXAMPLES.md](EXAMPLES.md) when calibrating how much exchange a settled request, ambiguity, correction, or joint exploration needs.
+Read [EXAMPLES.md](EXAMPLES.md) when calibrating how much exchange a settled request, ambiguity, correction, handoff, or joint exploration needs.

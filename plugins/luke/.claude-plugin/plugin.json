@@ -2,7 +2,7 @@
   "name": "luke",
   "displayName": "Luke's skills",
   "version": "1.0.0",
-  "description": "Luke Otwell's working skills: alignment, research, current-system audits, grilling plans, interactive reviews, SEO analytics, eval writing, prompt updates, Chain of Context, house HTML theme, and workstream retros.",
+  "description": "Luke Otwell's working skills: alignment, research, current-system audits, grilling plans, interactive reviews, SEO analytics, eval writing, prompt updates, Chain of Context, house HTML theme, visual explanations (show-me), and workstream retros.",
   "author": { "name": "Luke Otwell", "url": "https://github.com/lhotwll217" },
   "repository": "https://github.com/lhotwll217/skills",
   "license": "MIT"

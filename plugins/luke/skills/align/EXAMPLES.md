@@ -1,22 +1,20 @@
 # Alignment examples
 
-These illustrative exchanges calibrate the rules in [SKILL.md](SKILL.md). They show proposed behavior, including adaptations of observed failures; they are not transcripts or evidence that the skill works.
-
 ## Settled request
 
 > **Request:** Rename `fetchUser` to `getUser` across the repo.
 >
-> **Alignment:** I'll rename its definition and call sites, including tests. It's internal to this repo, so an alias isn't needed.
+> **Alignment:** I'll rename its definition and call sites, including tests. It's internal to this repo, so an alias isn't needed. Confirm?
 
 The repo establishes that the function is internal. If it were exported from a published package, preserving compatibility would instead be a consequential decision to settle before renaming.
 
-## Settled handoff
+## Handoff
 
-> **Request:** Continue the agent and write the skill from our agreed design: establish alignment and maintain it as work changes.
+> **Brief:** Review the question-asking skill against the research and the owner's feedback. Read-only.
 >
-> **Alignment:** I'll continue the same agent to write the skill and its examples from that design. It includes your latest clarification: restate settled understanding so it's reviewable, then proceed.
+> **Receiver's alignment:** Purpose: find why the skill's outputs miss the big picture. Result: a verdict with quoted causes and sourced edits; I apply nothing. Open: whether to run the current skill for fresh outputs, since every existing output predates it. I recommend yes. I'll start once you confirm.
 
-If the receiver instead describes a skill that aligns only once at the start, the sender corrects that scope before drafting begins.
+If the receiver had planned to apply its edits, the sender corrects that authority before confirming.
 
 ## Ambiguous artifact
 
@@ -24,23 +22,40 @@ If the receiver instead describes a skill that aligns only once at the start, th
 >
 > **Alignment:** I'll create a folder for these files. Should it be shared independently or inherit access from the existing team folder? I recommend independent sharing if it needs a different audience.
 
+## Showing the shape
+
+> **Request:** Build the results pages from the wireframes. What are we using for the components?
+>
+> **Alignment:** One shared table on both pages, inside the existing shadcn setup:
+>
+> ```text
+> <DesignDetail>
+>   <Tabs>          new ui/tabs.tsx
+>   <ChartCard>     existing, on ui/chart.tsx
+>   <ResultsTable>  TanStack Table + ui/table.tsx
+> <AllDesigns>
+>   <ResultsTable>  same component
+> ```
+>
+> Confirm?
+
 ## Correction
 
 > **Request:** Drop the rule requiring three or four annotation boxes per screen.
 >
-> **Alignment:** I'll remove the fixed count and annotate what each screen needs. The agreed layout and both annotation dimensions remain: implementation state (Exists / Update / Add) and commitment status (including TBD).
+> **Alignment:** I'll remove the fixed count and annotate what each screen needs. The agreed layout and both annotation dimensions remain: implementation state (Exists / Update / Add) and commitment status (including TBD). Confirm?
 
 ## Joint exploration
 
 > **Request:** Help me figure out why our project handoffs keep going wrong.
 >
-> **Alignment:** We'll investigate where intended meaning gets lost across handoffs. Which episodes matter and how to group them are still open. I'll use actual episodes to develop findings and questions we can examine together.
+> **Alignment:** We'll investigate where intended meaning gets lost across handoffs. Which episodes matter and how to group them are still open. I'll use actual episodes to develop findings and questions we can examine together. Confirm?
 
 ## Completion evidence
 
 > **Request:** Enter this week's hours against these projects.
 >
-> **Alignment:** I'll enter the listed hours. Completion means the entries are saved in the timesheet; I'll identify any that fail to save.
+> **Alignment:** I'll enter the listed hours. Completion means the entries are saved in the timesheet; I'll identify any that fail to save. Confirm?
 
 ## A question during authorized work
 
@@ -54,5 +69,4 @@ If real-app verification was already authorized, the agent answers and continues
 
 > **Request:** Tailor my resume for this platform-engineering role.
 >
-> **Alignment:** I'll tailor the resume using the verified experience in your career records. I'll flag gaps where those records don't support a requested qualification. The result is a draft for your review.
-
+> **Alignment:** I'll tailor the resume using the verified experience in your career records. I'll flag gaps where those records don't support a requested qualification. The result is a draft for your review. Confirm?

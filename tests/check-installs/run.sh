@@ -5,32 +5,24 @@ check=$here/../../scripts/check-installs.py
 fixtures=$here/fixtures
 failures=0
 
-run() {
-  env -u CLAUDE_CONFIG_DIR -u CODEX_HOME -u PI_CODING_AGENT_DIR -u OO_HOME \
-    HOME="$fixtures/$1" python3 "$check" --agents claude,codex,pi
-}
-
+# expect <fixture> <agents> <exit> <python assertion over report r>
 expect() {
-  local name=$1 want_exit=$2 want_text=$3 out code
-  out=$(run "$name"); code=$?
+  local name=$1 agents=$2 want_exit=$3 assertion=$4 out code
+  out=$(env -u CLAUDE_CONFIG_DIR -u CODEX_HOME -u PI_CODING_AGENT_DIR -u OO_HOME \
+    HOME="$fixtures/$name" python3 "$check" --agents "$agents" ${5:+--scope "$fixtures/$name/$5"})
+  code=$?
   if [[ $code -ne $want_exit ]]; then
     echo "FAIL $name: exit $code, expected $want_exit"; failures=$((failures + 1)); return
   fi
-  if ! grep -qF -- "$want_text" <<<"$out"; then
-    echo "FAIL $name: output lacks $want_text"; failures=$((failures + 1)); return
+  if ! python3 -c "import json, sys; r = json.loads(sys.argv[1]); assert $assertion" "$out" 2>/dev/null; then
+    echo "FAIL $name: $assertion"; failures=$((failures + 1)); return
   fi
-  echo "PASS $name"
+  echo "PASS $name: $assertion"
 }
 
-expect clean 0 '"duplicates": {}'
-expect duplicate 1 "$fixtures/duplicate/.agents/skills/beta"
-expect duplicate 1 "$fixtures/duplicate/.codex/skills/beta"
-
-pi_out=$(env -u PI_CODING_AGENT_DIR HOME="$fixtures/pi-package" python3 "$check" --agents pi --scope "$fixtures/pi-package/pkg" --counts)
-if grep -q '"names": 1' <<<"$pi_out"; then
-  echo "PASS pi-package exclusion drops skills/misc/*"
-else
-  echo "FAIL pi-package: expected 1 name, got $pi_out"; failures=$((failures + 1))
-fi
+expect clean claude,codex,pi 0 'r["claude"]["names"] == 1 and r["codex"]["names"] == 1 and not r["codex"]["duplicates"]'
+expect duplicate codex 1 'sorted(e["path"].split("/fixtures/duplicate/")[1] for e in r["codex"]["duplicates"]["beta"]) == [".agents/skills/beta", ".codex/skills/beta"]'
+expect linked codex 0 'r["codex"]["names"] == 2 and not r["codex"]["duplicates"]'
+expect pi-package pi 0 'r["pi"]["names"] == 1' pkg
 
 exit $((failures > 0))

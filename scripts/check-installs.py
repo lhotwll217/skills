@@ -42,8 +42,11 @@ def skill_name(skill_md):
     return skill_md.parent.name
 
 
-def skill_dirs(root, recursive):
-    """Skill directories under root: root itself, its children, or (recursive) any descendant."""
+def skill_dirs(root, recursive, hidden=()):
+    """Skill directories under root: root itself, its children, or (recursive) any descendant.
+
+    Codex and Pi skip dot-directories and node_modules; `hidden` names dot-directories to keep.
+    """
     root = Path(root)
     if not root.is_dir():
         return []
@@ -51,14 +54,14 @@ def skill_dirs(root, recursive):
         return [root]
     found = []
     for child in sorted(root.iterdir()):
-        if child.name.startswith(".") and not recursive:
+        if (child.name.startswith(".") and child.name not in hidden) or child.name == "node_modules":
             continue
         if not child.is_dir():
             continue
         if (child / "SKILL.md").is_file():
             found.append(child)
         elif recursive:
-            found.extend(skill_dirs(child, True))
+            found.extend(skill_dirs(child, True, hidden))
     return found
 
 
@@ -84,13 +87,15 @@ def claude_sources():
     installed = read_json(root / "plugins" / "installed_plugins.json").get("plugins", {})
     for key in sorted(enabled):
         for entry in installed.get(key, []):
+            if entry.get("scope", "user") != "user":
+                continue
             for d in plugin_skill_dirs(entry["installPath"], [".claude-plugin/plugin.json"]):
                 yield f"plugin {key}", d
 
 
 def codex_sources():
     root = Path(os.environ.get("CODEX_HOME", home() / ".codex"))
-    for d in skill_dirs(root / "skills", recursive=True):
+    for d in skill_dirs(root / "skills", recursive=True, hidden=(".system",)):
         yield "codex-home", d
     for d in skill_dirs(home() / ".agents" / "skills", recursive=True):
         yield "agents", d
@@ -102,7 +107,7 @@ def codex_sources():
         if not value.get("enabled", True) or "@" not in key:
             continue
         name, market = key.split("@", 1)
-        versions = sorted((root / "plugins" / "cache" / market / name).glob("*"))
+        versions = sorted((root / "plugins" / "cache" / market / name).glob("*"), key=lambda v: v.stat().st_mtime)
         if versions:
             manifests = [".codex-plugin/plugin.json", "plugin.json", ".claude-plugin/plugin.json"]
             for d in plugin_skill_dirs(versions[-1], manifests):
@@ -156,18 +161,18 @@ def oo_sources():
     oo_home = Path(os.environ.get("OO_HOME", home() / ".owner-operator"))
     oo_bin = shutil.which("oo")
     if oo_bin:
-        for d in skill_dirs(Path(os.path.realpath(oo_bin)).parent / "src" / "agent" / "skills", recursive=False):
+        for d in skill_dirs(Path(os.path.realpath(oo_bin)).parent / "src" / "agent" / "skills", recursive=True):
             yield "bundled", d
-    for d in skill_dirs(oo_home / "workspace" / "skills", recursive=False):
+    for d in skill_dirs(oo_home / "workspace" / "skills", recursive=True):
         yield "workspace", d
     policy = read_json(oo_home / "settings.json").get("skillPolicy") or {}
     personal = home() / ".agents" / "skills"
     if policy.get("mode") == "all-personal":
-        for d in skill_dirs(personal, recursive=False):
+        for d in skill_dirs(personal, recursive=True):
             yield "personal", d
     elif policy.get("mode") == "allowlist":
         for name in policy.get("allowlist", []):
-            for d in skill_dirs(personal / name, recursive=False):
+            for d in skill_dirs(personal / name, recursive=True):
                 yield "personal", d
 
 
@@ -175,10 +180,13 @@ SOURCES = {"claude": claude_sources, "codex": codex_sources, "pi": pi_sources, "
 
 
 def build_map(agent):
+    """Map each skill name to its distinct sources. Paths that resolve to one folder are one source."""
     names = {}
     for route, d in SOURCES[agent]():
         entry = {"route": route, "path": str(d), "real": os.path.realpath(d)}
-        names.setdefault(skill_name(d / "SKILL.md"), []).append(entry)
+        sources = names.setdefault(skill_name(d / "SKILL.md"), [])
+        if all(e["real"] != entry["real"] for e in sources):
+            sources.append(entry)
     return names
 
 

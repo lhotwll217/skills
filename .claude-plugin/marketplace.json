@@ -9,7 +9,7 @@
     {
       "name": "luke",
       "source": "./plugins/luke",
-      "description": "Luke Otwell's working skills: align, research, current-system-audit, grill-with-docs, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, chain-of-context, html-theme, and workstream-retro.",
+      "description": "Luke Otwell's working skills: align, ask-the-right-questions, research, current-system-audit, grill-with-docs, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, chain-of-context, html-theme, and workstream-retro.",
       "version": "1.0.0",
       "license": "MIT",
       "category": "workflows"

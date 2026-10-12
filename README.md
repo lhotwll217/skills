@@ -22,27 +22,45 @@ Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:
 
 ## Install
 
-**As plugins (Claude Code, any machine).** Namespaced, updatable with `claude plugin update`:
+The repo ships three plugins: `lotwell` (Luke's skills), `pstack`, and `mattpocock-skills`. `lotwell` depends on the other two. Install each agent through one route only. A second route loads every skill twice.
+
+**Claude Code.** One install brings all three plugins as `lotwell:`, `pstack:`, and `mattpocock-skills:` skills:
 
 ```bash
 claude plugin marketplace add lhotwll217/skills
 claude plugin install lotwell@lhotwll217-skills
-claude plugin install pstack@lhotwll217-skills
-claude plugin install mattpocock-skills@lhotwll217-skills
 ```
 
-**One skill at a time (any agent that reads `SKILL.md`).** The `skills` CLI finds the nested folders:
+**Codex.** Codex reads the same marketplace but not `dependencies`, so add each plugin:
+
+```bash
+codex plugin marketplace add lhotwll217/skills
+codex plugin add lotwell@lhotwll217-skills
+codex plugin add pstack@lhotwll217-skills
+codex plugin add mattpocock-skills@lhotwll217-skills
+```
+
+**ChatGPT desktop app.** Add `lhotwll217/skills` as a marketplace source in the Plugins Directory, then install `lotwell`, `pstack`, and `mattpocock-skills`.
+
+**Pi.** The root `package.json` makes the repo one Pi package with every skill from the three plugins:
+
+```bash
+pi install git:github.com/lhotwll217/skills
+```
+
+**Owner Operator.** Owner Operator loads skills from its workspace folder, not from Pi packages. Clone the repo and link each skill folder in:
+
+```bash
+git clone https://github.com/lhotwll217/skills.git
+for d in skills/plugins/{lotwell,pstack}/skills/*/ skills/plugins/mattpocock-skills/skills/{engineering,productivity}/*/; do ln -sfn "$PWD/${d%/}" "${OO_HOME:-$HOME/.owner-operator}/workspace/skills/$(basename "$d")"; done
+```
+
+**Any other agent.** The `skills` CLI installs named skills. It finds the `lotwell` and `pstack` skills from the repo root. Matt Pocock's skills need the plugin folder, which also holds skills he has not promoted, so name the ones you want:
 
 ```bash
 npx skills add lhotwll217/skills --list
 npx skills add lhotwll217/skills --skill writing-great-evals
-```
-
-**Flat symlinks (unprefixed names).** For `/pstack-poteto-mode` rather than `/pstack:pstack-poteto-mode`, link the folders into a skills root; the pstack folders must move together because they cross-link as siblings:
-
-```bash
-git clone https://github.com/lhotwll217/skills.git
-for d in skills/plugins/pstack/skills/*/; do ln -sfn "$PWD/${d%/}" ~/.claude/skills/"$(basename "$d")"; done
+npx skills add https://github.com/lhotwll217/skills/tree/main/plugins/mattpocock-skills --skill tdd
 ```
 
 ## Cloud sessions
@@ -53,12 +71,11 @@ Claude Code cloud sessions (claude.ai/code, routines, Desktop "Continue in cloud
 export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
 claude plugin marketplace list 2>/dev/null | grep -q lhotwll217-skills || claude plugin marketplace add lhotwll217/skills || true
 claude plugin install lotwell@lhotwll217-skills || true
-claude plugin install pstack@lhotwll217-skills || true
 ```
 
 `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` matters: the `owner/repo` shorthand clones over SSH by default, which a cloud VM lacks. The `|| true` guards keep a network failure from blocking session start. Every pstack entry point is `disable-model-invocation: true`: you type it, Claude never auto-loads it.
 
-Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOME` on Claude Code 2.1.267: both plugins installed, 12 and 48 skills cached, and `/pstack:pstack-tdd` executed in print mode. Not yet verified inside a live cloud VM.
+`lotwell` brings `pstack` and `mattpocock-skills` as dependencies. The earlier two-plugin version of these lines was verified on 2026-09-13 in a fresh `$HOME` on Claude Code 2.1.267. Not yet verified inside a live cloud VM.
 
 ## Skills
 

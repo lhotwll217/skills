@@ -1,0 +1,13 @@
+{
+  "name": "lhotwll217-skills",
+  "private": true,
+  "keywords": ["pi-package"],
+  "pi": {
+    "skills": [
+      "plugins/lotwell/skills",
+      "plugins/pstack/skills",
+      "plugins/mattpocock-skills/skills/engineering",
+      "plugins/mattpocock-skills/skills/productivity"
+    ]
+  }
+}

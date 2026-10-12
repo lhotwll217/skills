@@ -1,18 +1,20 @@
 # skills
 
-Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhotwll217-skills`) with two plugins. Each skill is a folder with a `SKILL.md`, so the folders also install one at a time with the `skills` CLI.
+Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhotwll217-skills`) with three plugins. Each skill is a folder with a `SKILL.md`, so the folders also install one at a time with the `skills` CLI.
 
 ## Layout
 
 ```text
-.claude-plugin/marketplace.json      # marketplace manifest: lists the two plugins below
-plugins/lotwell/                     # plugin "lotwell": the general skills (16)
+.claude-plugin/marketplace.json      # marketplace manifest: lists the three plugins below
+plugins/lotwell/                     # plugin "lotwell": the general skills (15)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
   .claude-plugin/plugin.json
   skills/pstack/README.md            # index, provenance, capability notes
   skills/pstack-<name>/SKILL.md
+plugins/mattpocock-skills/           # plugin "mattpocock-skills": Matt Pocock's skills (27), copied from a fork
+  FORK.md                            # source, commit, and Luke's changes
 deprecated/                          # unmaintained, kept for reference
 ```
 
@@ -26,6 +28,7 @@ Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:
 claude plugin marketplace add lhotwll217/skills
 claude plugin install lotwell@lhotwll217-skills
 claude plugin install pstack@lhotwll217-skills
+claude plugin install mattpocock-skills@lhotwll217-skills
 ```
 
 **One skill at a time (any agent that reads `SKILL.md`).** The `skills` CLI finds the nested folders:
@@ -66,7 +69,6 @@ Verified 2026-09-13 by running these exact lines against GitHub in a fresh `$HOM
 | [ask-the-right-questions](plugins/lotwell/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
 | [chain-of-context](plugins/lotwell/skills/chain-of-context/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
 | [current-system-audit](plugins/lotwell/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
-| [grill-with-docs](plugins/lotwell/skills/grill-with-docs/SKILL.md) | Grill a repository-backed plan while maintaining its glossary and durable decisions. |
 | [html-theme](plugins/lotwell/skills/html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |
 | [interactive-diff-review](plugins/lotwell/skills/interactive-diff-review/SKILL.md) | Render a targeted Git diff as a local interactive review and persist anchored Comments to JSON. |
 | [interactive-implementation-review](plugins/lotwell/skills/interactive-implementation-review/SKILL.md) | Turn grilling and delegated research into one interactive, evidence-backed implementation review. |

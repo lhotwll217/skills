@@ -9,9 +9,9 @@ An **agreement** is the shared understanding work proceeds from: it preserves th
 
 ## Establish the agreement
 
-Scale the exchange with the ask's **vagueness**, how **load-bearing** each assumption is, and the **consequences of being wrong**. An assumption is load-bearing when the result depends on it.
+Scale the exchange with the ask's **vagueness**, how **load-bearing** each assumption is, and the **consequences of being wrong**: a settled request gets a one-sentence say-back. An assumption is load-bearing when the result depends on it.
 
-1. **Recover what is settled.** Read the original request, relevant sources, and subsequent decisions or corrections. Account for each load-bearing assumption: identify the evidence or decision that settles it, or mark it as open. Resolve factual questions from available evidence before asking the requester.
+1. **Recover what is settled.** Read the original request, relevant sources, and subsequent decisions or corrections. Resolve factual questions from available evidence before asking the requester. Done when every load-bearing assumption is settled by evidence or a decision, or marked open.
 
 2. **Say it back.** Present to the requester, in their meaning:
    - **Purpose:** what the work is for, and why.
@@ -28,7 +28,7 @@ Scale the exchange with the ask's **vagueness**, how **load-bearing** each assum
 
 The agreement carries the initiating request's authority. A request to build or act authorizes the aligned work. A request to explore or discuss authorizes that exploration or discussion; changes to files or external state need authority in the request or existing agreement. Interpret new questions and remarks in context, preserving the work already authorized.
 
-Choose methods and local adaptations within your delegated authority. Take decisions beyond it to the relevant decision maker: choices retained by the requester return to them; changes affecting other contributors go to the person coordinating them. Work that remains useful under the current agreement can continue.
+Take decisions beyond your delegated authority to the relevant decision maker: choices retained by the requester return to them; changes affecting other contributors go to the person coordinating them. Work that remains useful under the current agreement can continue.
 
 ## Changes to the agreement
 
@@ -38,6 +38,6 @@ When a correction, consequential reframe, or change of responsibility alters the
 
 At a handoff, the receiver aligns with the sender as its requester: recover the brief and its sources, say it back, and wait for the sender's confirmation before acting. The sender compares that say-back with the original request and the confirmed agreement, since a restatement of the sender's brief cannot show fidelity, and corrects differences that would change the work. Differences that change the agreement itself go back to its requester.
 
-Keep a small request's agreement in the conversation. When work spans sessions, is delegated, or carries consequential decisions, record the current agreement in its existing issue, spec, or project document and link that record and its sources from the handoff.
+Keep a small request's agreement in the conversation. When work spans sessions, is delegated, or carries consequential decisions, record the current agreement in its existing issue, spec, or project document. The record is complete when it carries every say-back item and the sources behind each, and the handoff links it.
 
 Read [EXAMPLES.md](EXAMPLES.md) when calibrating how much exchange a settled request, ambiguity, correction, handoff, or joint exploration needs.

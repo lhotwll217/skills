@@ -5,7 +5,7 @@ description: Align before starting work, at a handoff, or when a correction or r
 
 # Align
 
-An **agreement** is the shared understanding work proceeds from: it preserves the requester's intent, makes the assumptions the work depends on explicit, and leaves methods to whoever owns execution. It can retain open questions.
+An **agreement** is the shared understanding work proceeds from: it preserves the requester's intent, makes the assumptions the work depends on explicit, and leaves methods to whoever owns execution.
 
 ## Establish the agreement
 
@@ -22,7 +22,7 @@ Scale the exchange with the ask's **vagueness**, how **load-bearing** each assum
    - **Shape:** the smallest view from the `show-me` skill of any parts, flow, or before and after in the work.
 
 
-3. **Get confirmation.** End the say-back by asking the requester to confirm or correct it, and start the work once they confirm. Every agreement is confirmed this way, however settled it looks. A confirmed shared purpose with explicitly open questions is enough to start joint exploration.
+3. **Get confirmation.** End every say-back, however settled the work looks, by asking the requester to confirm or correct it, and start the work once they confirm. A confirmed shared purpose with explicitly open questions is enough to start joint exploration.
 
 ## Authority
 
@@ -32,11 +32,11 @@ Take decisions beyond your delegated authority to the relevant decision maker: c
 
 ## Changes to the agreement
 
-When a correction, consequential reframe, or change of responsibility alters the agreement, say back **what changed and what still holds** and get it confirmed as in step 3 before acting on the change. Carry forward every unaffected requirement. Local method changes within an unchanged agreement remain yours; make consequential effects visible to affected participants.
+When a correction, consequential reframe, or change of responsibility alters the agreement, say back **what changed and what still holds** and confirm it as in step 3. Carry forward every unaffected requirement. Local method changes within an unchanged agreement remain yours; make consequential effects visible to affected participants.
 
 ## Handoffs and durable context
 
-At a handoff, the receiver aligns with the sender as its requester: recover the brief and its sources, say it back, and wait for the sender's confirmation before acting. The sender compares that say-back with the original request and the confirmed agreement, since a restatement of the sender's brief cannot show fidelity, and corrects differences that would change the work. Differences that change the agreement itself go back to its requester.
+At a handoff, the receiver runs steps 1 to 3 with the sender as its requester. The sender compares that say-back with the original request and the confirmed agreement, since a restatement of the sender's brief cannot show fidelity, corrects differences that would change the work, and confirms once none remain. Differences that change the agreement itself go back to its requester.
 
 Keep a small request's agreement in the conversation. When work spans sessions, is delegated, or carries consequential decisions, record the current agreement in its existing issue, spec, or project document. The record is complete when it carries every say-back item and the sources behind each, and the handoff links it.
 

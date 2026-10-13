@@ -2,7 +2,7 @@
 
 Ported on 2026-09-09 from Lauren Tan’s pstack 0.15.0, commit `df3fb154fb982fb83f649de8646d4af6a0cb16b3`, and updated on 2026-10-13 to [pstack 0.15.21](https://github.com/cursor/plugins/tree/1dcc2bacde73ddd284803b7af28164d0436198fc/pstack), commit `1dcc2bacde73ddd284803b7af28164d0436198fc`. All 52 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, the guide, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance. `scripts/port-upstream.py` at the port repository root merges a later upstream range under these conventions, and `scripts/check-port.py` checks the result.
 
-This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `054b739`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
+This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `e2f20ce`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
 
 ## Use
 

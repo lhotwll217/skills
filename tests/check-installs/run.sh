@@ -25,4 +25,17 @@ expect duplicate codex 1 'sorted(e["path"].split("/fixtures/duplicate/")[1] for 
 expect linked codex 0 'r["codex"]["names"] == 2 and not r["codex"]["duplicates"]'
 expect pi-package pi 0 'r["pi"]["names"] == 1' pkg
 
+# Pi resolves a relative package path lexically, so a symlinked home must not change where it points
+tmp=$(mktemp -d); mkdir -p "$tmp/real/deep/.pi/agent" "$tmp/pkg/skills/kept"
+ln -s "$tmp/real/deep" "$tmp/home"
+cp "$fixtures/pi-package/pkg/skills/kept/SKILL.md" "$tmp/pkg/skills/kept/"
+printf '{"packages": ["../../../pkg"]}\n' > "$tmp/real/deep/.pi/agent/settings.json"
+out=$(env -u PI_CODING_AGENT_DIR HOME="$tmp/home" python3 "$check" --agents pi --counts)
+if python3 -c "import json, sys; assert json.loads(sys.argv[1])['pi']['names'] == 1" "$out" 2>/dev/null; then
+  echo "PASS pi-symlinked-home: relative package path resolves lexically"
+else
+  echo "FAIL pi-symlinked-home: $out"; failures=$((failures + 1))
+fi
+rm -rf "$tmp"
+
 exit $((failures > 0))

@@ -123,7 +123,8 @@ def pi_package_root(source, agent_dir):
         spec = source.split(":", 1)[1] if source.startswith("git:") else source.split("://", 1)[1]
         spec = spec.split("@", 1)[0].removesuffix(".git")
         return agent_dir / "git" / spec
-    return (agent_dir / source).resolve()
+    # Pi resolves a local package path lexically against the agent dir, without following symlinks first
+    return Path(os.path.normpath(os.path.join(agent_dir, os.path.expanduser(source))))
 
 
 def pi_package_skill_dirs(root):

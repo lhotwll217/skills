@@ -48,11 +48,11 @@ codex plugin add mattpocock-skills@lhotwll217-skills
 pi install git:github.com/lhotwll217/skills
 ```
 
-**Owner Operator.** Owner Operator loads skills from its workspace folder, not from Pi packages. Clone the repo and link each skill folder in:
+**Owner Operator.** Owner Operator loads skills from its workspace folder, not from Pi packages. It bundles its own copy of `writing-for-agents`, so the loop skips that one. Clone the repo and link the rest:
 
 ```bash
 git clone https://github.com/lhotwll217/skills.git
-for d in skills/plugins/{lotwell,pstack}/skills/*/ skills/plugins/mattpocock-skills/skills/{engineering,productivity}/*/; do ln -sfn "$PWD/${d%/}" "${OO_HOME:-$HOME/.owner-operator}/workspace/skills/$(basename "$d")"; done
+for d in skills/plugins/{lotwell,pstack}/skills/*/ skills/plugins/mattpocock-skills/skills/{engineering,productivity}/*/; do [ "$(basename "$d")" = writing-for-agents ] || ln -sfn "$PWD/${d%/}" "${OO_HOME:-$HOME/.owner-operator}/workspace/skills/$(basename "$d")"; done
 ```
 
 **Any other agent.** The `skills` CLI installs named skills. It finds the `lotwell` and `pstack` skills from the repo root. Matt Pocock's skills need the plugin folder, which also holds skills he has not promoted, so name the ones you want:

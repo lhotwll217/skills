@@ -6,6 +6,7 @@ Luke Otwell's changes are made here only:
 
 - `skills/productivity/writing-for-agents/SKILL.md` has a rewritten description and a `## Finishing` section that prunes, then lints with `scripts/jev-lint.py`.
 - `skills/productivity/writing-for-agents/scripts/jev-lint.py` is new. It runs the `jev` CLI.
+  Owner Operator bundles a copy of this skill in `owner-operator/src/agent/skills/writing-for-agents/`. After changing it here, copy it there.
 - `skills/engineering/grill-with-docs/` is Luke's version, which the model can invoke.
 
 Upstream updates arrive by syncing the fork, then running `git subtree pull --prefix=plugins/mattpocock-skills https://github.com/lhotwll217/mattpocock-skills main --squash` from the repo root.

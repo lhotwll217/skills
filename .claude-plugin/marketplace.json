@@ -9,7 +9,7 @@
     {
       "name": "lotwell",
       "source": "./plugins/lotwell",
-      "description": "Luke Otwell's working skills: align, ask-the-right-questions, research, current-system-audit, grill-with-docs, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, chain-of-context, html-theme, show-me, and workstream-retro.",
+      "description": "Luke Otwell's working skills: align, ask-the-right-questions, research, current-system-audit, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, chain-of-context, html-theme, show-me, and workstream-retro.",
       "version": "2.0.0",
       "license": "MIT",
       "category": "workflows"
@@ -19,6 +19,14 @@
       "source": "./plugins/pstack",
       "description": "Portable, namespaced port of Lauren Tan's pstack engineering workflows. All entry points are user-invoked: /pstack:pstack-poteto-mode and friends.",
       "version": "0.15.0",
+      "license": "MIT",
+      "category": "workflows"
+    },
+    {
+      "name": "mattpocock-skills",
+      "source": "./plugins/mattpocock-skills",
+      "description": "Matt Pocock's agent skills, copied from the lhotwll217/mattpocock-skills fork with Luke's changes to writing-for-agents and grill-with-docs.",
+      "version": "1.3.1",
       "license": "MIT",
       "category": "workflows"
     }

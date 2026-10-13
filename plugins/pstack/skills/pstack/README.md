@@ -1,12 +1,12 @@
 # Portable pstack
 
-Ported on 2026-09-09 from Lauren Tan’s [pstack 0.15.0](https://github.com/cursor/plugins/tree/df3fb154fb982fb83f649de8646d4af6a0cb16b3/pstack), commit `df3fb154fb982fb83f649de8646d4af6a0cb16b3`. All 47 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance.
+Ported on 2026-09-09 from Lauren Tan’s pstack 0.15.0, commit `df3fb154fb982fb83f649de8646d4af6a0cb16b3`, and updated on 2026-10-13 to [pstack 0.15.21](https://github.com/cursor/plugins/tree/1dcc2bacde73ddd284803b7af28164d0436198fc/pstack), commit `1dcc2bacde73ddd284803b7af28164d0436198fc`. All 52 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, the guide, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance. `scripts/port-upstream.py` at the port repository root merges a later upstream range under these conventions, and `scripts/check-port.py` checks the result.
 
-This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `054b739`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
+This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `e2f20ce`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
 
 ## Use
 
-Start with `pstack-poteto-mode`, `pstack-create-verification-skill`, or `pstack-maintain-verification-skill`. In Owner Operator use `/skill:pstack-poteto-mode`; in Codex use `$pstack-poteto-mode`; in Claude Code use `/pstack-poteto-mode` (flat symlink install) or `/pstack:pstack-poteto-mode` (plugin install). `pstack` opens this index. Every upstream skill name has the `pstack-` prefix, so existing skills such as `tdd` remain separate. Prototype is a poteto-mode playbook, not a separate upstream skill.
+Start with `pstack-poteto-mode`, `pstack-create-verification-skill`, or `pstack-maintain-verification-skill`. Ask `pstack-poteto-help` when unsure which workflow fits. In Owner Operator use `/skill:pstack-poteto-mode`; in Codex use `$pstack-poteto-mode`; in Claude Code use `/pstack-poteto-mode` (flat symlink install) or `/pstack:pstack-poteto-mode` (plugin install). `pstack` opens this index. Every upstream skill name has the `pstack-` prefix, so existing skills such as `tdd` remain separate. Prototype is a poteto-mode playbook, not a separate upstream skill.
 
 All entry points are user-invoked (`disable-model-invocation: true`, plus Codex’s `policy.allow_implicit_invocation: false`). They apply only to the requested task. Where a host ignores these extensions, treat their descriptions as explicit-request-only. Cross-workflow steps read linked **WORKFLOW.md reference files**; they do not programmatically invoke hidden user-only commands. Unprefixed workflow labels in upstream prose refer to the corresponding namespaced workflow below, never a same-named local skill. Read only the selected branches and principles.
 
@@ -37,15 +37,19 @@ The links below open reference instructions. Their folder names are also the exp
 - [pstack-architect](../pstack-architect/WORKFLOW.md) — Explore competing type and module designs before implementation.
 - [pstack-arena](../pstack-arena/WORKFLOW.md) — Compare candidate artifacts, select a base, and combine proven strengths.
 - [pstack-automate-me](../pstack-automate-me/WORKFLOW.md) — Draft a personal working-style skill from scoped history and owner input.
+- [pstack-benchmark-checklist](../pstack-benchmark-checklist/WORKFLOW.md) — Vet a performance measurement before reporting or acting on it.
 - [pstack-blast-radius](../pstack-blast-radius/WORKFLOW.md) — Find downstream breakage and test the facts a change depends on.
 - [pstack-bro](../pstack-bro/WORKFLOW.md) — Restate the last response in plain language.
+- [pstack-correct](../pstack-correct/WORKFLOW.md) — Find mistakes agents keep repeating in a repo and make each one impossible.
 - [pstack-create-verification-skill](../pstack-create-verification-skill/WORKFLOW.md) — Generate and prove a project verification skill and feature map.
 - [pstack-figure-it-out](../pstack-figure-it-out/WORKFLOW.md) — Design a task-specific workflow with verifiable completion gates.
 - [pstack-how](../pstack-how/WORKFLOW.md) — Trace code structure and behavior to explain how a system works.
 - [pstack-interrogate](../pstack-interrogate/WORKFLOW.md) — Review changes adversarially and synthesize evidence-backed findings.
+- [pstack-ketchup](../pstack-ketchup/WORKFLOW.md) — Catch the user up on this chat since their last message, with each action item summarized.
 - [pstack-maintain-verification-skill](../pstack-maintain-verification-skill/WORKFLOW.md) — Check every mapped feature against source and live behavior.
 - [pstack-make-bot-ui](../pstack-make-bot-ui/WORKFLOW.md) — Build a webhook bot UI when routine and secret-input capabilities exist.
 - [pstack-no-comments](../pstack-no-comments/WORKFLOW.md) — Review comments, preserve required exceptions, and address accepted findings.
+- [pstack-poteto-help](../pstack-poteto-help/WORKFLOW.md) — Answer questions about pstack and route to the right workflow, playbook, or principle.
 - [pstack-poteto-mode](../pstack-poteto-mode/WORKFLOW.md) — Route a requested engineering task through pstack playbooks and principles.
 - [pstack-principle-attack-the-premise](../pstack-principle-attack-the-premise/WORKFLOW.md) — attack the premise.
 - [pstack-principle-boundary-discipline](../pstack-principle-boundary-discipline/WORKFLOW.md) — boundary discipline.
@@ -53,6 +57,7 @@ The links below open reference instructions. Their folder names are also the exp
 - [pstack-principle-encode-lessons-in-structure](../pstack-principle-encode-lessons-in-structure/WORKFLOW.md) — encode lessons in structure.
 - [pstack-principle-exhaust-the-design-space](../pstack-principle-exhaust-the-design-space/WORKFLOW.md) — exhaust the design space.
 - [pstack-principle-experience-first](../pstack-principle-experience-first/WORKFLOW.md) — experience first.
+- [pstack-principle-explain-the-number](../pstack-principle-explain-the-number/WORKFLOW.md) — explain the number.
 - [pstack-principle-fix-root-causes](../pstack-principle-fix-root-causes/WORKFLOW.md) — fix root causes.
 - [pstack-principle-foundational-thinking](../pstack-principle-foundational-thinking/WORKFLOW.md) — foundational thinking.
 - [pstack-principle-guard-the-context-window](../pstack-principle-guard-the-context-window/WORKFLOW.md) — guard the context window.

@@ -19,8 +19,8 @@ Scale the exchange with the ask's **vagueness**, how **load-bearing** each assum
    - **Assumptions:** each load-bearing one, with the evidence or decision that settles it, or marked open. For each open one, say whether the agreed work can explore it or it needs a decision first; ask for those decisions together, with a recommendation.
    - **Authority:** what you decide yourself, and what returns to the requester or others.
    - **Done when:** the evidence that makes the result usable or supports the next decision.
+   - **Shape:** the smallest view from the `show-me` skill of any parts, flow, or before and after in the work.
 
-   Show what is easier to see than read: follow the [show-me](../show-me/SKILL.md) skill and pick its smallest view that makes the point.
 
 3. **Get confirmation.** End the say-back by asking the requester to confirm or correct it, and start the work once they confirm. Every agreement is confirmed this way, however settled it looks. A confirmed shared purpose with explicitly open questions is enough to start joint exploration.
 

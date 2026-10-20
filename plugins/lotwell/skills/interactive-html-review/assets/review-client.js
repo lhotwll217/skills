@@ -4,12 +4,12 @@
   const ELEMENT_STATUS = new Set(["resolved", "relocated", "ambiguous", "missing", "unsupported-boundary"]);
   const DURABLE_ATTRIBUTES = ["data-review-id", "data-testid", "data-test", "data-cy", "data-qa"];
   const SEMANTIC_ATTRIBUTES = ["name", "role", "aria-label", "alt", "title"];
-  const COMPOSER_MARGIN = 12;
   let state;
   let pendingSelection = null;
   let pendingElementTarget = null;
   let editingCommentId = null;
   let discardArmed = false;
+  let composerAnchor = null;
   let cropState = null;
   let captureStream = null;
   let pickerActive = false;
@@ -368,13 +368,14 @@
     } else {
       quote.textContent = pendingSelection.selectedText;
     }
+    composerAnchor = rect;
     positionComposer(rect);
     $("#hr-text").focus();
   }
 
   function positionComposer(rect) {
     const bounds = composer.getBoundingClientRect();
-    const margin = COMPOSER_MARGIN;
+    const margin = 12;
     const gap = 8;
     let left = rect.right + gap;
     if (left + bounds.width > innerWidth - margin) left = rect.left - bounds.width - gap;
@@ -384,11 +385,9 @@
     composer.style.top = `${Math.min(Math.max(margin, top), Math.max(margin, innerHeight - bounds.height - margin))}px`;
   }
 
-  // A screenshot that loads after placement, or a dragged textarea, grows the composer past the viewport.
+  // A screenshot that loads after placement, or a dragged textarea, changes the composer's height.
   new ResizeObserver(() => {
-    if (!composer.classList.contains("visible")) return;
-    const bounds = composer.getBoundingClientRect();
-    composer.style.top = `${Math.max(COMPOSER_MARGIN, Math.min(bounds.top, innerHeight - bounds.height - COMPOSER_MARGIN))}px`;
+    if (composer.classList.contains("visible")) positionComposer(composerAnchor);
   }).observe(composer);
 
   function closeComposer() {

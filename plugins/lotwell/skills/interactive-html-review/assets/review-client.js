@@ -9,6 +9,7 @@
   let pendingElementTarget = null;
   let editingCommentId = null;
   let discardArmed = false;
+  let composerAnchor = null;
   let cropState = null;
   let captureStream = null;
   let pickerActive = false;
@@ -361,19 +362,18 @@
       const image = document.createElement("img");
       image.src = `/${pendingSelection.screenshot}`;
       image.alt = "Selected region";
-      image.addEventListener("load", () => { if (image.isConnected) positionComposer(rect); });
       quote.append(image);
     } else if (pendingSelection.element) {
       quote.textContent = pendingSelection.element.label;
     } else {
       quote.textContent = pendingSelection.selectedText;
     }
+    composerAnchor = rect;
     positionComposer(rect);
     $("#hr-text").focus();
   }
 
   function positionComposer(rect) {
-    if (!composer.classList.contains("visible")) return;
     const bounds = composer.getBoundingClientRect();
     const margin = 12;
     const gap = 8;
@@ -384,6 +384,11 @@
     composer.style.left = `${Math.min(Math.max(margin, left), Math.max(margin, innerWidth - bounds.width - margin))}px`;
     composer.style.top = `${Math.min(Math.max(margin, top), Math.max(margin, innerHeight - bounds.height - margin))}px`;
   }
+
+  // A screenshot that loads after placement, or a dragged textarea, changes the composer's height.
+  new ResizeObserver(() => {
+    if (composer.classList.contains("visible")) positionComposer(composerAnchor);
+  }).observe(composer);
 
   function closeComposer() {
     composer.classList.remove("visible");

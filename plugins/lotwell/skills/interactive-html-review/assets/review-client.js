@@ -361,7 +361,7 @@
       const image = document.createElement("img");
       image.src = `/${pendingSelection.screenshot}`;
       image.alt = "Selected region";
-      image.addEventListener("load", () => positionComposer(rect));
+      image.addEventListener("load", () => { if (image.isConnected) positionComposer(rect); });
       quote.append(image);
     } else if (pendingSelection.element) {
       quote.textContent = pendingSelection.element.label;

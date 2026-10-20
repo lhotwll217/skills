@@ -4,6 +4,7 @@
   const ELEMENT_STATUS = new Set(["resolved", "relocated", "ambiguous", "missing", "unsupported-boundary"]);
   const DURABLE_ATTRIBUTES = ["data-review-id", "data-testid", "data-test", "data-cy", "data-qa"];
   const SEMANTIC_ATTRIBUTES = ["name", "role", "aria-label", "alt", "title"];
+  const COMPOSER_MARGIN = 12;
   let state;
   let pendingSelection = null;
   let pendingElementTarget = null;
@@ -361,7 +362,6 @@
       const image = document.createElement("img");
       image.src = `/${pendingSelection.screenshot}`;
       image.alt = "Selected region";
-      image.addEventListener("load", () => { if (image.isConnected) positionComposer(rect); });
       quote.append(image);
     } else if (pendingSelection.element) {
       quote.textContent = pendingSelection.element.label;
@@ -373,9 +373,8 @@
   }
 
   function positionComposer(rect) {
-    if (!composer.classList.contains("visible")) return;
     const bounds = composer.getBoundingClientRect();
-    const margin = 12;
+    const margin = COMPOSER_MARGIN;
     const gap = 8;
     let left = rect.right + gap;
     if (left + bounds.width > innerWidth - margin) left = rect.left - bounds.width - gap;
@@ -384,6 +383,13 @@
     composer.style.left = `${Math.min(Math.max(margin, left), Math.max(margin, innerWidth - bounds.width - margin))}px`;
     composer.style.top = `${Math.min(Math.max(margin, top), Math.max(margin, innerHeight - bounds.height - margin))}px`;
   }
+
+  // A screenshot that loads after placement, or a dragged textarea, grows the composer past the viewport.
+  new ResizeObserver(() => {
+    if (!composer.classList.contains("visible")) return;
+    const bounds = composer.getBoundingClientRect();
+    composer.style.top = `${Math.max(COMPOSER_MARGIN, Math.min(bounds.top, innerHeight - bounds.height - COMPOSER_MARGIN))}px`;
+  }).observe(composer);
 
   function closeComposer() {
     composer.classList.remove("visible");

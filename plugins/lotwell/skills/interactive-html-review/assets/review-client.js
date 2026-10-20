@@ -361,12 +361,19 @@
       const image = document.createElement("img");
       image.src = `/${pendingSelection.screenshot}`;
       image.alt = "Selected region";
+      image.addEventListener("load", () => positionComposer(rect));
       quote.append(image);
     } else if (pendingSelection.element) {
       quote.textContent = pendingSelection.element.label;
     } else {
       quote.textContent = pendingSelection.selectedText;
     }
+    positionComposer(rect);
+    $("#hr-text").focus();
+  }
+
+  function positionComposer(rect) {
+    if (!composer.classList.contains("visible")) return;
     const bounds = composer.getBoundingClientRect();
     const margin = 12;
     const gap = 8;
@@ -376,7 +383,6 @@
     if (top + bounds.height > innerHeight - margin) top = rect.top - bounds.height - gap;
     composer.style.left = `${Math.min(Math.max(margin, left), Math.max(margin, innerWidth - bounds.width - margin))}px`;
     composer.style.top = `${Math.min(Math.max(margin, top), Math.max(margin, innerHeight - bounds.height - margin))}px`;
-    $("#hr-text").focus();
   }
 
   function closeComposer() {

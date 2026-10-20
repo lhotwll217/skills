@@ -543,7 +543,7 @@
     const element = comment.element ? resolvedElements.get(comment.id) : null;
     const nearby = element ?? range?.startContainer?.parentElement ?? fallbackTarget;
     if (!nearby) return;
-    if (element || range) nearby.scrollIntoView({ behavior: "instant", block: "center" });
+    if (element || range) nearby.scrollIntoView({ behavior: "instant", block: "start" });
     pendingSelection = { ...comment };
     pendingElementTarget = element;
     editingCommentId = comment.id;

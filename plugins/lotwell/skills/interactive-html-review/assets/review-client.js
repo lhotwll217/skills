@@ -9,7 +9,6 @@
   let pendingElementTarget = null;
   let editingCommentId = null;
   let discardArmed = false;
-  let composerAnchor = null;
   let cropState = null;
   let captureStream = null;
   let pickerActive = false;
@@ -353,7 +352,7 @@
     return changed;
   }
 
-  function placeComposer(rect) {
+  function placeComposer() {
     discardArmed = false;
     composer.classList.add("visible");
     const quote = $("#hr-quote");
@@ -368,27 +367,8 @@
     } else {
       quote.textContent = pendingSelection.selectedText;
     }
-    composerAnchor = rect;
-    positionComposer(rect);
     $("#hr-text").focus();
   }
-
-  function positionComposer(rect) {
-    const bounds = composer.getBoundingClientRect();
-    const margin = 12;
-    const gap = 8;
-    let left = rect.right + gap;
-    if (left + bounds.width > innerWidth - margin) left = rect.left - bounds.width - gap;
-    let top = rect.bottom + gap;
-    if (top + bounds.height > innerHeight - margin) top = rect.top - bounds.height - gap;
-    composer.style.left = `${Math.min(Math.max(margin, left), Math.max(margin, innerWidth - bounds.width - margin))}px`;
-    composer.style.top = `${Math.min(Math.max(margin, top), Math.max(margin, innerHeight - bounds.height - margin))}px`;
-  }
-
-  // A screenshot that loads after placement, or a dragged textarea, changes the composer's height.
-  new ResizeObserver(() => {
-    if (composer.classList.contains("visible")) positionComposer(composerAnchor);
-  }).observe(composer);
 
   function closeComposer() {
     composer.classList.remove("visible");
@@ -563,7 +543,7 @@
     const element = comment.element ? resolvedElements.get(comment.id) : null;
     const nearby = element ?? range?.startContainer?.parentElement ?? fallbackTarget;
     if (!nearby) return;
-    if (element || range) nearby.scrollIntoView({ behavior: "instant", block: "center" });
+    if (element || range) nearby.scrollIntoView({ behavior: "instant", block: "start" });
     pendingSelection = { ...comment };
     pendingElementTarget = element;
     editingCommentId = comment.id;
@@ -573,7 +553,7 @@
     $("#hr-save-comment").textContent = "Save Comment";
     if (range && CSS.highlights) CSS.highlights.set("hr-selection", new Highlight(range));
     renderElementMarkers();
-    requestAnimationFrame(() => placeComposer((range ?? element ?? nearby).getBoundingClientRect()));
+    placeComposer();
   }
 
   document.addEventListener("click", (event) => {
@@ -613,7 +593,7 @@
     $("#hr-composer-title").textContent = "Comment on selection";
     $("#hr-save-comment").textContent = "Add Comment";
     if (CSS.highlights) CSS.highlights.set("hr-selection", new Highlight(range));
-    placeComposer(range.getBoundingClientRect());
+    placeComposer();
   }
 
   function hitTest(root, x, y) {
@@ -711,7 +691,7 @@
     $("#hr-composer-title").textContent = "Comment on element";
     $("#hr-save-comment").textContent = "Add Comment";
     stopElementPicker();
-    placeComposer(element.getBoundingClientRect());
+    placeComposer();
   }
 
   document.addEventListener("pointermove", (event) => {
@@ -873,7 +853,7 @@
       editingCommentId = null;
       $("#hr-composer-title").textContent = "Comment on screenshot";
       $("#hr-save-comment").textContent = "Add Comment";
-      placeComposer(new DOMRect(rect.x, rect.y, rect.w, rect.h));
+      placeComposer();
     } finally {
       overlay.style.visibility = "";
       video.pause();

@@ -1,5 +1,10 @@
 (() => {
-  const reviewModel = window.__INTERACTIVE_HTML_REVIEW__.model;
+  const config = window.__INTERACTIVE_HTML_REVIEW__;
+  const reviewModel = config.model;
+  // Host decides where Comments go: the local server's review.json, or a claude.ai artifact's own comment threads.
+  const HOST = config.host === "artifact" ? "artifact" : "local";
+  // Touch devices get an explicit mode switch; pointer devices keep the hold gestures.
+  const COARSE = matchMedia("(pointer: coarse)").matches;
   const PAGE_ID = "document";
   const ELEMENT_STATUS = new Set(["resolved", "relocated", "ambiguous", "missing", "unsupported-boundary"]);
   const DURABLE_ATTRIBUTES = ["data-review-id", "data-testid", "data-test", "data-cy", "data-qa"];
@@ -44,7 +49,17 @@
       <button class="hr-btn hr-primary" id="hr-save-comment" type="button">Add Comment</button>
     </div>
   </div>
-  <div class="hr-note" id="hr-note" hidden></div>`;
+  <div class="hr-note" id="hr-note" hidden></div>
+  <div class="hr-area-layer" id="hr-area-layer" hidden></div>
+  <button class="hr-sel-chip" id="hr-sel-chip" type="button" hidden>Comment</button>
+  <div class="hr-touchbar" id="hr-touchbar">
+    <div class="hr-actbar" id="hr-actbar" hidden></div>
+    <div class="hr-modes" id="hr-modes" role="radiogroup" aria-label="Comment on" hidden>
+      <button type="button" role="radio" data-mode="text" aria-checked="true" aria-label="Text" title="Text"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3.5h10M8 3.5v9"/></svg></button>
+      <button type="button" role="radio" data-mode="element" aria-checked="false" aria-label="Element" title="Element"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11"/><path d="M9 9l4.5 4.5"/></svg></button>
+      <button type="button" role="radio" data-mode="area" aria-checked="false" aria-label="Area" title="Area"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3"/></svg></button>
+    </div>
+  </div>`;
   document.body.append(overlay);
 
   const $ = (selector) => overlay.querySelector(selector);
@@ -593,7 +608,7 @@
     $("#hr-composer-title").textContent = "Comment on selection";
     $("#hr-save-comment").textContent = "Add Comment";
     if (CSS.highlights) CSS.highlights.set("hr-selection", new Highlight(range));
-    placeComposer();
+    present({ range });
   }
 
   function hitTest(root, x, y) {
@@ -691,7 +706,7 @@
     $("#hr-composer-title").textContent = "Comment on element";
     $("#hr-save-comment").textContent = "Add Comment";
     stopElementPicker();
-    placeComposer();
+    present({ element });
   }
 
   document.addEventListener("pointermove", (event) => {
@@ -725,11 +740,11 @@
   // Pointer events fire more consistently than mouseup across drag styles,
   // and the zero-delay defer lets the browser finalize the selection first.
   document.addEventListener("pointerup", (event) => {
-    if (pickerActive || cropState || event.metaKey || inOverlay(event.target)) return;
+    if (COARSE || pickerActive || cropState || event.metaKey || inOverlay(event.target)) return;
     setTimeout(() => { captureSelection().catch((error) => note(`Selection failed: ${error.message}`)); }, 0);
   });
   document.addEventListener("dblclick", (event) => {
-    if (pickerActive || event.metaKey || inOverlay(event.target)) return;
+    if (COARSE || pickerActive || event.metaKey || inOverlay(event.target)) return;
     setTimeout(() => { captureSelection().catch((error) => note(`Selection failed: ${error.message}`)); }, 0);
   });
   document.addEventListener("keydown", (event) => {
@@ -812,7 +827,7 @@
     return captureStream;
   }
 
-  async function captureRegion(rect) {
+  async function streamRegion(rect) {
     const stream = await ensureCaptureStream();
     const video = document.createElement("video");
     video.muted = true;
@@ -831,8 +846,49 @@
         rect.x * scaleX, rect.y * scaleY, rect.w * scaleX, rect.h * scaleY,
         0, 0, canvas.width, canvas.height,
       );
-      const blob = await new Promise((settle) => canvas.toBlob(settle, "image/png"));
-      if (!blob) throw new Error("Could not encode the region");
+      return await new Promise((settle) => canvas.toBlob(settle, "image/png"));
+    } finally {
+      overlay.style.visibility = "";
+      video.pause();
+      video.srcObject = null;
+    }
+  }
+
+  // Where screen capture is unavailable (phones, sandboxed artifact frames), redraw the region from the DOM.
+  function loadRenderer() {
+    if (window.html2canvas) return Promise.resolve();
+    return new Promise((settle, fail) => {
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script.onload = settle;
+      script.onerror = () => fail(new Error("Could not load the page renderer"));
+      document.head.append(script);
+    });
+  }
+
+  async function renderRegion(rect) {
+    await loadRenderer();
+    const canvas = await window.html2canvas(document.documentElement, {
+      x: rect.x + scrollX,
+      y: rect.y + scrollY,
+      width: rect.w,
+      height: rect.h,
+      windowWidth: document.documentElement.clientWidth,
+      windowHeight: innerHeight,
+      backgroundColor: getComputedStyle(document.body).backgroundColor,
+      scale: Math.min(2, devicePixelRatio || 1),
+      logging: false,
+      ignoreElements: (node) => node === overlay,
+    });
+    return new Promise((settle) => canvas.toBlob(settle, "image/png"));
+  }
+
+  async function captureRegion(rect) {
+    const useStream = HOST === "local" && navigator.mediaDevices?.getDisplayMedia && !COARSE;
+    const blob = useStream ? await streamRegion(rect) : await renderRegion(rect);
+    if (!blob) throw new Error("Could not encode the region");
+    if (HOST === "artifact") { await stageArtifactArea(rect, blob); return; }
+    {
       const response = await fetch("/shots", { method: "POST", headers: { "content-type": "image/png" }, body: blob });
       if (!response.ok) throw new Error(`Upload failed (${response.status})`);
       const { path } = await response.json();
@@ -854,11 +910,279 @@
       $("#hr-composer-title").textContent = "Comment on screenshot";
       $("#hr-save-comment").textContent = "Add Comment";
       placeComposer();
-    } finally {
-      overlay.style.visibility = "";
-      video.pause();
-      video.srcObject = null;
     }
+  }
+
+  // --- Host routing: one call per captured target ---
+  function present(target) {
+    if (HOST === "artifact") {
+      sendToArtifact(target).catch((error) => note(`Comment failed: ${error.code ?? error.message}`));
+      return;
+    }
+    placeComposer();
+  }
+
+  // --- Action bar: what is picked and what can be done with it ---
+  function showActions(label, buttons) {
+    const bar = $("#hr-actbar");
+    if (!label && !buttons.length) { bar.hidden = true; bar.replaceChildren(); return; }
+    const nodes = [];
+    if (label) {
+      const what = document.createElement("span");
+      what.className = "hr-what";
+      what.textContent = label;
+      nodes.push(what);
+    }
+    for (const [text, onClick, primary, ariaLabel] of buttons) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = text;
+      if (primary) button.className = "hr-primary";
+      if (ariaLabel) button.setAttribute("aria-label", ariaLabel);
+      button.addEventListener("click", onClick);
+      nodes.push(button);
+    }
+    bar.replaceChildren(...nodes);
+    bar.hidden = false;
+  }
+
+  // --- claude.ai artifact host: the shell's composer and threads, screenshots in the asset store ---
+  let artifactComments = null;
+  let artifactAssets = null;
+  let anchors = null;
+  let threadList = [];
+  let stagedArea = null;
+  const knownAnchors = new Map();
+
+  function trimBytes(value, limit) {
+    const encoder = new TextEncoder();
+    let text = String(value);
+    while (encoder.encode(text).length > limit) text = text.slice(0, -1);
+    return text;
+  }
+
+  function nearestHeading(element) {
+    let current = element;
+    while (current && current !== document.body) {
+      let sibling = current;
+      while (sibling) {
+        const heading = sibling.matches?.("h1, h2, h3, h4, h5, h6") ? sibling : sibling.querySelector?.("h1, h2, h3, h4, h5, h6");
+        if (heading && !inOverlay(heading) && sibling !== element) return elementText(heading, 80);
+        sibling = sibling.previousElementSibling;
+      }
+      current = current.parentElement;
+    }
+    return "";
+  }
+
+  function whereText(element) {
+    const heading = nearestHeading(element);
+    return `${heading ? `Near “${heading}”. ` : ""}Path: ${structuralSelector(element, element.getRootNode())}`;
+  }
+
+  function coveredText(rect) {
+    const seen = new Set();
+    for (const element of document.body.querySelectorAll("*")) {
+      if (inOverlay(element) || element.children.length) continue;
+      const box = element.getBoundingClientRect();
+      if (box.right < rect.x || box.left > rect.x + rect.w || box.bottom < rect.y || box.top > rect.y + rect.h) continue;
+      const text = elementText(element, 120);
+      if (text) seen.add(text);
+    }
+    return Array.from(seen).join(" | ");
+  }
+
+  async function composeAt(element, point, target, { label, detail, area = false }) {
+    if (!artifactComments) { note("Commenting is unavailable in this view"); return; }
+    let result;
+    if (anchors) {
+      const [anchor, at] = anchors.domAnchor(element, point);
+      knownAnchors.set(anchor, element);
+      result = await anchors.compose(anchor, at, { label: trimBytes(label, 120), detail: trimBytes(detail, 500), area });
+    } else {
+      result = await artifactComments.openComposer(target);
+    }
+    if (result && result.opened === false) note("Finish or close the open comment first");
+    else resetTouch();
+  }
+
+  async function sendToArtifact(target) {
+    if (target.range) {
+      const quote = normalizeText(target.range.toString(), 400);
+      let host = target.range.commonAncestorContainer;
+      if (host.nodeType !== Node.ELEMENT_NODE) host = host.parentElement;
+      const box = target.range.getBoundingClientRect();
+      await composeAt(host, { clientX: box.left + 2, clientY: box.top + 2 }, { range: target.range }, {
+        label: `“${quote.slice(0, 100)}”`,
+        detail: `Selected text: “${quote}”. ${whereText(host)}`,
+      });
+    } else if (target.element) {
+      await composeAt(target.element, undefined, { element: target.element }, {
+        label: elementLabel(target.element),
+        detail: whereText(target.element),
+      });
+    }
+    closeComposer();
+  }
+
+  async function stageArtifactArea(rect, blob) {
+    const centerX = rect.x + rect.w / 2;
+    const centerY = rect.y + rect.h / 2;
+    const element = hitTest(document, centerX, centerY) ?? document.body;
+    const staged = { rect, element, point: { clientX: centerX, clientY: centerY }, asset: null, covers: coveredText(rect) };
+    stagedArea = staged;
+    showActions("Saving…", [["✕", resetTouch, false, "Cancel"]]);
+    try {
+      if (artifactAssets) staged.asset = (await artifactAssets.upload(blob)).id;
+    } catch {
+      staged.asset = null;
+    }
+    if (stagedArea !== staged) return;
+    showActions(staged.asset ? "Area captured" : "Area marked, no image", [
+      ["Comment", () => {
+        composeAt(staged.element, staged.point, { element: staged.element }, {
+          label: `Area${nearestHeading(staged.element) ? ` near “${nearestHeading(staged.element)}”` : ""}`,
+          detail: `${staged.asset ? `Screenshot asset ${staged.asset}. ` : ""}Covers: ${staged.covers}`,
+          area: true,
+        }).catch((error) => note(`Comment failed: ${error.code ?? error.message}`));
+      }, true],
+      ["✕", resetTouch, false, "Cancel"],
+    ]);
+  }
+
+  function locateAnchor(anchor) {
+    const known = knownAnchors.get(anchor);
+    if (known?.isConnected) return known;
+    try { return document.querySelector(anchor); } catch { return null; }
+  }
+
+  function placePins() {
+    if (!anchors) return;
+    const placed = {};
+    for (const thread of threadList) {
+      const element = locateAnchor(thread.anchor);
+      if (!element) continue;
+      const box = element.getBoundingClientRect();
+      placed[thread.id] = { x: box.right + scrollX - 6, y: box.top + scrollY + 6 };
+    }
+    anchors.placed(placed);
+  }
+
+  async function initializeArtifact() {
+    state = { comments: [] };
+    $(".hr-topbar").hidden = COARSE;
+    $("#hr-toggle").hidden = true;
+    $("#hr-save").hidden = true;
+    if (!window.claude?.use) { overlay.hidden = true; return; }
+    window.claude.use("assets").then((assets) => { artifactAssets = assets; });
+    artifactComments = await window.claude.use("comments");
+    if (!artifactComments) { overlay.hidden = true; return; }
+    if (!artifactComments.customAnchors) return;
+    // Owning anchoring keeps the shell's click-to-comment from capturing taps on this overlay.
+    artifactComments.customAnchors({
+      mode: () => {},
+      threads: (list) => { threadList = list ?? []; placePins(); },
+      reveal: (id) => {
+        const thread = threadList.find((item) => item.id === id);
+        const element = thread && locateAnchor(thread.anchor);
+        element?.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      },
+      composing: (open) => { if (!open && stagedArea) resetTouch(); },
+    }).then((controller) => { anchors = controller; placePins(); }, () => { anchors = null; });
+  }
+
+  // --- Touch: an explicit mode switch, Text by default ---
+  let touchMode = "text";
+  let touchPicking = false;
+  let touchCrop = null;
+
+  function resetTouch() {
+    stagedArea = null;
+    touchPicking = false;
+    $("#hr-picker-box").hidden = true;
+    $("#hr-sel-chip").hidden = true;
+    showActions("", []);
+  }
+
+  function setTouchMode(mode) {
+    touchMode = mode;
+    for (const button of overlay.querySelectorAll("[data-mode]")) button.setAttribute("aria-checked", String(button.dataset.mode === mode));
+    resetTouch();
+    $("#hr-area-layer").hidden = mode !== "area";
+  }
+
+  function showTouchPick(element) {
+    touchPicking = true;
+    showPickerTarget(element);
+    showActions(elementText(element, 60) || element.localName, [
+      ["↑", () => { pickerDepth += 1; showPickerTarget(ancestorAtDepth(pickerDeepest, pickerDepth)); }, false, "Parent element"],
+      ["↓", () => { pickerDepth = Math.max(0, pickerDepth - 1); showPickerTarget(ancestorAtDepth(pickerDeepest, pickerDepth)); }, false, "Smaller element"],
+      ["Comment", () => { const element = pickerTarget; resetTouch(); captureElement(element); }, true],
+      ["✕", resetTouch, false, "Cancel"],
+    ]);
+  }
+
+  if (COARSE) {
+    $("#hr-modes").hidden = false;
+    $("#hr-pick-hint").hidden = true;
+    for (const button of overlay.querySelectorAll("[data-mode]")) button.addEventListener("click", () => setTouchMode(button.dataset.mode));
+
+    let selectionTimer = null;
+    document.addEventListener("selectionchange", () => {
+      clearTimeout(selectionTimer);
+      selectionTimer = setTimeout(() => {
+        const chip = $("#hr-sel-chip");
+        const selection = getSelection();
+        if (touchMode !== "text" || !selection?.rangeCount || selection.isCollapsed || inOverlay(selection.anchorNode)) { chip.hidden = true; return; }
+        const box = selection.getRangeAt(0).getBoundingClientRect();
+        chip.hidden = false;
+        chip.style.left = `${Math.min(Math.max(8, box.left), innerWidth - chip.offsetWidth - 8)}px`;
+        chip.style.top = `${Math.min(box.bottom + 10, innerHeight - chip.offsetHeight - 80)}px`;
+      }, 150);
+    });
+    $("#hr-sel-chip").addEventListener("pointerdown", (event) => event.preventDefault());
+    $("#hr-sel-chip").addEventListener("click", () => {
+      $("#hr-sel-chip").hidden = true;
+      captureSelection().catch((error) => note(`Selection failed: ${error.message}`));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (touchMode !== "element" || inOverlay(event.target)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      pickerDeepest = hitTest(document, event.clientX, event.clientY);
+      pickerDepth = 0;
+      if (pickerDeepest) showTouchPick(pickerDeepest);
+    }, true);
+
+    const areaLayer = $("#hr-area-layer");
+    areaLayer.addEventListener("pointerdown", (event) => {
+      areaLayer.setPointerCapture(event.pointerId);
+      const box = document.createElement("div");
+      box.className = "hr-crop";
+      overlay.append(box);
+      showActions("", []);
+      touchCrop = { startX: event.clientX, startY: event.clientY, box };
+    });
+    areaLayer.addEventListener("pointermove", (event) => {
+      if (!touchCrop) return;
+      const x = Math.min(touchCrop.startX, event.clientX);
+      const y = Math.min(touchCrop.startY, event.clientY);
+      Object.assign(touchCrop.box.style, { left: `${x}px`, top: `${y}px`, width: `${Math.abs(event.clientX - touchCrop.startX)}px`, height: `${Math.abs(event.clientY - touchCrop.startY)}px` });
+    });
+    areaLayer.addEventListener("pointerup", (event) => {
+      if (!touchCrop) return;
+      const rect = {
+        x: Math.min(touchCrop.startX, event.clientX),
+        y: Math.min(touchCrop.startY, event.clientY),
+        w: Math.abs(event.clientX - touchCrop.startX),
+        h: Math.abs(event.clientY - touchCrop.startY),
+      };
+      touchCrop.box.remove();
+      touchCrop = null;
+      if (rect.w < 12 || rect.h < 12) return;
+      captureRegion(rect).catch((error) => note(`Screenshot failed: ${error.message}`));
+    });
   }
 
   $("#hr-toggle").addEventListener("click", () => {
@@ -905,13 +1229,15 @@
     markerFrame = requestAnimationFrame(() => {
       markerFrame = null;
       renderElementMarkers();
-      if (pickerActive && pickerTarget) showPickerTarget(pickerTarget);
+      if ((pickerActive || touchPicking) && pickerTarget) showPickerTarget(pickerTarget);
+      if (HOST === "artifact") placePins();
     });
   }
   addEventListener("scroll", scheduleMarkerRefresh, true);
   addEventListener("resize", scheduleMarkerRefresh);
 
   async function initialize() {
+    if (HOST === "artifact") return initializeArtifact();
     const response = await fetch("/review.json");
     state = await response.json();
     let changed = false;

@@ -85,3 +85,25 @@ test("element routes fail closed when their boundary sequence is malformed", () 
   comment.element.route.push(elementAnchor().route[0]);
   assert.throws(() => minimalComment(comment), /explicit boundary|alternate/);
 });
+
+test("an artifact build carries the title only, never the local document path", async () => {
+  const model = htmlModel("/Users/someone/private/fixture.html", "<title>Fixture</title><body>Hi</body>");
+  const html = await generateReviewHtml({ model, documentHtml: "<html><body>Hi</body></html>", host: "artifact" });
+  assert.match(html, /"host":"artifact"/);
+  assert.match(html, /"title":"Fixture"/);
+  assert.doesNotMatch(html, /\/Users\/someone|reviewPath|sourceHash/);
+});
+
+test("the local build keeps its review path and defaults to the local host", async () => {
+  const model = htmlModel("/tmp/fixture.html", "<title>Fixture</title><body>Hi</body>");
+  const html = await generateReviewHtml({ model, documentHtml: "<html><body>Hi</body></html>", reviewPath: "/tmp/review.json" });
+  assert.match(html, /"host":"local"/);
+  assert.match(html, /"reviewPath":"\/tmp\/review.json"/);
+});
+
+test("touch modes are a radio group, so the desktop Shift gesture stays a hold", async () => {
+  const model = htmlModel("/tmp/fixture.html", "<title>Fixture</title><body>Hi</body>");
+  const html = await generateReviewHtml({ model, documentHtml: "<html><body>Hi</body></html>", reviewPath: "/tmp/review.json" });
+  assert.match(html, /role="radiogroup"/);
+  assert.match(html, /role="radio" data-mode="text" aria-checked="true"/);
+});

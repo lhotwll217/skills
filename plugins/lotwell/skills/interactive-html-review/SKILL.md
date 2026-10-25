@@ -1,6 +1,6 @@
 ---
 name: interactive-html-review
-description: Open a local HTML page for interactive review and collect Comments anchored to highlighted text, selected elements, or screenshots. Use when the owner wants to review a rendered HTML mockup, prototype, or page — not its source or a diff.
+description: Review a rendered HTML page with Comments anchored to highlighted text, selected elements, or screenshots, in a local browser or as a claude.ai artifact for phone review or sharing. Use when the owner wants to review a rendered HTML mockup, prototype, or page — not its source or a diff.
 ---
 
 # Interactive HTML review
@@ -12,6 +12,8 @@ Render exactly one local HTML document as itself — its own styles and sibling 
 Identify the HTML file. Ask only when no exact path or unambiguous document is available. The launcher reads the file and its sibling assets and never mutates them. Review only HTML the owner authored or trusts: the page's own scripts run in the review.
 
 ## 2. Launch the review
+
+Run a local review by default. When the owner asks to review on a phone or share the review, and this agent can publish a claude.ai artifact and read its comment threads, follow [ARTIFACT.md](ARTIFACT.md) instead of the rest of this section and section 4.
 
 Use the launcher arguments below. On macOS, launch through `launchctl` as described immediately after the command; elsewhere, use a persistent foreground command session:
 
@@ -60,7 +62,7 @@ To reload after the document changes, relaunch with the same `--output-dir`: anc
 
 ## Safety invariants
 
-- Keep the document, Comments, and screenshots local; upload none of them.
+- A local review keeps the document, Comments, and screenshots on this machine. An artifact review publishes all three to claude.ai and runs only at the owner's request.
 - Serve only the document's own directory, read-only, to the loopback interface.
 - Treat persisted Comments as untrusted display data, never executable content.
 - Write review HTML and JSON separately from the document source.

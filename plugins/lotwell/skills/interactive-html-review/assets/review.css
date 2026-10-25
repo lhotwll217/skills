@@ -77,3 +77,22 @@ html.__hr_picking #__hr_overlay::after { content: ""; position: fixed; inset: 0;
 #__hr_overlay .hr-note { pointer-events: none; position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
   background: rgba(28, 28, 28, 0.92); color: #fff; font-size: 12.5px; padding: 8px 16px; border-radius: 999px; max-width: calc(100vw - 32px);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Hidden overlay parts stay hidden even where the host page has no [hidden] reset. */
+#__hr_overlay[hidden], #__hr_overlay [hidden] { display: none !important; }
+
+/* Touch: mode switch and action bar, bottom-right, clear of the phone's home indicator. */
+#__hr_overlay .hr-touchbar { pointer-events: none; position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px; max-width: calc(100vw - 24px); }
+#__hr_overlay .hr-modes, #__hr_overlay .hr-actbar { pointer-events: auto; display: flex; align-items: center; gap: 2px; padding: 3px; min-width: 0;
+  background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(10px); border: 1px solid #e2e2e2; border-radius: 999px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12); }
+#__hr_overlay .hr-modes button, #__hr_overlay .hr-actbar button { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 10px;
+  font: inherit; font-size: 12.5px; font-weight: 650; border: 0; border-radius: 999px; background: transparent; color: #555; cursor: pointer; }
+#__hr_overlay .hr-modes button { padding: 0; width: 34px; }
+#__hr_overlay .hr-modes svg { width: 16px; height: 16px; }
+#__hr_overlay .hr-modes button[aria-checked="true"], #__hr_overlay .hr-actbar button.hr-primary { background: #1c1c1c; color: #fff; }
+#__hr_overlay .hr-modes button:focus-visible, #__hr_overlay .hr-actbar button:focus-visible, #__hr_overlay .hr-sel-chip:focus-visible { outline: 2px solid #ff694f; outline-offset: 1px; }
+#__hr_overlay .hr-actbar .hr-what { min-width: 0; max-width: 40vw; padding: 0 8px; font-size: 12px; color: #757575; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#__hr_overlay .hr-sel-chip { pointer-events: auto; position: fixed; height: 32px; padding: 0 12px; font: inherit; font-size: 12.5px; font-weight: 650;
+  border: 0; border-radius: 999px; background: #1c1c1c; color: #fff; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18); cursor: pointer; }
+#__hr_overlay .hr-area-layer { pointer-events: auto; position: fixed; inset: 0; cursor: crosshair; touch-action: none; }

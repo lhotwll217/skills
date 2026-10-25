@@ -235,7 +235,7 @@ async function readRequestJson(request) {
   return JSON.parse((await readRequestBody(request, 1_000_000, "Review state")).toString("utf8"));
 }
 
-export async function generateReviewHtml({ model, documentHtml, reviewPath }) {
+export async function generateReviewHtml({ model, documentHtml, reviewPath, host = "local" }) {
   const [overlayCss, clientJavaScript] = await Promise.all([
     readFile(join(assetDirectory, "review.css"), "utf8"),
     readFile(join(assetDirectory, "review-client.js"), "utf8"),
@@ -244,10 +244,9 @@ export async function generateReviewHtml({ model, documentHtml, reviewPath }) {
 <style id="__hr_style">
 ${overlayCss}
 </style>
-<script id="__hr_script">window.__INTERACTIVE_HTML_REVIEW__=${scriptJson({
-    model,
-    reviewPath,
-  })};
+<script id="__hr_script">window.__INTERACTIVE_HTML_REVIEW__=${scriptJson(host === "artifact"
+    ? { host, model: { title: model.title } }
+    : { host, model, reviewPath })};
 ${clientJavaScript}
 </script>`;
   if (/<\/body>/i.test(documentHtml)) return documentHtml.replace(/<\/body>/i, `${bootstrap}\n</body>`);
@@ -347,6 +346,7 @@ Options:
   --document <file.html>  HTML document to review; sibling assets are served read-only
   --output-dir <path>     Reuse or create a durable review directory
   --no-open               Print the URL without opening a browser
+  --artifact <file.html>  Write a self-contained page for a claude.ai artifact instead of serving
   --help                  Show this help
 `;
 
@@ -356,7 +356,7 @@ function parseArguments(arguments_) {
     const argument = arguments_[index];
     if (argument === "--help") return { help: true };
     if (argument === "--no-open") { options.open = false; continue; }
-    const field = { "--document": "documentPath", "--output-dir": "outputDirectory" }[argument];
+    const field = { "--document": "documentPath", "--output-dir": "outputDirectory", "--artifact": "artifactPath" }[argument];
     if (!field) throw new Error(`Unknown argument: ${argument}`);
     const value = arguments_[index + 1];
     if (value === undefined) throw new Error(`${argument} requires a value`);
@@ -387,6 +387,13 @@ async function runCli(arguments_) {
   if (!/\.html?$/i.test(documentPath)) throw new Error(`Not an HTML file: ${documentPath}`);
   const documentHtml = await readFile(documentPath, "utf8");
   const model = htmlModel(documentPath, documentHtml);
+  if (options.artifactPath) {
+    const artifactPath = resolve(options.artifactPath);
+    if (artifactPath === documentPath) throw new Error("--artifact must not overwrite the document");
+    await writeFile(artifactPath, await generateReviewHtml({ model, documentHtml, host: "artifact" }));
+    process.stdout.write(`Artifact page: ${artifactPath}\n`);
+    return;
+  }
   const outputDirectory = options.outputDirectory ? resolve(options.outputDirectory) : await mkdtemp(join(tmpdir(), "interactive-html-review-"));
   await mkdir(outputDirectory, { recursive: true });
   const reviewPath = join(outputDirectory, "review.json");

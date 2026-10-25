@@ -71,12 +71,13 @@ test("source changes request element re-resolution without rewriting the capture
   assert.equal(state.review.sourceHash, currentModel.sourceHash);
 });
 
-test("the injected overlay presents Shift as a hold gesture rather than a toggle", async () => {
+test("Shift still works as a hold beside the clickable modes, and the dock shows its shortcuts", async () => {
   const model = htmlModel("/tmp/fixture.html", "<title>Fixture</title><body>Hi</body>");
   const html = await generateReviewHtml({ model, documentHtml: "<html><body>Hi</body></html>", reviewPath: "/tmp/review.json" });
-  assert.match(html, /Hold <kbd>⇧<\/kbd> to select/);
-  assert.match(html, /event\.key === "Shift"/);
-  assert.match(html, /addEventListener\("keyup"/);
+  assert.match(html, /event\.key === "Shift" && !event\.repeat/);
+  assert.match(html, /event\.key === "Shift" && pickerActive && touchMode !== "element"\) stopElementPicker\(\)/);
+  assert.match(html, /title="Element: hold ⇧ and click an element"/);
+  assert.match(html, /title="Area: hold ⌘ and drag a box"/);
   assert.doesNotMatch(html, /Shift\+E|⇧E|aria-pressed/);
 });
 

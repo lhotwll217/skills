@@ -11,30 +11,11 @@ html.__hr_picking #__hr_overlay::after { content: ""; position: fixed; inset: 0;
 #__hr_overlay * { box-sizing: border-box; }
 #__hr_overlay .hr-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #757575; }
 
-#__hr_overlay .hr-topbar { pointer-events: auto; position: fixed; top: 12px; right: 12px; display: flex; align-items: center;
-  background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); border: 1px solid #e2e2e2; border-radius: 14px;
-  padding: 9px 11px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12); max-width: calc(100vw - 24px); }
-#__hr_overlay .hr-topbar-right { display: flex; align-items: center; gap: 8px; min-width: 0; }
-#__hr_overlay .hr-save { flex: 0 0 auto; font-size: 12px; color: #757575; }
-
 #__hr_overlay .hr-btn { pointer-events: auto; font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px;
   border: 1px solid #c4c4c4; background: #fff; color: #1c1c1c; cursor: pointer; white-space: nowrap; }
 #__hr_overlay .hr-btn:hover { border-color: #1c1c1c; }
 #__hr_overlay .hr-primary { background: #1c1c1c; color: #fff; border-color: #1c1c1c; }
-#__hr_overlay .hr-pick-hint { display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; padding: 6px 9px; border-radius: 999px;
-  background: #f1f1f1; color: #555; font-size: 12px; font-weight: 650; line-height: 1; white-space: nowrap; transition: background 100ms ease, color 100ms ease; }
-#__hr_overlay .hr-pick-hint kbd { display: inline-grid; place-items: center; min-width: 21px; height: 21px; padding: 0 5px; border: 1px solid #bbb; border-bottom-width: 2px;
-  border-radius: 6px; background: #fff; color: #222; font: inherit; font-weight: 800; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05); }
-#__hr_overlay .hr-pick-hint.active { background: #1c1c1c; color: #fff; }
-#__hr_overlay .hr-pick-hint.active kbd { border-color: #ff8d78; background: #ff694f; color: #fff; }
-
-@media (max-width: 420px) {
-  #__hr_overlay .hr-save { display: none; }
-  #__hr_overlay .hr-topbar { padding: 7px 8px; }
-  #__hr_overlay .hr-topbar-right { gap: 6px; }
-}
-
-#__hr_overlay .hr-panel { pointer-events: auto; position: fixed; top: 68px; right: 12px; bottom: 12px; width: min(360px, calc(100vw - 24px));
+#__hr_overlay .hr-panel { pointer-events: auto; position: fixed; top: 12px; right: 12px; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100vw - 24px));
   overflow-y: auto; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10px); border: 1px solid #e2e2e2; border-radius: 14px;
   padding: 16px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12); }
 #__hr_overlay .hr-comment { border: 1px solid #e6e6e6; border-radius: 10px; padding: 12px; margin-top: 10px; font-size: 13.5px; line-height: 1.45; cursor: pointer; background: #fff; }
@@ -96,3 +77,18 @@ html.__hr_picking #__hr_overlay::after { content: ""; position: fixed; inset: 0;
 #__hr_overlay .hr-sel-chip { pointer-events: auto; position: fixed; height: 32px; padding: 0 12px; font: inherit; font-size: 12.5px; font-weight: 650;
   border: 0; border-radius: 999px; background: #1c1c1c; color: #fff; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18); cursor: pointer; }
 #__hr_overlay .hr-area-layer { pointer-events: auto; position: fixed; inset: 0; cursor: crosshair; touch-action: none; }
+
+/* Dock: mode switch with its shortcuts, and the Comments count. */
+#__hr_overlay .hr-save { position: fixed; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#__hr_overlay .hr-modes button { width: auto; min-width: 34px; padding: 0 9px; gap: 5px; display: inline-flex; align-items: center; justify-content: center; }
+#__hr_overlay .hr-key { font: inherit; font-size: 11px; font-weight: 700; line-height: 1; color: #8a8a8a; }
+#__hr_overlay .hr-modes button[aria-checked="true"] .hr-key { color: #c9c9c9; }
+#__hr_overlay.hr-coarse .hr-key { display: none; }
+#__hr_overlay.hr-coarse .hr-modes button { padding: 0; width: 34px; }
+#__hr_overlay .hr-modes button.hr-held { box-shadow: inset 0 0 0 1.5px #1c1c1c; color: #1c1c1c; }
+#__hr_overlay .hr-count { pointer-events: auto; display: inline-flex; align-items: center; gap: 5px; height: 40px; padding: 0 12px;
+  font: inherit; font-size: 12.5px; font-weight: 650; color: #555; background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(10px);
+  border: 1px solid #e2e2e2; border-radius: 999px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12); cursor: pointer; }
+#__hr_overlay .hr-count svg { width: 16px; height: 16px; }
+#__hr_overlay .hr-count:hover { color: #1c1c1c; }
+#__hr_overlay .hr-count:focus-visible { outline: 2px solid #ff694f; outline-offset: 1px; }

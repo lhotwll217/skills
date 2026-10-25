@@ -26,19 +26,13 @@
   const overlay = document.createElement("div");
   overlay.id = "__hr_overlay";
   overlay.innerHTML = `
-  <header class="hr-topbar">
-    <div class="hr-topbar-right">
-      <span class="hr-save" id="hr-save">Loading…</span>
-      <span class="hr-pick-hint" id="hr-pick-hint">Hold <kbd>⇧</kbd> to select</span>
-      <button class="hr-btn hr-toggle" id="hr-toggle" type="button">Comments · <span id="hr-count">0</span></button>
-    </div>
-  </header>
+  <span class="hr-save" id="hr-save" role="status">Loading…</span>
   <aside class="hr-panel" id="hr-panel" hidden>
     <div class="hr-label">Comments · <span id="hr-count-2">0</span></div>
     <div id="hr-comments"></div>
   </aside>
   <div class="hr-element-layer" id="hr-element-layer"></div>
-  <div class="hr-picker-help" id="hr-picker-help" role="status" hidden>Shift held · click an element · ↑ parent · ↓ back</div>
+  <div class="hr-picker-help" id="hr-picker-help" role="status" hidden>Click an element · ↑ parent · ↓ back · Esc to stop</div>
   <div class="hr-picker-box" id="hr-picker-box" hidden><span id="hr-picker-label"></span></div>
   <div class="hr-composer" id="hr-composer" role="dialog" aria-modal="false" aria-labelledby="hr-composer-title">
     <div class="hr-label" id="hr-composer-title">Comment on selection</div>
@@ -54,13 +48,15 @@
   <button class="hr-sel-chip" id="hr-sel-chip" type="button" hidden>Comment</button>
   <div class="hr-touchbar" id="hr-touchbar">
     <div class="hr-actbar" id="hr-actbar" hidden></div>
-    <div class="hr-modes" id="hr-modes" role="radiogroup" aria-label="Comment on" hidden>
-      <button type="button" role="radio" data-mode="text" aria-checked="true" aria-label="Text" title="Text"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3.5h10M8 3.5v9"/></svg></button>
-      <button type="button" role="radio" data-mode="element" aria-checked="false" aria-label="Element" title="Element"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11"/><path d="M9 9l4.5 4.5"/></svg></button>
-      <button type="button" role="radio" data-mode="area" aria-checked="false" aria-label="Area" title="Area"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3"/></svg></button>
+    <div class="hr-modes" id="hr-modes" role="radiogroup" aria-label="Comment on">
+      <button type="button" role="radio" data-mode="text" aria-checked="true" aria-label="Text" title="Text: select text to comment"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3.5h10M8 3.5v9"/></svg></button>
+      <button type="button" role="radio" data-mode="element" aria-checked="false" aria-label="Element" title="Element: hold ⇧ and click an element"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11"/><path d="M9 9l4.5 4.5"/></svg><kbd class="hr-key">⇧</kbd></button>
+      <button type="button" role="radio" data-mode="area" aria-checked="false" aria-label="Area" title="Area: hold ⌘ and drag a box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 5.5v-3h3M10.5 2.5h3v3M13.5 10.5v3h-3M5.5 13.5h-3v-3"/></svg><kbd class="hr-key">⌘</kbd></button>
     </div>
+    <button class="hr-count" id="hr-toggle" type="button" aria-label="Comments" title="Comments"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg><span id="hr-count">0</span></button>
   </div>`;
   document.body.append(overlay);
+  if (COARSE) overlay.classList.add("hr-coarse");
 
   const $ = (selector) => overlay.querySelector(selector);
   const composer = $("#hr-composer");
@@ -397,6 +393,7 @@
     $("#hr-composer-title").textContent = "Comment on selection";
     $("#hr-save-comment").textContent = "Add Comment";
     renderElementMarkers();
+    if (!COARSE && touchMode === "element") startElementPicker();
   }
 
   function commentRange(comment) {
@@ -521,7 +518,7 @@
       body: JSON.stringify(state),
     });
     $("#hr-save").textContent = response.ok ? "Saved" : "Save failed";
-    if (!response.ok) throw new Error(`Autosave failed: ${response.status}`);
+    if (!response.ok) { note("Save failed"); throw new Error(`Autosave failed: ${response.status}`); }
     state = await response.json();
     renderComments();
   }
@@ -674,7 +671,7 @@
     document.documentElement.classList.remove("__hr_picking");
     $("#hr-picker-box").hidden = true;
     $("#hr-picker-help").hidden = true;
-    $("#hr-pick-hint").classList.remove("active");
+    heldMode(null);
   }
 
   function startElementPicker() {
@@ -682,7 +679,7 @@
     pickerActive = true;
     document.documentElement.classList.add("__hr_picking");
     $("#hr-picker-help").hidden = false;
-    $("#hr-pick-hint").classList.add("active");
+    heldMode("element");
   }
 
   function captureElement(element) {
@@ -711,7 +708,7 @@
 
   document.addEventListener("pointermove", (event) => {
     if (!pickerActive || inOverlay(event.target)) return;
-    if (!event.shiftKey) { stopElementPicker(); return; }
+    if (!event.shiftKey && touchMode !== "element") { stopElementPicker(); return; }
     // Keep the stepped ancestor depth across pointer jitter; it resets only
     // when the hit-tested deepest element actually changes.
     setPickerFromPoint(event.clientX, event.clientY, false);
@@ -732,7 +729,7 @@
     if (!pickerActive || inOverlay(event.target)) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (!event.shiftKey) { stopElementPicker(); return; }
+    if (!event.shiftKey && touchMode !== "element") { stopElementPicker(); return; }
     setPickerFromPoint(event.clientX, event.clientY, false);
     captureElement(pickerTarget);
   }, true);
@@ -748,6 +745,7 @@
     setTimeout(() => { captureSelection().catch((error) => note(`Selection failed: ${error.message}`)); }, 0);
   });
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Meta" && !event.repeat && !pickerActive) heldMode("area");
     if (event.key === "Shift" && !event.repeat && !event.metaKey && !event.ctrlKey && !event.altKey) {
       const active = document.activeElement;
       const editable = active && (active.isContentEditable || /^(input|textarea|select)$/i.test(active.tagName ?? ""));
@@ -777,10 +775,12 @@
     }
   }, true);
   document.addEventListener("keyup", (event) => {
-    if (event.key === "Shift" && pickerActive) stopElementPicker();
+    if (event.key === "Meta") heldMode(null);
+    if (event.key === "Shift" && pickerActive && touchMode !== "element") stopElementPicker();
   }, true);
   addEventListener("blur", () => {
-    if (pickerActive) stopElementPicker();
+    heldMode(null);
+    if (pickerActive && touchMode !== "element") stopElementPicker();
   });
 
   // --- ⌘+drag region screenshots ---
@@ -1070,7 +1070,6 @@
 
   async function initializeArtifact() {
     state = { comments: [] };
-    $(".hr-topbar").hidden = COARSE;
     $("#hr-toggle").hidden = true;
     $("#hr-save").hidden = true;
     if (!window.claude?.use) { overlay.hidden = true; return; }
@@ -1091,8 +1090,13 @@
     }).then((controller) => { anchors = controller; placePins(); }, () => { anchors = null; });
   }
 
-  // --- Touch: an explicit mode switch, Text by default ---
+  // --- Mode switch, Text by default. Touch uses it alone; desktop also keeps the ⇧ and ⌘ holds. ---
   let touchMode = "text";
+
+  // Light the mode a held shortcut stands for, without changing the chosen mode.
+  function heldMode(mode) {
+    for (const button of overlay.querySelectorAll("[data-mode]")) button.classList.toggle("hr-held", button.dataset.mode === mode);
+  }
   let touchPicking = false;
   let touchCrop = null;
 
@@ -1109,6 +1113,10 @@
     for (const button of overlay.querySelectorAll("[data-mode]")) button.setAttribute("aria-checked", String(button.dataset.mode === mode));
     resetTouch();
     $("#hr-area-layer").hidden = mode !== "area";
+    if (!COARSE) {
+      if (mode === "element") startElementPicker();
+      else if (pickerActive) stopElementPicker();
+    }
   }
 
   function showTouchPick(element) {
@@ -1122,10 +1130,12 @@
     ]);
   }
 
+  for (const button of overlay.querySelectorAll("[data-mode]")) button.addEventListener("click", () => setTouchMode(button.dataset.mode));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && touchMode !== "text" && !composer.classList.contains("visible")) setTouchMode("text");
+  });
+
   if (COARSE) {
-    $("#hr-modes").hidden = false;
-    $("#hr-pick-hint").hidden = true;
-    for (const button of overlay.querySelectorAll("[data-mode]")) button.addEventListener("click", () => setTouchMode(button.dataset.mode));
 
     let selectionTimer = null;
     document.addEventListener("selectionchange", () => {
@@ -1155,35 +1165,36 @@
       if (pickerDeepest) showTouchPick(pickerDeepest);
     }, true);
 
-    const areaLayer = $("#hr-area-layer");
-    areaLayer.addEventListener("pointerdown", (event) => {
-      areaLayer.setPointerCapture(event.pointerId);
-      const box = document.createElement("div");
-      box.className = "hr-crop";
-      overlay.append(box);
-      showActions("", []);
-      touchCrop = { startX: event.clientX, startY: event.clientY, box };
-    });
-    areaLayer.addEventListener("pointermove", (event) => {
-      if (!touchCrop) return;
-      const x = Math.min(touchCrop.startX, event.clientX);
-      const y = Math.min(touchCrop.startY, event.clientY);
-      Object.assign(touchCrop.box.style, { left: `${x}px`, top: `${y}px`, width: `${Math.abs(event.clientX - touchCrop.startX)}px`, height: `${Math.abs(event.clientY - touchCrop.startY)}px` });
-    });
-    areaLayer.addEventListener("pointerup", (event) => {
-      if (!touchCrop) return;
-      const rect = {
-        x: Math.min(touchCrop.startX, event.clientX),
-        y: Math.min(touchCrop.startY, event.clientY),
-        w: Math.abs(event.clientX - touchCrop.startX),
-        h: Math.abs(event.clientY - touchCrop.startY),
-      };
-      touchCrop.box.remove();
-      touchCrop = null;
-      if (rect.w < 12 || rect.h < 12) return;
-      captureRegion(rect).catch((error) => note(`Screenshot failed: ${error.message}`));
-    });
   }
+
+  const areaLayer = $("#hr-area-layer");
+  areaLayer.addEventListener("pointerdown", (event) => {
+    areaLayer.setPointerCapture(event.pointerId);
+    const box = document.createElement("div");
+    box.className = "hr-crop";
+    overlay.append(box);
+    showActions("", []);
+    touchCrop = { startX: event.clientX, startY: event.clientY, box };
+  });
+  areaLayer.addEventListener("pointermove", (event) => {
+    if (!touchCrop) return;
+    const x = Math.min(touchCrop.startX, event.clientX);
+    const y = Math.min(touchCrop.startY, event.clientY);
+    Object.assign(touchCrop.box.style, { left: `${x}px`, top: `${y}px`, width: `${Math.abs(event.clientX - touchCrop.startX)}px`, height: `${Math.abs(event.clientY - touchCrop.startY)}px` });
+  });
+  areaLayer.addEventListener("pointerup", (event) => {
+    if (!touchCrop) return;
+    const rect = {
+      x: Math.min(touchCrop.startX, event.clientX),
+      y: Math.min(touchCrop.startY, event.clientY),
+      w: Math.abs(event.clientX - touchCrop.startX),
+      h: Math.abs(event.clientY - touchCrop.startY),
+    };
+    touchCrop.box.remove();
+    touchCrop = null;
+    if (rect.w < 12 || rect.h < 12) return;
+    captureRegion(rect).catch((error) => note(`Screenshot failed: ${error.message}`));
+  });
 
   $("#hr-toggle").addEventListener("click", () => {
     const panel = $("#hr-panel");

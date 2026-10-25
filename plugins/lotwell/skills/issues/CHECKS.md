@@ -1,0 +1,23 @@
+# Semantic checks for issues
+
+Apply every check when reviewing an issue or preparing a write; completion requires a disposition for each check under [Record a verdict](#record-a-verdict). Inputs are the proposed issue, its originating request and supporting sources, and, for a revision, the prior issue plus subsequent decisions and corrections. Preserve source order, authorship, and whether a statement was accepted. Missing inputs limit the verdict.
+
+Review scope includes implications of titles, checkboxes, and acceptance criteria regardless of heading names. Sources establish what was said or observed; only the relevant authority can establish a decision.
+
+| ID | Comparison and finding criterion |
+| --- | --- |
+| **S1 Support** | Trace every consequential factual claim, requirement, constraint, and decision to evidence or authority. Flag a hypothesis presented as fact, an assistant suggestion or research finding promoted to a requirement, or a decision attributed to someone who did not make it. An explicitly uncertain claim can be retained as uncertain. |
+| **S2 Preservation** | Trace every still-applicable outcome, constraint, and correction from the sources into the issue. For revisions, identify exactly what the correction changes and what still holds. Flag omissions, contradictions, and superseded instructions left active. A changed retrieval method, for example, does not cancel the requested delivery destination. |
+| **S3 Maturity** | Compare requested work with what the evidence establishes. Flag a fix or acceptance criterion that assumes an unresolved cause, feasibility question, or owner decision. Exploration should expose the uncertainty and its intended use; implementation should carry established behavior. Concrete implementation is appropriate when that behavior and authority are established. |
+| **S4 Abstraction** | For the title, goal, and each mandated tool, sequence, or implementation detail, ask what outcome it serves and why it is binding. Flag a method that substitutes for the outcome or excludes valid alternatives without an established constraint or demonstrated necessity. Even a sourced suggestion can overprescribe. Preserve legitimate technical, compatibility, safety, and owner constraints; propose renegotiation if one seems counterproductive. |
+| **S5 Responsibility** | Compare local discretion, retained decisions, and coordination triggers with the governing authority. Flag invented permission, an unexplained restriction on delegated judgment, or silence about a known dependency or decision that affects others. Local method changes stay local while their consequences do; material changes to purpose, shared assumptions, or others' work go to the responsible decision maker. |
+| **S6 Usability** | Follow the issue's pointers to the governing agreement and consequential evidence. Flag competing versions, sources too vague to recover, or a handoff that requires choosing between conflicting instructions. A missing or inaccessible source makes the affected meaning unverified; it is not proof that the claim is false. |
+| **S7 Completion** | Compare proposed completion evidence with the outcome and intended use. Flag a weaker substitute: a report produced without answering its question, a UI action without saved state, or writing lint offered as proof of semantic fidelity. Exploration may conclude that evidence is insufficient if the result explains the limits and supports the next decision. |
+
+## Record a verdict
+
+Give each check a **pass**, **finding**, **unverified**, or **not applicable** disposition. A pass cites the compared evidence; not applicable states why the check has no subject. When part of a check is assessable, record its supported findings alongside any unverified remainder. Reserve an overall pass for coverage of all applicable checks with no unresolved findings or evidence gaps.
+
+For each finding, identify the check ID, the issue excerpt or missing obligation, the source passage or authority it conflicts with, its consequence for the work, and the smallest repair. For an evidence gap, identify the missing source, the affected claim, and what would resolve it. Keep this review separate from the issue body unless the uncertainty itself belongs in the work.
+
+After a repair, repeat every affected check and S2 to catch losses introduced by the correction, updating each disposition and its evidence. Finish when every original finding is resolved or explicitly reported as remaining, with all evidence gaps identified. These are semantic judgments grounded in comparisons, not a guarantee of understanding from a completed checklist.

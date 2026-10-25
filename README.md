@@ -6,7 +6,7 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 
 ```text
 .claude-plugin/marketplace.json      # marketplace manifest: lists the three plugins below
-plugins/lotwell/                     # plugin "lotwell": the general skills (15)
+plugins/lotwell/                     # plugin "lotwell": the general skills (16)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
@@ -90,6 +90,7 @@ claude plugin install lotwell@lhotwll217-skills || true
 | [interactive-diff-review](plugins/lotwell/skills/interactive-diff-review/SKILL.md) | Render a targeted Git diff as a local interactive review and persist anchored Comments to JSON. |
 | [interactive-implementation-review](plugins/lotwell/skills/interactive-implementation-review/SKILL.md) | Turn grilling and delegated research into one interactive, evidence-backed implementation review. |
 | [interactive-markdown-review](plugins/lotwell/skills/interactive-markdown-review/SKILL.md) | Open a Markdown file for interactive review and persist anchored Comments to JSON. |
+| [issues](plugins/lotwell/skills/issues/SKILL.md) | Write or revise issues without inventing solutions. |
 | [prior-art](plugins/lotwell/skills/prior-art/SKILL.md) | Research implementations and standards with opened, pinned, quoted, linked, credible evidence. |
 | [seo-analytics-research](plugins/lotwell/skills/seo-analytics-research/SKILL.md) | Research SEO questions with live DataForSEO evidence. |
 | [show-me](plugins/lotwell/skills/show-me/SKILL.md) | Explain the current topic visually with the smallest diagram, sketch, or HTML view. Copied from [humanlayer/skills](https://github.com/humanlayer/skills/tree/653b6411c1f7/plugins/show-me) at `653b641` (MIT) and made model-callable; see its [README](plugins/lotwell/skills/show-me/README.md). align links to it by path. |

@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "1379cdd841fcd5368aabea3f8e34b2d76a57f852",
+    "node_id": "C_kwDOALaj49oAKDEzNzljZGQ4NDFmY2Q1MzY4YWFiZWEzZjhlMzRiMmQ3NmE1N2Y4NTI",
+    "commit": {
+      "author": {
+        "name": "Anne van Kesteren",
+        "email": "annevk@annevk.nl",
+        "date": "2026-09-03T10:24:40Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2026-09-03T10:24:40Z"
+      },
+      "message": "Editorial: fix broken cross-specification references\n\nThe referenced specifications moved or renamed these anchors:\n\n* DOM renamed the event target concept to #event-target.\n* File API folded its blob: scheme definition into its blob URLs\n  definition.\n* Battery Status API no longer uses WebIDL-style anchors.\n* CSS Box Alignment's justify-content and justify-items anchors were\n  written with a duplicated \"propdef-\" prefix.\n* Bikeshed gave its W3C boilerplate anchors a \"w3c-\" prefix, so CSS\n  Syntax's conformance classes section moved.\n* attr() was deferred to CSS Values and Units Level 5.\n* WebVTT renamed \"WebVTT file using cue text\" to \"WebVTT file using\n  caption or subtitle cue text\".\n* ARIA no longer defines \"accessible name\" and now defers to Accessible\n  Name and Description Computation, so cite that instead.\n\nPart of #8272.",
+      "tree": {
+        "sha": "07d49edc19dfb680c103d30638ab5ad59f47d9d2",
+        "url": "https://api.github.com/repos/whatwg/html/git/trees/07d49edc19dfb680c103d30638ab5ad59f47d9d2"
+      },
+      "url": "https://api.github.com/repos/whatwg/html/git/commits/1379cdd841fcd5368aabea3f8e34b2d76a57f852",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqmUroCRC1aQ7uu5UhlAAARhgQAJbFl9y8h6/GanEPZyfHuVBQ\n9Z2ydBz2n80p2Kd/GID83WfHQCj93Z01cZEru5iexXVHTet2WbhxP6R0xuwajQtA\nytnwSJxwAYbg674ezUPrLgz/W3Lim222Vpgc16Lxahef4Dp7nQ7RXWrI4llmkzHb\nFrosReVvV1qNiEyJkZeAQf8fyoVeeo1dUUR6wI/wC/vbEd85iaccRgnyDGhOTcO1\nqI3ZWJit8ZOKxGgz3x2kzVKXh3t7i45JM4qMuwq63Min63Hg6ikInUMHLuwhXbI5\nS+aqHSiMFjXOfejZCUCKhlCzs7D9nHFBYc0JRfYkQByk71rsZBwfBzyxVTE31oFr\nakCU6ITRRFj8NJ521TGsmQVuIyraG3yOawCjCBSZyneJvq113krJUJSYyHGsSOz3\np1lDGJGfvTFTSN1aVNtslwh9wn3UpCn5GNjNUFljX7r0mdyS4iTORDtqbwf4zIAQ\nmtG/YgS5rsKObm/tMpZ6YdhjUoaxVT/PwTDtNJ08Q3hgABG/Q8o2Jdt72Nt8eGaK\n2Jk68QRXVk0Fb/U6OKnpsvSzWIDGqQL6NXkDgGD7325ZXAKZw+ngA2yJ8psoFKxe\nndyop18ytJ3iRkGeIH2l/14TRtjgdlRXZsf3K5E0x/CKHoMYKF1i4R3FOmLrGDcZ\nQHi1wb9n9BLvBQ+GUgGF\n=jbfx\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree 07d49edc19dfb680c103d30638ab5ad59f47d9d2\nparent d57dd09ce7592f5c299c0b7d7c2257092525a3dd\nauthor Anne van Kesteren <annevk@annevk.nl> 1788431080 +0200\ncommitter GitHub <noreply@github.com> 1788431080 +0200\n\nEditorial: fix broken cross-specification references\n\nThe referenced specifications moved or renamed these anchors:\n\n* DOM renamed the event target concept to #event-target.\n* File API folded its blob: scheme definition into its blob URLs\n  definition.\n* Battery Status API no longer uses WebIDL-style anchors.\n* CSS Box Alignment's justify-content and justify-items anchors were\n  written with a duplicated \"propdef-\" prefix.\n* Bikeshed gave its W3C boilerplate anchors a \"w3c-\" prefix, so CSS\n  Syntax's conformance classes section moved.\n* attr() was deferred to CSS Values and Units Level 5.\n* WebVTT renamed \"WebVTT file using cue text\" to \"WebVTT file using\n  caption or subtitle cue text\".\n* ARIA no longer defines \"accessible name\" and now defers to Accessible\n  Name and Description Computation, so cite that instead.\n\nPart of #8272.",
+        "verified_at": "2026-09-03T10:24:41Z"
+      }
+    },
+    "url": "https://api.github.com/repos/whatwg/html/commits/1379cdd841fcd5368aabea3f8e34b2d76a57f852",
+    "html_url": "https://github.com/whatwg/html/commit/1379cdd841fcd5368aabea3f8e34b2d76a57f852",
+    "comments_url": "https://api.github.com/repos/whatwg/html/commits/1379cdd841fcd5368aabea3f8e34b2d76a57f852/comments",
+    "author": {
+      "login": "annevk",
+      "id": 1544111,
+      "node_id": "MDQ6VXNlcjE1NDQxMTE=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1544111?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/annevk",
+      "html_url": "https://github.com/annevk",
+      "followers_url": "https://api.github.com/users/annevk/followers",
+      "following_url": "https://api.github.com/users/annevk/following{/other_user}",
+      "gists_url": "https://api.github.com/users/annevk/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/annevk/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/annevk/subscriptions",
+      "organizations_url": "https://api.github.com/users/annevk/orgs",
+      "repos_url": "https://api.github.com/users/annevk/repos",
+      "events_url": "https://api.github.com/users/annevk/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/annevk/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "web-flow",
+      "id": 19864447,
+      "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/web-flow",
+      "html_url": "https://github.com/web-flow",
+      "followers_url": "https://api.github.com/users/web-flow/followers",
+      "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+      "organizations_url": "https://api.github.com/users/web-flow/orgs",
+      "repos_url": "https://api.github.com/users/web-flow/repos",
+      "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/web-flow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "d57dd09ce7592f5c299c0b7d7c2257092525a3dd",
+        "url": "https://api.github.com/repos/whatwg/html/commits/d57dd09ce7592f5c299c0b7d7c2257092525a3dd",
+        "html_url": "https://github.com/whatwg/html/commit/d57dd09ce7592f5c299c0b7d7c2257092525a3dd"
+      }
+    ]
+  }
+]

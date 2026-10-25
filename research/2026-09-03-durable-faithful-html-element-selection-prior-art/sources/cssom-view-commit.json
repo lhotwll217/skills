@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "e9f49775e6d62d8e406dfc7ff160e8f96977ad52",
+    "node_id": "C_kwDOAI0trNoAKGU5ZjQ5Nzc1ZTZkNjJkOGU0MDZkZmM3ZmYxNjBlOGY5Njk3N2FkNTI",
+    "commit": {
+      "author": {
+        "name": "jogibear9988",
+        "email": "jochen.kuehner@gmx.de",
+        "date": "2026-07-12T09:29:44Z"
+      },
+      "committer": {
+        "name": "Chris Lilley",
+        "email": "chris@w3.org",
+        "date": "2026-09-01T19:45:48Z"
+      },
+      "message": "[cssom-view] Restrict cross-document GeometryUtils conversions\n\nGeometryUtils coordinate conversion can traverse nested document boundaries. Checking only the origins of the endpoint nodes is insufficient: two same-origin documents can have a cross-origin document between them, allowing the inner document to observe layout information from that intermediate document.\n\nDefine the document chains participating in a conversion and require every document up to their common container document to be same-origin with the target node's document. Throw SecurityError before computing transforms when that condition is not met.\n\nThis prevents the cross-origin layout leak while retaining support for coordinate conversion across same-origin iframe hierarchies. Because the check is performed by convertPointFromNode(), it also applies to the quad, rectangle, and getBoxQuads({relativeTo}) paths built on top of point conversion.\n\nFixes #14170",
+      "tree": {
+        "sha": "5546a21ff460eb45967a8e8828924e23ca42f546",
+        "url": "https://api.github.com/repos/w3c/csswg-drafts/git/trees/5546a21ff460eb45967a8e8828924e23ca42f546"
+      },
+      "url": "https://api.github.com/repos/w3c/csswg-drafts/git/commits/e9f49775e6d62d8e406dfc7ff160e8f96977ad52",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/w3c/csswg-drafts/commits/e9f49775e6d62d8e406dfc7ff160e8f96977ad52",
+    "html_url": "https://github.com/w3c/csswg-drafts/commit/e9f49775e6d62d8e406dfc7ff160e8f96977ad52",
+    "comments_url": "https://api.github.com/repos/w3c/csswg-drafts/commits/e9f49775e6d62d8e406dfc7ff160e8f96977ad52/comments",
+    "author": {
+      "login": "jogibear9988",
+      "id": 364896,
+      "node_id": "MDQ6VXNlcjM2NDg5Ng==",
+      "avatar_url": "https://avatars.githubusercontent.com/u/364896?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/jogibear9988",
+      "html_url": "https://github.com/jogibear9988",
+      "followers_url": "https://api.github.com/users/jogibear9988/followers",
+      "following_url": "https://api.github.com/users/jogibear9988/following{/other_user}",
+      "gists_url": "https://api.github.com/users/jogibear9988/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/jogibear9988/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/jogibear9988/subscriptions",
+      "organizations_url": "https://api.github.com/users/jogibear9988/orgs",
+      "repos_url": "https://api.github.com/users/jogibear9988/repos",
+      "events_url": "https://api.github.com/users/jogibear9988/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/jogibear9988/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "svgeesus",
+      "id": 2506926,
+      "node_id": "MDQ6VXNlcjI1MDY5MjY=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2506926?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/svgeesus",
+      "html_url": "https://github.com/svgeesus",
+      "followers_url": "https://api.github.com/users/svgeesus/followers",
+      "following_url": "https://api.github.com/users/svgeesus/following{/other_user}",
+      "gists_url": "https://api.github.com/users/svgeesus/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/svgeesus/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/svgeesus/subscriptions",
+      "organizations_url": "https://api.github.com/users/svgeesus/orgs",
+      "repos_url": "https://api.github.com/users/svgeesus/repos",
+      "events_url": "https://api.github.com/users/svgeesus/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/svgeesus/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "479c4c1881b6bb560c31d9b821a2e099f5c2638b",
+        "url": "https://api.github.com/repos/w3c/csswg-drafts/commits/479c4c1881b6bb560c31d9b821a2e099f5c2638b",
+        "html_url": "https://github.com/w3c/csswg-drafts/commit/479c4c1881b6bb560c31d9b821a2e099f5c2638b"
+      }
+    ]
+  }
+]

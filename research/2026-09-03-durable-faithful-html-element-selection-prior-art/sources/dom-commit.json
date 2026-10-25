@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "a2331a45360129e8645ef7e0a04740241b6e3726",
+    "node_id": "C_kwDOAFUqXtoAKGEyMzMxYTQ1MzYwMTI5ZTg2NDVlZjdlMGEwNDc0MDI0MWI2ZTM3MjY",
+    "commit": {
+      "author": {
+        "name": "Mason Freed",
+        "email": "masonf@chromium.org",
+        "date": "2026-08-25T06:07:15Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2026-08-25T06:07:15Z"
+      },
+      "message": "Mark XSLT deprecated",
+      "tree": {
+        "sha": "f792e70d5eb6cb81015132128840af8b0c018d4b",
+        "url": "https://api.github.com/repos/whatwg/dom/git/trees/f792e70d5eb6cb81015132128840af8b0c018d4b"
+      },
+      "url": "https://api.github.com/repos/whatwg/dom/git/commits/a2331a45360129e8645ef7e0a04740241b6e3726",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqjTETCRC1aQ7uu5UhlAAACgkQACZLxyVAaiB3llhLmGlDeji8\nmlKsLIeIo9h0wUDluc3xzCKFYRN5nEW63ceH4sNUWn8fGFpY96ucHwO6K2U/wqAA\n2xoY7AcQpPowJDn9PNAJUoynbRz7ykNGjh4ijRnLEHw4OBWJyGnTE7HcCs8PIHmM\nF+BGVyZ26CzzWkV4wrQbIHPv3VWWWdvFtjs/1erH6IJY0TRK3fL9vD/bAYZ5lVWr\ne2do2y+WPe9d2Abwu1sZAPMU8/HPEMM3dwdNx5mGVUiCaAOfKyokgf4cI+5/4l4a\nlgOhcPtbw2iqIVOLMk3MuyiVcbM146d/c+oB+lvDqzISTYgfeOQ4XBLg1q0iqE4v\nX39NbF3yUl3pMDOycGXqGqNUs03Oyv7ZxSQngzPMBoVS1Y5gpqcx7TH+S6irJ++X\nKrUwZQQX/ATV4xtTiJga1vaEtvht7SKX+hDNXxSLwAzRroBWRGSqnGmPipxStXSL\nJNprDZVcqxtMDA/cFYVd/+kO9C4KjLZ+n9OaxPdfqjsnfOj2gCskrz0NNO5CkMFZ\nDg5qSxW3/m/GyZBbY3oz10yPum9vxu9ciyRKTh927z2K9H9I+iKzj100iNFutU3V\n/NtVmGKvyBKg2KKGLmqLA/skYvsENDXT+kYcDMnTJ01UhJuWZqpjp/JB9JWVf5t0\nEp9Xo8vxrEo08kot7Pb1\n=cVpx\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree f792e70d5eb6cb81015132128840af8b0c018d4b\nparent 94d41b30c97fe086c76be8a692ff74ed4db08407\nauthor Mason Freed <masonf@chromium.org> 1787638035 -0700\ncommitter GitHub <noreply@github.com> 1787638035 +0200\n\nMark XSLT deprecated",
+        "verified_at": "2026-08-25T06:07:15Z"
+      }
+    },
+    "url": "https://api.github.com/repos/whatwg/dom/commits/a2331a45360129e8645ef7e0a04740241b6e3726",
+    "html_url": "https://github.com/whatwg/dom/commit/a2331a45360129e8645ef7e0a04740241b6e3726",
+    "comments_url": "https://api.github.com/repos/whatwg/dom/commits/a2331a45360129e8645ef7e0a04740241b6e3726/comments",
+    "author": {
+      "login": "mfreed7",
+      "id": 29559695,
+      "node_id": "MDQ6VXNlcjI5NTU5Njk1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29559695?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/mfreed7",
+      "html_url": "https://github.com/mfreed7",
+      "followers_url": "https://api.github.com/users/mfreed7/followers",
+      "following_url": "https://api.github.com/users/mfreed7/following{/other_user}",
+      "gists_url": "https://api.github.com/users/mfreed7/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/mfreed7/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/mfreed7/subscriptions",
+      "organizations_url": "https://api.github.com/users/mfreed7/orgs",
+      "repos_url": "https://api.github.com/users/mfreed7/repos",
+      "events_url": "https://api.github.com/users/mfreed7/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/mfreed7/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "web-flow",
+      "id": 19864447,
+      "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/web-flow",
+      "html_url": "https://github.com/web-flow",
+      "followers_url": "https://api.github.com/users/web-flow/followers",
+      "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+      "organizations_url": "https://api.github.com/users/web-flow/orgs",
+      "repos_url": "https://api.github.com/users/web-flow/repos",
+      "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/web-flow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "94d41b30c97fe086c76be8a692ff74ed4db08407",
+        "url": "https://api.github.com/repos/whatwg/dom/commits/94d41b30c97fe086c76be8a692ff74ed4db08407",
+        "html_url": "https://github.com/whatwg/dom/commit/94d41b30c97fe086c76be8a692ff74ed4db08407"
+      }
+    ]
+  }
+]

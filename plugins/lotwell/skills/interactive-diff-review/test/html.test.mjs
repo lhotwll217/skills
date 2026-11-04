@@ -7,7 +7,7 @@ import test from "node:test";
 import { generateReviewHtml } from "../scripts/review.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const themePath = join(here, "..", "..", "html-theme", "theme.css");
+const stylesheetPath = join(here, "..", "assets", "review.css");
 const clientPath = join(here, "..", "assets", "review-client.js");
 
 const model = {
@@ -35,17 +35,17 @@ const model = {
   ],
 };
 
-test("generates a safely embedded standalone review using the canonical theme", async () => {
-  const canonicalTheme = await readFile(themePath, "utf8");
+test("generates a safely embedded standalone review with its own unbranded stylesheet", async () => {
+  const stylesheet = await readFile(stylesheetPath, "utf8");
 
   const html = await generateReviewHtml({
     model,
     reviewPath: "/tmp/review<script>.json",
-    themePath,
   });
 
   assert.match(html, /^<!doctype html>/);
-  assert.ok(html.includes(canonicalTheme));
+  assert.ok(html.includes(stylesheet));
+  assert.doesNotMatch(html, /Owner Operator|house theme|data-theme/i);
   assert.doesNotMatch(html, /<link[^>]+stylesheet|https?:\/\//);
   assert.doesNotMatch(html, /<\/script><script>alert\(1\)<\/script>/);
   assert.match(html, /\\u003c\/script\\u003e\\u003cscript\\u003ealert\(1\)\\u003c\/script\\u003e/);
@@ -53,18 +53,21 @@ test("generates a safely embedded standalone review using the canonical theme", 
   assert.match(html, /base&lt;script&gt; → candidate&amp;1/);
 });
 
-test("renders continuous sticky file navigation and narrow comment controls", async () => {
-  const html = await generateReviewHtml({ model, reviewPath: "/tmp/review.json", themePath });
+test("headlines the selected diff's file count and aggregate line totals instead of revisions", async () => {
+  const html = await generateReviewHtml({ model, reviewPath: "/tmp/review.json" });
+  const heading = /<h1[^>]*>([\s\S]*?)<\/h1>/.exec(html)[1];
 
-  assert.match(html, /\.file-nav\{position:sticky/);
-  assert.match(html, /\.line\.add \.code\{[^}]+var\(--positive\)/);
-  assert.match(html, /\.line\.remove \.code\{[^}]+var\(--destructive\)/);
-  assert.match(html, /element\("span", "positive", `\+\$\{file\.additions\}`\)/);
-  assert.match(html, /element\("span", "negative", `−\$\{file\.deletions\}`\)/);
-  assert.match(html, /Comments ·/);
-  assert.match(html, /actionButton\("Edit"/);
-  assert.match(html, /actionButton\("Delete"/);
-  assert.match(html, /\$\{comment\.file\}:\$\{comment\.startLine\}/);
+  assert.equal(
+    heading,
+    '<span class="positive">+3 added</span> <span class="negative">−1 deleted</span> <span class="file-count">2 files</span>',
+  );
+  assert.match(html, /<dt>Base<\/dt><dd>base&lt;script&gt;<\/dd>/);
+  assert.match(html, /<dt>Candidate<\/dt><dd>candidate&amp;1<\/dd>/);
+});
+
+test("adds no review workflow states", async () => {
+  const html = await generateReviewHtml({ model, reviewPath: "/tmp/review.json" });
+
   assert.doesNotMatch(html, /Finish review|raw state|Resolve|Resolved|Open comment/i);
   assert.doesNotMatch(html, /comment\.side.*textContent|textContent.*comment\.side/);
 });

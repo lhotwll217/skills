@@ -30,47 +30,91 @@ function statsNode(file) {
   return stats;
 }
 
-function commentCount(file, side, line) {
-  if (line === null || !state) return 0;
+function lineComments(file, side, line) {
+  if (line === null || !state) return [];
   return state.comments.filter(
     (comment) => !comment.stale && comment.file === file.path && comment.side === side &&
       comment.startLine <= line && comment.endLine >= line,
-  ).length;
+  );
 }
 
 function renderNavigation() {
-  const navigation = $("#file-nav");
-  navigation.replaceChildren();
-  reviewModel.files.forEach((file, fileIndex) => {
-    const link = element("a", "file-link", file.path);
-    link.href = `#${internalFileAnchor(file)}`;
-    link.append(" ", statsNode(file));
-    navigation.append(link);
-  });
+  const total = reviewModel.files.length;
+  $("#file-select").replaceChildren(...reviewModel.files.map((file, fileIndex) => {
+    const option = element("option", "", `${fileIndex + 1}/${total} · ${file.path} · +${file.additions} −${file.deletions}`);
+    option.value = internalFileAnchor(file);
+    return option;
+  }));
 }
 
-function renderSide(file, fileIndex, side) {
-  const section = element("section", "side");
-  section.append(element("div", "side-title", `${side === "old" ? "OLD" : "NEW"} · ${side === "old" ? reviewModel.base : reviewModel.candidate}`));
-  for (const row of file.rows) {
-    const line = side === "old" ? row.oldLine : row.newLine;
-    const text = side === "old" ? row.oldText : row.newText;
-    const kind = side === "old" ? row.oldKind : row.newKind;
-    const count = commentCount(file, side, line);
-    const lineNode = element("div", `line ${kind}${count ? " annotated" : ""}`);
-    if (line !== null) lineNode.id = internalLineAnchor(file, side, line);
-    lineNode.append(element("div", "line-no", line ?? ""));
-    const code = element("div", "code", text);
-    code.dataset.file = file.path;
-    code.dataset.fileIndex = String(fileIndex);
-    code.dataset.side = side;
-    code.dataset.line = line === null ? "" : String(line);
-    code.dataset.kind = kind;
-    if (count) code.append(element("span", "badge", String(count)));
-    lineNode.append(code);
-    section.append(lineNode);
+function jumpToFile(anchor) {
+  const section = document.getElementById(anchor);
+  if (!section) return;
+  section.scrollIntoView({ behavior: "instant", block: "start" });
+  section.querySelector(".file-head").focus({ preventScroll: true });
+  $("#file-select").value = anchor;
+}
+
+function stepFile(offset) {
+  const select = $("#file-select");
+  const index = Math.min(Math.max(select.selectedIndex + offset, 0), select.options.length - 1);
+  jumpToFile(select.options[index].value);
+}
+
+function currentFileAnchor() {
+  const headerBottom = $("#topbar").getBoundingClientRect().bottom;
+  let current = reviewModel.files[0];
+  for (const file of reviewModel.files) {
+    if (document.getElementById(internalFileAnchor(file)).getBoundingClientRect().top > headerBottom + 1) break;
+    current = file;
   }
-  return section;
+  return internalFileAnchor(current);
+}
+
+function lineCells(file, fileIndex, side, row) {
+  const line = side === "old" ? row.oldLine : row.newLine;
+  const kind = side === "old" ? row.oldKind : row.newKind;
+  const comments = lineComments(file, side, line);
+  const count = comments.filter((comment) => comment.startLine === line).length;
+  const number = element("div", `num ${side} ${kind}`, line ?? "");
+  const code = element("div", `code ${side} ${kind}${comments.length ? " annotated" : ""}`, side === "old" ? row.oldText : row.newText);
+  if (line !== null) code.id = internalLineAnchor(file, side, line);
+  code.dataset.file = file.path;
+  code.dataset.fileIndex = String(fileIndex);
+  code.dataset.side = side;
+  code.dataset.line = line === null ? "" : String(line);
+  code.dataset.kind = kind;
+  if (count) {
+    const badge = element("button", "badge", String(count));
+    badge.type = "button";
+    badge.setAttribute("aria-label", `${count} comment${count === 1 ? "" : "s"} on ${side === "old" ? "base" : "candidate"} line ${line}`);
+    code.append(badge);
+  }
+  return [number, code];
+}
+
+function hunkLabel(row) {
+  return `@@ ${row.oldLine === null ? "" : `−${row.oldLine} `}${row.newLine === null ? "" : `+${row.newLine} `}@@`;
+}
+
+function renderFileDiff(file, fileIndex) {
+  const diff = element("div", "diff");
+  const digits = String(Math.max(...file.rows.flatMap((row) => [row.oldLine ?? 0, row.newLine ?? 0]), 1)).length;
+  diff.style.setProperty("--gutter", `calc(${digits}ch + 16px)`);
+  const sides = element("div", "side-labels");
+  sides.append(element("span", "", "Base"), element("span", "", "Candidate"));
+  diff.append(sides);
+  let previous = { oldLine: null, newLine: null };
+  for (const row of file.rows) {
+    const breaksOld = row.oldLine !== null && previous.oldLine !== null && row.oldLine !== previous.oldLine + 1;
+    const breaksNew = row.newLine !== null && previous.newLine !== null && row.newLine !== previous.newLine + 1;
+    if (row === file.rows[0] || breaksOld || breaksNew) diff.append(element("div", "hunk", hunkLabel(row)));
+    const rowNode = element("div", `row ${row.oldKind === "context" ? "context" : "change"}`);
+    rowNode.append(...lineCells(file, fileIndex, "old", row), ...lineCells(file, fileIndex, "new", row));
+    diff.append(rowNode);
+    previous = { oldLine: row.oldLine ?? previous.oldLine, newLine: row.newLine ?? previous.newLine };
+  }
+  return diff;
 }
 
 function renderDiff() {
@@ -79,11 +123,13 @@ function renderDiff() {
   reviewModel.files.forEach((file, fileIndex) => {
     const section = element("section", "file-review");
     section.id = internalFileAnchor(file);
-    const header = element("div", "file-head");
-    header.append(element("span", "", file.path), statsNode(file));
-    const diff = element("div", "diff");
-    diff.append(renderSide(file, fileIndex, "old"), renderSide(file, fileIndex, "new"));
-    section.append(header, diff);
+    const header = element("h2", "file-head");
+    header.tabIndex = -1;
+    const slash = file.path.lastIndexOf("/") + 1;
+    const path = element("span", "file-path");
+    path.append(element("span", "dir", file.path.slice(0, slash)), element("span", "name", file.path.slice(slash)));
+    header.append(path, statsNode(file));
+    section.append(header, renderFileDiff(file, fileIndex));
     files.append(section);
   });
 }
@@ -99,28 +145,31 @@ function actionButton(action, commentId) {
 function renderComments() {
   const comments = $("#comments");
   comments.replaceChildren();
-  for (const comment of state.comments) {
+  const fileOrder = new Map(reviewModel.files.map((file, index) => [file.path, index]));
+  const inDiffOrder = [...state.comments].sort((left, right) =>
+    (fileOrder.get(left.file) ?? Infinity) - (fileOrder.get(right.file) ?? Infinity) || left.startLine - right.startLine);
+  for (const comment of inDiffOrder) {
     const card = element("article", `comment${comment.stale ? " stale" : ""}`);
     card.dataset.commentId = comment.id;
     card.tabIndex = 0;
-    const label = element("div", "label");
-    label.textContent = `${comment.file}:${comment.startLine}${comment.stale ? " · stale anchor" : ""}`;
+    const lines = comment.endLine > comment.startLine ? `${comment.startLine}–${comment.endLine}` : comment.startLine;
+    const label = element("div", "comment-location", `${comment.file}:${lines}`);
+    if (comment.stale) label.append(element("span", "stale-tag", "Stale anchor"));
     const actions = element("div", "comment-actions");
     actions.append(actionButton("Edit", comment.id), actionButton("Delete", comment.id));
     card.append(
       label,
       element("div", "quote", comment.selectedText),
-      element("div", "", comment.comment),
+      element("div", "comment-body", comment.comment),
       actions,
     );
     comments.append(card);
   }
-  if (state.comments.length === 0) comments.append(element("div", "empty", "No comments yet."));
+  if (state.comments.length === 0) comments.append(element("div", "empty", "No comments yet. Select changed text in the diff to comment; every change autosaves."));
   $("#comment-count").textContent = String(state.comments.length);
 }
 
 function render() {
-  renderNavigation();
   renderDiff();
   renderComments();
 }
@@ -168,6 +217,17 @@ function textOffset(node, container, offset) {
   return before.toString().length;
 }
 
+function sideRanges(range, start, end) {
+  const cells = [...start.closest(".diff").querySelectorAll(`.code[data-side="${start.dataset.side}"]`)];
+  return cells.slice(cells.indexOf(start), cells.indexOf(end) + 1).map((cell) => {
+    const cellRange = document.createRange();
+    cellRange.selectNodeContents(cell);
+    if (cell === start) cellRange.setStart(range.startContainer, range.startOffset);
+    if (cell === end) cellRange.setEnd(range.endContainer, range.endOffset);
+    return cellRange;
+  });
+}
+
 function composerPosition(rect, bounds, viewport) {
   const margin = 12;
   const gap = 8;
@@ -210,7 +270,7 @@ function openExistingComment(comment, fallbackTarget) {
   const fileIndex = reviewModel.files.findIndex((file) => file.path === comment.file);
   const file = reviewModel.files[fileIndex];
   const target = !comment.stale && file ? document.getElementById(internalLineAnchor(file, comment.side, comment.startLine)) : null;
-  const nearby = target?.querySelector(".code") ?? fallbackTarget;
+  const nearby = target ?? fallbackTarget;
   if (!nearby) return;
   const scrollTarget = target ?? (file ? document.getElementById(internalFileAnchor(file)) : null);
   scrollTarget?.scrollIntoView({ behavior: "instant", block: "center" });
@@ -223,6 +283,7 @@ function openExistingComment(comment, fallbackTarget) {
 }
 
 $("#files").addEventListener("mouseup", async () => {
+  if (!state) return;
   const selection = getSelection();
   const selectedText = selection.toString();
   if (!selectedText.trim() || selection.rangeCount === 0) return;
@@ -243,7 +304,7 @@ $("#files").addEventListener("mouseup", async () => {
   const prefix = selectedEntries[0].text.slice(0, textOffset(start, range.startContainer, range.startOffset));
   const suffix = selectedEntries.at(-1).text.slice(textOffset(end, range.endContainer, range.endOffset));
   const selectedLines = selectedEntries.map((entry) => entry.text).join("\n");
-  if (CSS.highlights) CSS.highlights.set("review-selection", new Highlight(range));
+  if (CSS.highlights) CSS.highlights.set("review-selection", new Highlight(...sideRanges(range, start, end)));
   pendingSelection = {
     file: file.path,
     side: start.dataset.side,
@@ -261,6 +322,9 @@ $("#files").addEventListener("mouseup", async () => {
 });
 
 $("#cancel").addEventListener("click", closeComposer);
+composer.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeComposer();
+});
 $("#save-comment").addEventListener("click", async () => {
   const content = $("#comment-text").value.trim();
   if (!pendingSelection || !content) return;
@@ -269,6 +333,7 @@ $("#save-comment").addEventListener("click", async () => {
     if (existing) existing.comment = content;
   } else {
     state.comments.push({ id: crypto.randomUUID(), ...pendingSelection, comment: content });
+    if (matchMedia("(min-width: 1100px)").matches) setCommentsOpen(true);
   }
   closeComposer();
   await save();
@@ -298,8 +363,82 @@ $("#comments").addEventListener("keydown", (event) => {
   openExistingComment(state.comments.find((comment) => comment.id === card.dataset.commentId), card);
 });
 
-fetch("/review.json").then((response) => response.json()).then((loaded) => {
-  state = loaded;
-  render();
-  $("#save-status").textContent = "Saved";
+function setCommentsOpen(open) {
+  document.body.dataset.comments = open ? "open" : "closed";
+  $("#comments-toggle").setAttribute("aria-expanded", String(open));
+}
+
+function showLineComments(code) {
+  const line = Number(code.dataset.line);
+  const comment = state.comments.find((item) => !item.stale && item.file === code.dataset.file &&
+    item.side === code.dataset.side && item.startLine <= line && item.endLine >= line);
+  setCommentsOpen(true);
+  const card = comment && $(`.comment[data-comment-id="${CSS.escape(comment.id)}"]`);
+  card?.scrollIntoView({ block: "nearest" });
+  card?.focus();
+}
+
+$("#files").addEventListener("mousedown", (event) => {
+  $("#files").dataset.selectSide = codeNode(event.target)?.dataset.side ?? "";
 });
+
+$("#files").addEventListener("click", (event) => {
+  const badge = event.target.closest(".badge");
+  if (badge && state) showLineComments(badge.closest(".code"));
+});
+
+$("#comments-toggle").addEventListener("click", () => setCommentsOpen(document.body.dataset.comments !== "open"));
+$("#comments-close").addEventListener("click", () => {
+  setCommentsOpen(false);
+  $("#comments-toggle").focus();
+});
+$("#comments-panel").addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  setCommentsOpen(false);
+  $("#comments-toggle").focus();
+});
+$("#previous-file").addEventListener("click", () => stepFile(-1));
+$("#next-file").addEventListener("click", () => stepFile(1));
+
+new ResizeObserver(([entry]) => {
+  document.documentElement.style.setProperty("--header-height", `${entry.target.offsetHeight}px`);
+}).observe($("#topbar"));
+
+$("#file-select").addEventListener("change", (event) => jumpToFile(event.target.value));
+
+let scrollFrame = 0;
+addEventListener("scroll", () => {
+  if (scrollFrame) return;
+  scrollFrame = requestAnimationFrame(() => {
+    scrollFrame = 0;
+    $("#file-select").value = currentFileAnchor();
+  });
+}, { passive: true });
+
+renderNavigation();
+fetch("/review.json")
+  .then((response) => {
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  })
+  .then((loaded) => {
+    state = loaded;
+    render();
+    setCommentsOpen(state.comments.length > 0 && matchMedia("(min-width: 1100px)").matches);
+    $("#save-status").textContent = "Saved";
+  })
+  .catch((error) => {
+    renderDiff();
+    $("#save-status").textContent = "Not connected";
+    setCommentsOpen(true);
+    $("#comments").replaceChildren(element(
+      "div",
+      "load-error",
+      `Comments are unavailable: could not load review.json (${error.message}). ` +
+        "Open the 127.0.0.1 URL the launcher printed while it is still running; " +
+        `opening review.html directly cannot load or save comments. JSON: ${reviewPath}`,
+    ));
+  })
+  .finally(() => {
+    if (location.hash) jumpToFile(decodeURIComponent(location.hash.slice(1)));
+  });

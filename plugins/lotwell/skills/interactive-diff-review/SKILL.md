@@ -20,11 +20,7 @@ Ask for a missing base or candidate. Preserve explicit paths exactly. With no pa
 
 The launcher validates the repository, resolves both revisions to commits, verifies every requested path at either revision, and generates the authoritative patch with `git diff --no-ext-diff`. It never writes to the reviewed repository.
 
-## 2. Load the canonical HTML theme (optional)
-
-The launcher defaults to the sibling [`theme.css`](../html-theme/theme.css), so this step is optional. To review or adjust theming, load the model-invoked sibling [`html-theme`](../html-theme/SKILL.md) skill and pass its canonical `theme.css` path to the launcher. Whichever stylesheet is used, it is inlined at generation time so the resulting review HTML is standalone; do not copy, fork, or substitute the palette in this skill.
-
-## 3. Launch the review
+## 2. Launch the review
 
 Use the launcher arguments below. On macOS, launch through `launchctl` as described immediately after the command; elsewhere, use a persistent foreground command session:
 
@@ -33,7 +29,6 @@ node /absolute/path/to/interactive-diff-review/scripts/review.mjs \
   --repo /absolute/path/to/repository \
   --base BASE_REVISION \
   --candidate CANDIDATE_REVISION \
-  --theme /absolute/path/to/html-theme/theme.css \
   --path path/to/first-file \
   --path path/to/second-file
 ```
@@ -51,17 +46,17 @@ Replace `LAUNCHER_ARGUMENTS` with the arguments above, quoting paths with spaces
 
 Read the stdout log for the printed URL and `JSON:` path; check stderr on failure. In a **subsequent tool call**, verify the URL responds and `/bin/launchctl list com.owner-operator.review.diff.UUID` reports a live PID before reporting success. Record the exact job label with the artifact paths. Use a separate UUID for concurrent reviews; never replace another review job. After reading the owner's Comments, stop only this job with `/bin/launchctl remove com.owner-operator.review.diff.UUID`; retain the review artifacts.
 
-Omit `--theme` to use the default sibling `theme.css`. Omit `--path` for the filtered product-file default. Repeat it for every explicit file or directory. Add `--output-dir /absolute/path` only when the owner explicitly chose a durable or reusable location; otherwise the launcher creates a temporary review directory outside the repository. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
+Omit `--path` for the filtered product-file default. Repeat it for every explicit file or directory. Add `--output-dir /absolute/path` only when the owner explicitly chose a durable or reusable location; otherwise the launcher creates a temporary review directory outside the repository. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
 
 The launcher binds to `127.0.0.1` on OS-assigned port `0`, prints the assigned URL, and opens it as a dedicated browser artifact. Report the printed `JSON:` filesystem path to the owner exactly. Keep the supervised job (or non-macOS foreground session) alive while they review.
 
-## 4. Let the owner annotate
+## 3. Let the owner annotate
 
-The page stacks all files and hunks in one scroll beneath sticky file anchor links. The owner can highlight changed text on either side, add a nearby Comment, then Edit or Delete it. Every mutation atomically autosaves the minimal review schema to `review.json`; refreshing the page reloads it.
+The page stacks all files and hunks in one scroll. The owner ranks diff width and line totals above revisions, so full revisions stay under Details, and the viewer keeps its own `assets/review.css` apart from `html-theme`. The owner can highlight changed text on either side, add a nearby Comment, then Edit or Delete it. Every mutation atomically autosaves the minimal review schema to `review.json`; refreshing the page reloads it.
 
 Internal anchors retain old/new side and structural selectors, while visible labels use `file:line`. Added lines and `+N` stay green; deleted lines and `−N` stay red. The page intentionally has no workflow states, Finish button, or raw-state panel.
 
-## 5. Read the result and stop cleanly
+## 4. Read the result and stop cleanly
 
 When the owner says they are done, read the printed JSON path. Treat each entry in `comments` as owner feedback, including its file, line range, selected text, and Comment. A `stale: true` entry means the launcher could not reliably relocate that anchor; surface the uncertainty instead of silently applying it elsewhere.
 

@@ -55,7 +55,7 @@ test("CLI help documents the deterministic review inputs and output controls", (
   assert.match(output, /--base <revision>/);
   assert.match(output, /--candidate <revision>/);
   assert.match(output, /--path <path>/);
-  assert.match(output, /--theme <theme\.css>/);
+  assert.doesNotMatch(output, /--theme/);
   assert.match(output, /--output-dir <path>/);
   assert.match(output, /--no-open/);
 });

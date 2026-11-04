@@ -240,10 +240,8 @@ function scriptJson(value) {
     .replaceAll("\u2029", "\\u2029");
 }
 
-export async function generateReviewHtml({ model, reviewPath, themePath }) {
-  if (!themePath) throw new Error("The canonical html-theme/theme.css path is required");
-  const [themeCss, reviewCss, clientJavaScript] = await Promise.all([
-    readFile(themePath, "utf8"),
+export async function generateReviewHtml({ model, reviewPath }) {
+  const [reviewCss, clientJavaScript] = await Promise.all([
     readFile(join(assetDirectory, "review.css"), "utf8"),
     readFile(join(assetDirectory, "review-client.js"), "utf8"),
   ]);
@@ -251,44 +249,53 @@ export async function generateReviewHtml({ model, reviewPath, themePath }) {
     ...model,
     files: model.files.map((file) => ({ ...file, anchor: file.anchor ?? stableFileAnchor(file.path) })),
   };
+  const additions = model.files.reduce((total, file) => total + file.additions, 0);
+  const deletions = model.files.reduce((total, file) => total + file.deletions, 0);
   const title = `Interactive diff review — ${model.repository} — ${model.base} → ${model.candidate} — ${model.paths.join(", ")}`;
   return `<!doctype html>
-<html lang="en" data-theme="gray">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>${escapeHtml(title)}</title>
 <style>
-${themeCss}
 ${reviewCss}
 </style>
 </head>
-<body>
-<header class="topbar">
-  <div class="topbar-row">
-    <div><div class="label">Targeted diff review</div><h1 class="title">${model.files.length} files · ${escapeHtml(model.base)} → ${escapeHtml(model.candidate)}</h1></div>
-    <div class="save-status" id="save-status">Loading…</div>
-  </div>
-  <div class="meta">
-    <span>Repository: ${escapeHtml(model.repository)}</span>
-    <span>Paths: ${escapeHtml(model.paths.join(", "))}</span>
-    <span class="artifact-path">JSON: ${escapeHtml(reviewPath)}</span>
-  </div>
+<body data-comments="closed">
+<header class="toolbar" id="topbar">
+  <h1 class="totals" id="diff-totals"><span class="positive">+${additions.toLocaleString("en-US")} added</span> <span class="negative">−${deletions.toLocaleString("en-US")} deleted</span> <span class="file-count">${model.files.length} files</span></h1>
+  <nav class="file-nav" aria-label="Changed files">
+    <button class="icon-button" id="previous-file" type="button" aria-label="Previous file">‹</button>
+    <select id="file-select" aria-label="Jump to file"></select>
+    <button class="icon-button" id="next-file" type="button" aria-label="Next file">›</button>
+  </nav>
+  <button class="button" id="comments-toggle" type="button" aria-controls="comments-panel" aria-expanded="false"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M1.75 1h12.5c.97 0 1.75.78 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.57 2.57A.75.75 0 0 1 4.2 15v-2H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.78.78 1 1.75 1Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .14.11.25.25.25h3.2c.41 0 .75.34.75.75v1.19l1.72-1.72a.75.75 0 0 1 .53-.22h6.3a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Z"/></svg><span class="button-label">Comments</span> <span class="count" id="comment-count">0</span></button>
+  <details class="meta">
+    <summary class="button">Details</summary>
+    <dl class="meta-panel">
+      <dt>Repository</dt><dd>${escapeHtml(model.repository)}</dd>
+      <dt>Base</dt><dd>${escapeHtml(model.base)}</dd>
+      <dt>Candidate</dt><dd>${escapeHtml(model.candidate)}</dd>
+      <dt>Paths</dt><dd><ul>${model.paths.map((path) => `<li>${escapeHtml(path)}</li>`).join("")}</ul></dd>
+      <dt>JSON</dt><dd>${escapeHtml(reviewPath)}</dd>
+    </dl>
+  </details>
+  <div class="save-status" id="save-status" role="status">Loading…</div>
 </header>
 <div class="layout">
-  <main class="main">
-    <nav class="file-nav" id="file-nav" aria-label="Changed files"></nav>
-    <div id="files"></div>
-    <div class="selection-help">Highlight changed text to add a nearby comment. Every add, edit, and delete autosaves.</div>
-  </main>
-  <aside class="sidebar"><section><div class="label">Comments · <span id="comment-count">0</span></div><div id="comments"></div></section></aside>
+  <main class="main" id="files"></main>
+  <aside class="comments-panel" id="comments-panel" aria-label="Comments">
+    <div class="panel-head"><h2>Comments</h2><button class="icon-button" id="comments-close" type="button" aria-label="Close comments">×</button></div>
+    <div id="comments"></div>
+  </aside>
 </div>
 <div class="composer" id="composer" role="dialog" aria-modal="false" aria-labelledby="composer-title">
-  <div class="label" id="composer-title">Comment on selection</div>
+  <div class="composer-title" id="composer-title">Comment on selection</div>
   <blockquote id="selected-quote"></blockquote>
   <textarea id="comment-text" placeholder="What should the agent understand or change?"></textarea>
-  <div class="actions"><button class="btn btn-outline" id="cancel" type="button">Cancel</button><button class="btn btn-primary" id="save-comment" type="button">Add comment</button></div>
+  <div class="actions"><button class="button" id="cancel" type="button">Cancel</button><button class="button primary" id="save-comment" type="button">Add comment</button></div>
 </div>
 <script>window.__INTERACTIVE_DIFF_REVIEW__=${scriptJson({ model: browserModel, reviewPath })};
 ${clientJavaScript}
@@ -492,7 +499,6 @@ Options:
   --base <revision>      Base commit, tag, or revision
   --candidate <revision> Candidate commit, tag, or revision
   --path <path>          Repository-relative target; repeat for multiple paths
-  --theme <theme.css>    Canonical html-theme/theme.css to inline
   --output-dir <path>    Reuse or create a durable review directory
   --no-open              Print the URL without opening a browser
   --help                 Show this help
@@ -511,7 +517,6 @@ function parseArguments(arguments_) {
       "--repo": "repo",
       "--base": "base",
       "--candidate": "candidate",
-      "--theme": "themePath",
       "--output-dir": "outputDirectory",
     }[argument];
     if (field) {
@@ -532,7 +537,6 @@ function parseArguments(arguments_) {
   }
   if (!options.base) throw new Error("--base is required");
   if (!options.candidate) throw new Error("--candidate is required");
-  options.themePath ??= join(scriptDirectory, "..", "..", "html-theme", "theme.css");
   return options;
 }
 
@@ -589,7 +593,7 @@ async function runCli(arguments_) {
   await mkdir(outputDirectory, { recursive: true });
   const reviewPath = join(outputDirectory, "review.json");
   const htmlPath = join(outputDirectory, "review.html");
-  const html = await generateReviewHtml({ model, reviewPath, themePath: resolve(options.themePath) });
+  const html = await generateReviewHtml({ model, reviewPath });
   await writeFile(htmlPath, html, { mode: 0o600 });
   const session = await startReviewServer({ html, reviewPath, model });
   process.stdout.write(`Interactive diff review\nURL: ${session.url}\nJSON: ${reviewPath}\nHTML: ${htmlPath}\nStop: Ctrl-C\n`);

@@ -1,3 +1,1 @@
-Before publishing changes inside a listed plugin's source directory, increase its `.claude-plugin/plugin.json` version and matching version in the root `.claude-plugin/marketplace.json` together. This includes assets, scripts, and references: Claude Code keeps its cached copy when the version stays unchanged.
-
-Enable the release guard in each publishing clone with `git config core.hooksPath .githooks`. Before pushing, run `python3 scripts/check-plugin-releases.py --base <remote-main-commit> --head <candidate-commit>`; the pre-push hook checks the server's advertised main commit automatically. Run `python3 tests/check-plugin-releases/test_check.py` after changing the guard.
+@AGENTS.md

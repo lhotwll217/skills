@@ -101,6 +101,8 @@ def main(clone, base, head):
         dest.parent.mkdir(parents=True, exist_ok=True)
         if old is None or not dest.exists():
             dest.write_text(new)
+            if git(clone, "ls-tree", head, "--", path).startswith(b"100755"):
+                dest.chmod(0o755)
             print(f"A {dest.relative_to(ROOT)}")
             continue
         with tempfile.TemporaryDirectory() as tmp:

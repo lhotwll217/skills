@@ -1,8 +1,8 @@
 # Portable pstack
 
-Ported on 2026-09-09 from Lauren Tan’s pstack 0.15.0, commit `df3fb154fb982fb83f649de8646d4af6a0cb16b3`, and updated on 2026-10-13 to [pstack 0.15.21](https://github.com/cursor/plugins/tree/1dcc2bacde73ddd284803b7af28164d0436198fc/pstack), commit `1dcc2bacde73ddd284803b7af28164d0436198fc`. All 52 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, the guide, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance. `scripts/port-upstream.py` at the port repository root merges a later upstream range under these conventions, and `scripts/check-port.py` checks the result.
+Ported on 2026-09-09 from Lauren Tan’s pstack 0.15.0 (`df3fb15`), then updated to 0.15.21 (`1dcc2ba`) on 2026-10-13 and to [pstack 0.15.36](https://github.com/cursor/plugins/tree/c742dd61706fbacc1b95f1a20b7b988cf096ce6c/pstack) on 2026-11-05. All 58 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, the guide, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance. `scripts/port-upstream.py` at the plugin root merges a later upstream range under these conventions, and `scripts/check-port.py` checks the result.
 
-This copy comes from [lhotwll217/pstack](https://github.com/lhotwll217/pstack) at `e2f20ce`, which holds the port unedited. Local changes are made here. Port updates arrive with `git subtree pull --prefix=plugins/pstack https://github.com/lhotwll217/pstack main`.
+Make local changes here. [lhotwll217/pstack](https://github.com/lhotwll217/pstack) stops at 0.15.21 (`e2f20ce`). The next update merges from the linked 0.15.36 commit, not by subtree pull.
 
 ## Use
 
@@ -28,7 +28,7 @@ Owner instructions, task scope, permissions, delegation, session privacy, and mo
 
 - **Waits and optional services.** Cursor `/loop`, cloud-sleeper, and cloud launch fields are not portable APIs. Use an exposed in-session event/wait mechanism without installing jobs. If the host cannot sustain and resume an unattended run, report that limit. `make-bot-ui` requires verified webhook-routine and secure secret-input capabilities and explicit service authorization; these are not provided here. Source-specific MCP recipes are examples: inspect actual tool schemas, permissions, authentication, and data schemas before use. An unavailable source remains an explicit gap.
 
-- **Helpers.** Node runs `pstack-poteto-mode/scripts/check-plan.mjs`; Bash runs the worktree audit and decision-log helper. Worktree audit also uses git, gh, jq, and system utilities, and refreshes remote refs. `orch` and `watch-pr` require Bun and the locked packages in the scripts folder. Bun is absent in this installation and those runtime paths are untested. Bootstrap now fails with setup instructions rather than installing packages automatically. An explicitly requested setup can run `bun install --frozen-lockfile` in that folder after Bun is available. `watch-pr` needs authenticated `gh` and supports GitHub only; its merge options can write remotely. `orch` is an optional task-state helper, never a replacement for Owner Operator’s delegated-run record. Graphite and Origin integrations require separately verified installations.
+- **Helpers.** Node runs `pstack-poteto-mode/scripts/check-plan.mjs`; Bash runs the worktree audit and decision-log helper. Worktree audit also uses git, gh, jq, and system utilities, and refreshes remote refs. `watch-pr` requires Bun and the locked packages in the scripts folder. Bun is absent in this installation and those runtime paths are untested. Bootstrap now fails with setup instructions rather than installing packages automatically. An explicitly requested setup can run `bun install --frozen-lockfile` in that folder after Bun is available. `watch-pr` needs authenticated `gh` and supports GitHub only; its merge options can write remotely. `pstack-statechart/scripts/statechart` runs on Node 22.18 or later, Bun, or Deno, and needs TLC and Java 11 or later; it installs them with mise only when TLC is missing, which this installation has not verified. Graphite and Origin integrations require separately verified installations.
 
 ## Workflows
 
@@ -41,11 +41,15 @@ The links below open reference instructions. Their folder names are also the exp
 - [pstack-blast-radius](../pstack-blast-radius/WORKFLOW.md) — Find downstream breakage and test the facts a change depends on.
 - [pstack-bro](../pstack-bro/WORKFLOW.md) — Restate the last response in plain language.
 - [pstack-correct](../pstack-correct/WORKFLOW.md) — Find mistakes agents keep repeating in a repo and make each one impossible.
+- [pstack-create-formal-verification-skill](../pstack-create-formal-verification-skill/WORKFLOW.md) — Generate and prove a project formal verification skill.
 - [pstack-create-verification-skill](../pstack-create-verification-skill/WORKFLOW.md) — Generate and prove a project verification skill and feature map.
 - [pstack-figure-it-out](../pstack-figure-it-out/WORKFLOW.md) — Design a task-specific workflow with verifiable completion gates.
 - [pstack-how](../pstack-how/WORKFLOW.md) — Trace code structure and behavior to explain how a system works.
-- [pstack-interrogate](../pstack-interrogate/WORKFLOW.md) — Review changes adversarially and synthesize evidence-backed findings.
+- [pstack-in-your-own-words](../pstack-in-your-own-words/WORKFLOW.md) — Restate the user's goals and problem before work.
+- [pstack-interrogate](../pstack-interrogate/WORKFLOW.md) — Have adversaries break a change, keeping only run-proven findings.
 - [pstack-ketchup](../pstack-ketchup/WORKFLOW.md) — Catch the user up on this chat since their last message, with each action item summarized.
+- [pstack-ketchup-video](../pstack-ketchup-video/WORKFLOW.md) — Catch the user up with a short subtitled slide video.
+- [pstack-maintain-formal-verification-skill](../pstack-maintain-formal-verification-skill/WORKFLOW.md) — Realign formal verification with changed code.
 - [pstack-maintain-verification-skill](../pstack-maintain-verification-skill/WORKFLOW.md) — Check every mapped feature against source and live behavior.
 - [pstack-make-bot-ui](../pstack-make-bot-ui/WORKFLOW.md) — Build a webhook bot UI when routine and secret-input capabilities exist.
 - [pstack-no-comments](../pstack-no-comments/WORKFLOW.md) — Review comments, preserve required exceptions, and address accepted findings.
@@ -78,7 +82,9 @@ The links below open reference instructions. Their folder names are also the exp
 - [pstack-recall](../pstack-recall/WORKFLOW.md) — Reconstruct scoped working context from approved session and project evidence.
 - [pstack-reflect](../pstack-reflect/WORKFLOW.md) — Review session lessons and propose concrete skill improvements.
 - [pstack-setup-pstack](../pstack-setup-pstack/WORKFLOW.md) — Inspect pstack role support using existing owner model-selection policy.
+- [pstack-sharpen](../pstack-sharpen/WORKFLOW.md) — Make a task deeper, not bigger, then rewrite the prompt.
 - [pstack-show-me-your-work](../pstack-show-me-your-work/WORKFLOW.md) — Keep a task decision trail in the owner’s established workspace.
+- [pstack-statechart](../pstack-statechart/WORKFLOW.md) — Check a TLA+ model and draw it as a Mermaid statechart.
 - [pstack-swarm](../pstack-swarm/WORKFLOW.md) — Partition work or compare attempts using authorized execution capabilities.
 - [pstack-tdd](../pstack-tdd/WORKFLOW.md) — Reproduce a bug with a focused failing test before fixing it.
 - [pstack-teach](../pstack-teach/WORKFLOW.md) — Explain what a system does, how it works, and why.

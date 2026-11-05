@@ -4,7 +4,7 @@ Read [pstack portability and capability checks](../pstack/README.md) before foll
 
 Investigate the motivation and intent behind code. The companion [pstack-how](../pstack-how/WORKFLOW.md) skill answers what the code does and how it works. [pstack-why](WORKFLOW.md) answers what forces led to its shape.
 
-Select each investigator and synthesizer execution identity through the owner’s model-selection policy. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used.
+Select each investigator and synthesizer execution identity through the owner’s model-selection policy. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used. Match each delegate's effort to the job, per the Subagents section of the [pstack-poteto-mode](../pstack-poteto-mode/WORKFLOW.md) workflow.
 
 Every spawn is a general-purpose worker doing read-only investigation with the required exposed tools. A missing tool is a capability gap; keep the harness permission mode. The synthesizer's citation spot-checks can need the same tools. Investigators still shouldn't write anything.
 

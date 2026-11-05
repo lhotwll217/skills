@@ -9,7 +9,7 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 plugins/lotwell/                     # plugin "lotwell": the general skills (16)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
-plugins/pstack/                      # plugin "pstack": the portable pstack port (48)
+plugins/pstack/                      # plugin "pstack": the portable pstack port (59)
   .claude-plugin/plugin.json
   skills/pstack/README.md            # index, provenance, capability notes
   skills/pstack-<name>/SKILL.md

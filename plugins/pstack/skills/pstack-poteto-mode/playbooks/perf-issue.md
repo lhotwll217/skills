@@ -14,7 +14,7 @@
    7. Do it cheaper.
 
    When an earlier mantra meets the target, stop.
-3. Plan the fix from the trace. If it crosses a function boundary, [pstack-architect](../../pstack-architect/WORKFLOW.md) first. Delegate implementation to a subagent using your configured perf-issue model (selected through owner policy). Review the diff. Capture a post-fix trace.
+3. Plan the fix from the trace. If it crosses a function boundary, [pstack-architect](../../pstack-architect/WORKFLOW.md) first. Delegate implementation to a subagent using your configured perf-issue model (selected through owner policy). Match each delegate's effort to the job, per the Subagents section. Review the diff. Capture a post-fix trace.
    Apply the [pstack-principle-sequence-verifiable-units](../../pstack-principle-sequence-verifiable-units/WORKFLOW.md) principle skill, verifying each attempt before trying the next.
 4. Parse and compare the artifacts (JSON to sqlite, diff). "Inconclusive" or wrong-surface is not a pass. Flag it.
 5. Cite the measurement in the PR.

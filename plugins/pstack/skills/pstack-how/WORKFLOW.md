@@ -4,7 +4,7 @@ Read [pstack portability and capability checks](../pstack/README.md) before foll
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Every spawn is a delegated general-purpose worker with read-only access within the task scope. Select the explorer and explainer execution identities through the owner’s model-selection policy. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used.
+Every spawn is a delegated general-purpose worker with read-only access within the task scope. Select the explorer and explainer execution identities through the owner’s model-selection policy. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used. Match each delegate's effort to the job, per the Subagents section of the [pstack-poteto-mode](../pstack-poteto-mode/WORKFLOW.md) workflow.
 
 ## 1. Assess complexity
 

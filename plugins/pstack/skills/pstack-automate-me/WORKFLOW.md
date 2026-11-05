@@ -24,7 +24,7 @@ Update mode changes the rest of the flow:
 
 Use the approved privacy-aware session-search route. Pin the workspace, time range, and topic; do not open transcript stores directly.
 
-Survey recent agent conversations within that scope for recurring patterns. When authorized and supported, run parallel investigators across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each authorized slice investigator uses the same approved session-search route, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. When authorized and supported, run parallel investigators across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Match each delegate's effort to the job, per the Subagents section of the [pstack-poteto-mode](../pstack-poteto-mode/WORKFLOW.md) workflow. Each authorized slice investigator uses the same approved session-search route, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)

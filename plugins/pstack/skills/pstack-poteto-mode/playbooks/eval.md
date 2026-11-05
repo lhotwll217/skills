@@ -17,7 +17,7 @@
 1. **Frame.** State what variant is under test and what behavior counts as success. Write the rubric (3-6 concrete criteria) for the judge only. Hold it back from candidates.
 2. **Set up sanitized environments.** Per-candidate working dir with the variant in place. Plant any context an organic task would have: a project skeleton, the skills the candidate would naturally read.
 3. **Author one organic prompt.** What a user would type. No leakage of what's being measured.
-4. **Spawn N parallel candidates** on different models per the [pstack-arena](../../pstack-arena/WORKFLOW.md) skill's Phase B. Each works in its own sanitized dir. Same prompt to each.
+4. **Spawn N parallel candidates** on different models per the [pstack-arena](../../pstack-arena/WORKFLOW.md) skill's Phase B. Each works in its own sanitized dir. Same prompt to each. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section.
 5. **Spawn one blinded judge** on a different model family per the [pstack-arena](../../pstack-arena/WORKFLOW.md) skill's Phase C. Judge sees outputs by sanitized label and the rubric, never a model name.
 6. **Verify the chain from transcripts, not self-report.** Retrieve each candidate’s scoped tool evidence through the approved session-search route. Check files actually opened and code shape. If the host cannot expose the evidence, report the gap rather than infer chain-following.
 7. **Read every candidate output yourself** end to end. Compare to the judge's verdict. Disagreement means a model is biased or the rubric is ambiguous. Synthesize.

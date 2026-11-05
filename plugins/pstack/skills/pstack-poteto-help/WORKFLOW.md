@@ -22,13 +22,14 @@ Check the state that changes the answer, and mention it only when it does:
 
 - The owner's model-selection policy decides which roles can run. `/pstack-setup-pstack` reports which roles that policy supports.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `/pstack-create-verification-skill` when the question is about proving a change works.
+- No formal verification skill in the project means no property is checked past what tests reach. Mention `/pstack-create-formal-verification-skill` when the question is about a race, an invariant, or another case tests rarely hit. When one exists and the code it covers changed after the commit it records as last in sync, mention `/pstack-maintain-formal-verification-skill` if the question touches that code.
 
 When role support is unknown and it matters, offer `/pstack-setup-pstack` once per chat. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Answer their question either way.
 
 ## Get set up
 
 1. Install the port as the [pstack README](../pstack/README.md) describes, and reload or restart the harness.
-2. Run [`/pstack-setup-pstack`](../pstack-setup-pstack/WORKFLOW.md). It reports which roles the owner's model-selection policy supports. It writes no rule and changes no preference.
+2. Run [`/pstack-setup-pstack`](../pstack-setup-pstack/WORKFLOW.md). It reports which roles the owner's model-selection policy supports. It writes no rule and changes no preference. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `/pstack-poteto-mode`, a goal, and a check that can pass or fail.
 
 Installing changes nothing until the user invokes a skill. Every pstack skill is user-invoked, so none loads from the user's words alone. Each harness spells the invocation its own way. The [pstack README](../pstack/README.md) lists the spellings, and upstream [guide page 1](https://github.com/cursor/plugins/blob/1dcc2bacde73ddd284803b7af28164d0436198fc/pstack/docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
@@ -50,11 +51,14 @@ The default answer is `/pstack-poteto-mode`, which runs most of the others when 
 | The user wants to | Skill |
 |---|---|
 | Do any non-trivial task with rigor | [`/pstack-poteto-mode`](../pstack-poteto-mode/WORKFLOW.md) |
+| Check that the agent understood their goal and the problem before it starts | [`/pstack-in-your-own-words`](../pstack-in-your-own-words/WORKFLOW.md) |
+| Get a prompt rewritten deeper, not bigger, before sending it: what a top professional would add, their raw material and methods, and an outside check. It returns the prompt and doesn't do the task | [`/pstack-sharpen`](../pstack-sharpen/WORKFLOW.md) |
 | Know how code works now, or where new code should live | [`/pstack-how`](../pstack-how/WORKFLOW.md) |
 | Know why code is shaped this way, or where a number came from | [`/pstack-why`](../pstack-why/WORKFLOW.md) |
 | Understand a change or subsystem, explained plainly | [`/pstack-teach`](../pstack-teach/WORKFLOW.md) |
 | Catch up on their own recent work on a topic | [`/pstack-recall`](../pstack-recall/WORKFLOW.md) |
-| Catch up on everything in this chat since their last message, with enough context to decide each action item | [`/pstack-ketchup`](../pstack-ketchup/WORKFLOW.md) |
+| Catch up on what changed in this chat since their last message, in plain words and small visuals, with every item waiting on them listed and decidable from the reply alone | [`/pstack-ketchup`](../pstack-ketchup/WORKFLOW.md) |
+| Catch up like `/pstack-ketchup`, in a short subtitled video of slides, with the waiting calls as text under it | [`/pstack-ketchup-video`](../pstack-ketchup-video/WORKFLOW.md) |
 | Know what a small diff could break outside itself | [`/pstack-blast-radius`](../pstack-blast-radius/WORKFLOW.md) |
 | Settle types and module shape before code that crosses a function boundary | [`/pstack-architect`](../pstack-architect/WORKFLOW.md) |
 | Get several attempts at one brief, merged into the best one | [`/pstack-arena`](../pstack-arena/WORKFLOW.md) |
@@ -68,6 +72,9 @@ The default answer is `/pstack-poteto-mode`, which runs most of the others when 
 | Hear the last reply again in plain words | [`/pstack-bro`](../pstack-bro/WORKFLOW.md) |
 | Give agents a scripted way to drive the app and prove behavior | [`/pstack-create-verification-skill`](../pstack-create-verification-skill/WORKFLOW.md) |
 | Bring a verification skill and its feature map back in line with the app | [`/pstack-maintain-verification-skill`](../pstack-maintain-verification-skill/WORKFLOW.md) |
+| Formally verify a race, invariant, or other property that tests rarely reach | [`/pstack-create-formal-verification-skill`](../pstack-create-formal-verification-skill/WORKFLOW.md) |
+| Bring a formal verification back in line after the code it covers changed, and learn whether a failure is drift or a bug | [`/pstack-maintain-formal-verification-skill`](../pstack-maintain-formal-verification-skill/WORKFLOW.md) |
+| Show a PM or designer what the user sees as a chart checked by a TLA+ model, with the shortest path to each state that breaks a rule | [`/pstack-statechart`](../pstack-statechart/WORKFLOW.md) |
 | Vet a performance number before reporting or acting on it | [`/pstack-benchmark-checklist`](../pstack-benchmark-checklist/WORKFLOW.md) |
 | Run a large or cross-cutting change, or one to review after stepping away | [`/pstack-figure-it-out`](../pstack-figure-it-out/WORKFLOW.md) |
 | Keep a decision log during a run, and review it afterward | [`/pstack-show-me-your-work`](../pstack-show-me-your-work/WORKFLOW.md) |
@@ -103,7 +110,7 @@ Playbooks are step lists inside `/pstack-poteto-mode`, not skills, so they have 
 - "land the stack" runs Shipping.
 - "take over this branch" runs Session pickup.
 - "pause safely" runs Pause safely.
-- "full autopilot on this queue" runs Autopilot-full. "stack them, don't ship" runs Autopilot-stack.
+- "full autopilot on this queue" runs Autopilot-full. "autopilot, don't merge" runs Autopilot-stack.
 - "run the eval playbook" runs Eval.
 
 Without `/pstack-poteto-mode`, a phrase such as "babysit this pr" can start another installed skill for the same job instead. The Playbooks section of [`poteto-mode`](../pstack-poteto-mode/WORKFLOW.md) lists every playbook and when it applies. Upstream [guide page 6](https://github.com/cursor/plugins/blob/1dcc2bacde73ddd284803b7af28164d0436198fc/pstack/docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.

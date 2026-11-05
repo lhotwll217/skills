@@ -14,7 +14,7 @@ Resolve the current session’s stable ID using the host’s session context. Re
 
 One message, three calls through the supported delegation API, a general-purpose worker role, read-only investigation using available tools. Preserve the harness permission mode. Reviewers need tool access to look up the tickets, chat threads, and observability traces the transcript references.
 
-Select each reviewer and synthesizer execution identity through the owner’s model-selection policy, using the roles in the table below. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used.
+Select each reviewer and synthesizer execution identity through the owner’s model-selection policy, using the roles in the table below. If a selected identity is unavailable, follow the host policy for fallback and report the identity actually used. Match each delegate's effort to the job, per the Subagents section of the [pstack-poteto-mode](../pstack-poteto-mode/WORKFLOW.md) workflow.
 
 | Lens | Role | Prompt template |
 |---|---|---|
@@ -37,6 +37,8 @@ Move any Accepted item that a lint rule, script, metadata flag, or runtime check
 Present the synthesizer's full Accepted / Rejected / Backlog output and wait for explicit approval before applying any Accepted edit. The user picks the subset and may redirect routings. Skill changes affect every future agent in the org. Do not auto-apply.
 
 Keep backlog proposals in the response unless tracker writes are authorized. Accepted edits follow the owner’s approval policy.
+
+Never edit a skill inside an installed plugin cache. Before approval, show its destination: the project's or owner's established skill home, or the skill's source checkout. After approval, edit it there, copying the skill folder first when the source is a cache. Never open a PR or push.
 
 Follow each approved row's Routing exactly:
 

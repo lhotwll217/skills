@@ -1,6 +1,6 @@
 # Fork notes
 
-This folder is a copy of [lhotwll217/mattpocock-skills](https://github.com/lhotwll217/mattpocock-skills) at `49dd158d1076134a641b33efb035946536778336`, a fork of [mattpocock/skills](https://github.com/mattpocock/skills) that is kept unedited. Matt Pocock wrote these skills, licensed under the MIT license in [LICENSE](LICENSE).
+This folder is a copy of [lhotwll217/mattpocock-skills](https://github.com/lhotwll217/mattpocock-skills) at upstream release v1.3.2, `d1478fcb140db0b93c0c8df17bcfd311844749d0`, a fork of [mattpocock/skills](https://github.com/mattpocock/skills) that is kept unedited. Matt Pocock wrote these skills, licensed under the MIT license in [LICENSE](LICENSE).
 
 Luke Otwell's changes are made here only:
 

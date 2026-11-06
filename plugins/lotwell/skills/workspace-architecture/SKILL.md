@@ -1,33 +1,49 @@
 ---
 name: workspace-architecture
-description: Organize project files for a cold reader. Use when saving or locating work, planning or changing a layout, recording decisions, sources, or standing instructions, or auditing a workspace.
+description: Organize project files for a cold reader. Use when saving or locating work, changing a layout, recording decisions, sources, or standing instructions, or auditing a workspace.
 ---
 
 # Workspace architecture
 
-Arrange project work for a **cold reader**: an agent holding only the filesystem, who must find, trust, and continue it. Judge every folder, index, and note by whether it serves that reader. A category with one member earns its place when it names a distinction the reader needs.
-
-## Properties
-
-1. **Kind is visible.** From the parent listing alone, a cold reader predicts what each child holds and which one to open. Units sharing a role share a domain-named folder. A repository or package moves whole and keeps its Git state. Use the project's established names, and add a one-line parent description only where a name cannot carry the distinction.
-2. **The route reaches evidence.** From an entry point the reader follows links to the current work, and from each finding to the location its source actually has: a file and section, a transcript and timestamp, a session ID. When asked to preserve a source, keep the full original beside any summary. A reader who knows the target opens it directly, so add an index only where the listing leaves the next step unclear.
-3. **Authority and scope survive.** Each saved claim keeps who said it, whether it is evidence, synthesis, a decision, or an instruction, and how far it applies. A correction governs the thing it corrected. A standing instruction rests on the owner's words making it standing, and lives in the nearest applicable `AGENTS.md`; where the project uses `CLAUDE.md`, that file imports `@AGENTS.md`. A new kind of source joins the work under the rules already in place.
-4. **One current authority.** Each subject or decision has one maintained document. When understanding changes, edit that document and, in the same pass, every index, README, or instruction still presenting the old state as current. Keep history where someone will ask about it, labelled as superseded. Point to an authority rather than writing a second account of it.
+Leave work a **cold reader** can use: an agent holding only the filesystem can tell what each item is, reach the current work and its source, and continue it.
 
 ## Steps
 
-1. **Inspect the owning project.** Start at the project the request names, otherwise the working project's parent, even when a neighbouring repository offers a docs folder. Read its instructions, listing, and index. Done when you can name the role of every immediate child and the existing home, if any, for the incoming work.
-2. **Plan in proportion.**
-   - A lookup: answer with links to the maintained authority, put any requested summary in the reply, and stop.
-   - Placement into an established single-role home: state the file and its destination in one line.
-   - Anything else (a new home, a layout change, material landing beside a repository or package): show one row per immediate child and incoming item.
+1. **Classify the request.** Lookup: answer with links to the maintained document and write nothing. Plan-only: stop after step 3. Audit: run step 5 alone. Change: every step.
 
-     ```text
-     current path or NEW | role | proposed path relative to the project parent
-     ```
+2. **Inspect the project parent.** Start at the project the request names, otherwise the working project's parent, even when a neighbouring repository has a docs folder. Read its instructions, listing, and index. Done when every immediate child has a named role.
 
-     Pipe the rows to `python3 <skill>/scripts/check_layout.py "<project parent>"`. Append `| fixed=file:line` when a config, script, or build file depends on a unit's present location, citing that dependency. Append `| owns=file:line` when an independent unit owns the material, citing that ownership. Open each cited line and confirm it says so.
+3. **Plan before choosing a destination or filename.** The plan keeps two properties:
+   - **Kind.** Name each folder at the basic level: its name predicts what it holds and what a reader can do with it, so its information scent picks the right branch without opening the others. Take names from the project's own work. Units of one kind share a folder, even a category of one. Repositories and packages move whole. Topic, role, owner, and lifecycle are separate facets: one shapes the tree, names and links carry the rest. An existing layout is an example of these properties, never a template.
+   - **Route.** Overview → detail → source, each step visible and short. A reader who knows the target opens it directly, and names stay searchable.
 
-   Done when the plan satisfies the four properties and any rows check `OK` at the project parent. For a plan-only request, deliver the plan here.
-3. **Carry it out** within the authority the request gives. If the project keeps a daily log, append a dated link to the new work.
-4. **Verify the result.** An audit starts and ends here, on what exists. Rerun any rows with `--delivered`. For a move, check the destination, the vacated path, and every reference to the old path. For a copy, compare it with the original. Then read the parent listing as a cold reader and walk the route to the evidence. Done when each property holds, or when you report the first place a cold reader would have to guess.
+   For a file joining an established single-role home, state the destination in one line. For anything else, including a save into a parent entry file beside a repository or package, show one row per immediate child and incoming item:
+
+   ```text
+   current path or NEW | role | proposed path relative to the project parent
+   ```
+
+   Pipe the rows to `python3 <skill>/scripts/check_layout.py "<project parent>"`. A unit stays in place with `| fixed=file:line` citing the config, script, or build file that depends on its location. Material inside an independent unit takes `| owns=file:line` citing that ownership. List every reference to a path the plan moves. Done when the checker prints `OK` for the project parent and the plan keeps Kind and Route.
+
+4. **Apply the plan** within the scope the request grants. What you write keeps two properties:
+   - **Provenance.** Record attribution, derivation, and revision: who said it, what it came from, what it replaces. The speaker stays distinct from the agent who recorded it, and a hypothesis keeps its uncertainty. Source, index, and conclusion are separate, linked artifacts, with the full source beside any summary, cited at the location it actually has. A correction governs the scope its source gave it; one source's format binds only that source. An open question stays written where the next reader meets it. Every link resolves inside the workspace.
+   - **Current.** Practice truth maintenance: each subject has one maintained document holding its conclusions and their reasons. When a reason changes, update that document and every surface depending on it. Link to it instead of restating it.
+
+   Done when every saved claim names its speaker and source, and every reference you listed points to the new path.
+
+5. **Verify.** `check_layout.py` establishes paths and repository boundaries; a cold reader establishes meaning, including whether the names mean to them what they mean to you. Rerun the rows with `--delivered`. For a move, search for references to the old path. For a copy, diff it against the original. Then walk overview → detail → source from the parent listing as a cold reader. Done when you report both results and the first place a cold reader would guess, or that there is none.
+
+## Mechanisms
+
+| Mechanism | Use when |
+| --- | --- |
+| Category folder | Two or more kinds share a parent |
+| `YYYY-MM-DD-` prefix | A date-bound artifact where the local convention carries no date |
+| `README.md` or index | The cold reader cannot tell from names and listing what is current, its source, or what to read next |
+| `AGENTS.md` | The owner's words establish a standing rule. Place it at the nearest applicable directory; a `CLAUDE.md` there contains only `@AGENTS.md`. |
+| Topic document | Understanding of a subject will change and be reused |
+| Daily log | The project already keeps one: append a dated link to the change and its source session |
+| Source artifact | Findings derive from it, or the owner asks to keep it |
+| Session ID and message range | A session materially informed the artifact. Copy the ID from the source. |
+| Superseded label | Someone will ask what the earlier state was |
+| Business data | Holds business data only. Session IDs and audit notes go in the accompanying note. |

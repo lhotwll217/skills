@@ -11,7 +11,7 @@ Leave work a **cold reader** can use: an agent holding only the filesystem can t
 
 1. **Classify the request.** Lookup: answer with links to the maintained document and write nothing. Plan-only: stop after step 3. Audit: run step 5 alone. Change: every step.
 
-2. **Inspect the project parent.** Start at the project the request names, otherwise the working project's parent, even when a neighbouring repository has a docs folder. Read its instructions, listing, and index. Done when every immediate child has a named role.
+2. **Inspect the project parent.** Start at the project the request names, otherwise the working project's parent. Read its instructions, listing, and index. Decide here who owns the deliverable: a repository or package inside the parent owns it only when the request or an opened source says so. Available storage or a docs folder alone establishes no ownership. Done when every immediate child has a named role and the deliverable has an owner.
 
 3. **Plan before choosing a destination or filename.** The plan keeps two properties:
    - **Kind.** Name each folder at the basic level: its name predicts what it holds and what a reader can do with it, so its information scent picks the right branch without opening the others. Take names from the project's own work. Units of one kind share a folder, even a category of one. Repositories and packages move whole. Topic, role, owner, and lifecycle are separate facets: one shapes the tree, names and links carry the rest. An existing layout is an example of these properties, never a template.
@@ -19,13 +19,13 @@ Leave work a **cold reader** can use: an agent holding only the filesystem can t
 
    Saving into a mixed parent includes grouping its existing units by kind: put movable units of one kind under one folder, moving repositories and packages whole.
 
-   For a file joining an established single-role home, state the destination in one line. For anything else, including a save into a parent entry file beside a repository or package, show one row per immediate child and incoming item:
+   For a file joining an established single-role home of the owner, state the destination in one line. For anything else, including a save into a parent entry file beside a repository or package, show one row per immediate child and incoming item:
 
    ```text
    current path or NEW | role | proposed path relative to the project parent
    ```
 
-   Pipe the rows to `python3 <skill>/scripts/check_layout.py "<project parent>"`. A unit stays in place with `| fixed=file:line` citing the config, script, or build file that depends on its location. Material inside an independent unit takes `| owns=file:line` citing that ownership. List every reference to a path the plan moves. Done when the checker prints `OK` for the project parent and the plan keeps Kind and Route.
+   Pipe the rows to `python3 <skill>/scripts/check_layout.py "<project parent>"`. A unit stays in place with `| fixed=file:line` citing the config, script, or build file that depends on its location. Material inside an independent unit takes `| owns=file:line` citing that ownership. List every reference to a path the plan moves. Revise a failing plan before any write. Done when the checker prints `OK` for the project parent and the plan keeps Kind and Route.
 
 4. **Apply the plan** within the scope the request grants. What you write keeps two properties:
    - **Provenance.** Record attribution, derivation, and revision: who said it, what it came from, what it replaces. The speaker stays distinct from the agent who recorded it, and a hypothesis keeps its uncertainty. Source, index, and conclusion are separate, linked artifacts, with the full source beside any summary, cited at the location it actually has. A correction governs the scope its source gave it; one source's format binds only that source. An open question stays written where the next reader meets it. Every link resolves inside the workspace.

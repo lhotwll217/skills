@@ -1,9 +1,9 @@
 ---
-name: workspace-architecture
+name: workspace-management
 description: Organize project files for a cold reader. Use when saving or locating work, changing a layout, recording decisions, sources, or standing instructions, or auditing a workspace.
 ---
 
-# Workspace architecture
+# Workspace management
 
 Leave work a **cold reader** can use: an agent holding only the filesystem can tell what each item is, reach the current work and its source, and continue it.
 

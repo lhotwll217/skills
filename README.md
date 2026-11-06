@@ -84,7 +84,7 @@ claude plugin install lotwell@lhotwll217-skills || true
 | [pstack](plugins/pstack/skills/pstack/README.md) | On-demand, namespaced port of pstack's engineering workflows, with portable capability checks. |
 | [align](plugins/lotwell/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
 | [ask-the-right-questions](plugins/lotwell/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
-| [workspace-architecture (WIP v2)](plugins/lotwell/skills/workspace-architecture/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
+| [workspace-management](plugins/lotwell/skills/workspace-management/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
 | [current-system-audit](plugins/lotwell/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |
 | [html-theme](plugins/lotwell/skills/html-theme/SKILL.md) | Apply Luke's house visual system to generated HTML, including Owner Operator's terminal semantic palette. |
 | [interactive-diff-review](plugins/lotwell/skills/interactive-diff-review/SKILL.md) | Render a targeted Git diff as a local interactive review and persist anchored Comments to JSON. |

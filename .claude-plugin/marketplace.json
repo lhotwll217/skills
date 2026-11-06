@@ -9,7 +9,7 @@
     {
       "name": "lotwell",
       "source": "./plugins/lotwell",
-      "description": "Luke Otwell's working skills: align, issues, ask-the-right-questions, research, current-system-audit, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, workspace-architecture, html-theme, show-me, and workstream-retro.",
+      "description": "Luke Otwell's working skills: align, issues, ask-the-right-questions, research, current-system-audit, interactive reviews, SEO analytics, writing-great-evals, updating-prompts, workspace-management, html-theme, show-me, and workstream-retro.",
       "version": "2.1.8",
       "license": "MIT",
       "category": "workflows"

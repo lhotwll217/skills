@@ -39,7 +39,7 @@ A run is one agent conversation, including its later turns and any summary of it
 
 ## Where it lives
 
-Place the log in the owner’s established project/workstream home outside product repositories, or in temporary scratch for an ephemeral run. Follow Chain of Context for new placement.
+Place the log in the owner’s established project/workstream home outside product repositories, or in temporary scratch for an ephemeral run.
 
 Keep internal trails out of product PRs unless intentionally shipped documentation is authorized.
 

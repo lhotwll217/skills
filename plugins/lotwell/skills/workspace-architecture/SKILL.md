@@ -26,4 +26,4 @@ Name folders for distinctions a reader needs to see, even if a category has one 
 
 For a move, verify the destination, the vacated path, and anything that refers to the old location. For a copy, compare it with the original. On an audit, start with the parent listing and follow the route to the current work and its evidence. Report the first place a new reader would have to guess.
 
-When an unfamiliar document needs a format, consult the [examples](EXAMPLES.md). Before changing this skill, read its [origin and maintenance notes](ORIGIN.md).
+When an unfamiliar document needs a format, consult the [examples](EXAMPLES.md).

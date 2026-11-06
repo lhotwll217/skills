@@ -17,6 +17,8 @@ Leave work a **cold reader** can use: an agent holding only the filesystem can t
    - **Kind.** Name each folder at the basic level: its name predicts what it holds and what a reader can do with it, so its information scent picks the right branch without opening the others. Take names from the project's own work. Units of one kind share a folder, even a category of one. Repositories and packages move whole. Topic, role, owner, and lifecycle are separate facets: one shapes the tree, names and links carry the rest. An existing layout is an example of these properties, never a template.
    - **Route.** Overview → detail → source, each step visible and short. A reader who knows the target opens it directly, and names stay searchable.
 
+   Saving into a mixed parent includes grouping its existing units by kind: put movable units of one kind under one folder, moving repositories and packages whole.
+
    For a file joining an established single-role home, state the destination in one line. For anything else, including a save into a parent entry file beside a repository or package, show one row per immediate child and incoming item:
 
    ```text

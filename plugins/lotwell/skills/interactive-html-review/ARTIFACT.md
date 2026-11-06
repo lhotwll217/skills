@@ -14,7 +14,7 @@ The review runs inside a claude.ai artifact: the owner comments in claude.ai on 
 
 2. Publish the built file as an artifact with the capabilities `{"comments": {"composer_only": true, "customAnchors": true}, "assets": {}}`. Owning anchoring is what lets taps reach the overlay instead of claude.ai's own comment mode. If the publish refuses `customAnchors`, republish without that key.
 
-3. The owner comments until they say they are done. On a touch screen a mode switch replaces the hold gestures: Text (the default) shows a Comment chip under a selection, Element picks the tapped element with ↑, ↓ and Comment, and Area drags a screenshot box. On desktop the owner selects text, holds ⇧, or ⌘-drags. Each gesture opens claude.ai's own comment composer; an Area capture asks for one more tap on Comment once its screenshot is saved.
+3. Use the review's touch or desktop controls to open the claude.ai comment composer. On a phone, tap a passage and choose **Comment**. For an Area screenshot, tap **Comment** after the image saves.
 
 4. Read every comment thread with the artifact comments tool, and every screenshot an Area thread names as `Screenshot asset <id>`, fetched by that id. Each thread's anchor detail carries the selected text or element, its nearest heading, and a DOM path.
 

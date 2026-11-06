@@ -5,6 +5,7 @@
   const HOST = config.host === "artifact" ? "artifact" : "local";
   // Touch devices get an explicit mode switch; pointer devices keep the hold gestures.
   const COARSE = matchMedia("(pointer: coarse)").matches;
+  const DEFAULT_MODE = COARSE ? "element" : "text";
   const PAGE_ID = "document";
   const ELEMENT_STATUS = new Set(["resolved", "relocated", "ambiguous", "missing", "unsupported-boundary"]);
   const DURABLE_ATTRIBUTES = ["data-review-id", "data-testid", "data-test", "data-cy", "data-qa"];
@@ -26,6 +27,8 @@
   const overlay = document.createElement("div");
   overlay.id = "__hr_overlay";
   overlay.innerHTML = `
+  <!-- First, so the panel and composer paint above the full-viewport Area layer. -->
+  <div class="hr-area-layer" id="hr-area-layer" hidden></div>
   <span class="hr-save" id="hr-save" role="status">Loading…</span>
   <aside class="hr-panel" id="hr-panel" hidden>
     <div class="hr-label">Comments · <span id="hr-count-2">0</span></div>
@@ -44,9 +47,8 @@
     </div>
   </div>
   <div class="hr-note" id="hr-note" hidden></div>
-  <div class="hr-area-layer" id="hr-area-layer" hidden></div>
-  <button class="hr-sel-chip" id="hr-sel-chip" type="button" hidden>Comment</button>
   <div class="hr-touchbar" id="hr-touchbar">
+    <button class="hr-sel-chip" id="hr-sel-chip" type="button" hidden>Comment</button>
     <div class="hr-actbar" id="hr-actbar" hidden></div>
     <div class="hr-modes" id="hr-modes" role="radiogroup" aria-label="Comment on">
       <button type="button" role="radio" data-mode="text" aria-checked="true" aria-label="Text" title="Text: select text to comment"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3.5h10M8 3.5v9"/></svg></button>
@@ -365,6 +367,7 @@
 
   function placeComposer() {
     discardArmed = false;
+    $("#hr-panel").hidden = true;
     composer.classList.add("visible");
     const quote = $("#hr-quote");
     quote.replaceChildren();
@@ -378,7 +381,7 @@
     } else {
       quote.textContent = pendingSelection.selectedText;
     }
-    $("#hr-text").focus();
+    $("#hr-text").focus({ preventScroll: true });
   }
 
   function closeComposer() {
@@ -501,7 +504,7 @@
     if (state.comments.length === 0) {
       const empty = document.createElement("div");
       empty.className = "hr-empty";
-      empty.textContent = "No Comments yet. Highlight text, hold ⇧ to select an element, or ⌘-drag a screenshot.";
+      empty.textContent = COARSE ? "Tap a passage in Element, then tap Comment." : "No Comments yet. Highlight text, hold ⇧ to select an element, or ⌘-drag a screenshot.";
       list.append(empty);
     }
     $("#hr-count").textContent = String(state.comments.length);
@@ -576,11 +579,16 @@
     }
   }, true);
 
-  async function captureSelection() {
+  function selectedPageRange() {
     const selection = getSelection();
-    if (!selection || selection.rangeCount === 0 || !selection.toString().trim()) return;
-    const range = selection.getRangeAt(0).cloneRange();
-    if (inOverlay(range.startContainer) || inOverlay(range.endContainer)) return;
+    if (!selection?.rangeCount || selection.isCollapsed) return null;
+    const range = selection.getRangeAt(0);
+    if (inOverlay(range.startContainer) || inOverlay(range.endContainer)) return null;
+    return range.cloneRange();
+  }
+
+  async function captureSelection(range = selectedPageRange()) {
+    if (!range || composer.classList.contains("visible")) return;
     const startOffset = boundaryOffset(range.startContainer, range.startOffset);
     const endOffset = boundaryOffset(range.endContainer, range.endOffset);
     if (endOffset <= startOffset) return;
@@ -783,36 +791,75 @@
     if (pickerActive && touchMode !== "element") stopElementPicker();
   });
 
-  // --- ⌘+drag region screenshots ---
+  // Area mode and the desktop shortcut share one pointer-owned drag.
+  const areaLayer = $("#hr-area-layer");
+
   function cropRect(event) {
     const x = Math.min(cropState.startX, event.clientX);
     const y = Math.min(cropState.startY, event.clientY);
     return { x, y, w: Math.abs(event.clientX - cropState.startX), h: Math.abs(event.clientY - cropState.startY) };
   }
 
+  function cancelCrop() {
+    cropState?.box.remove();
+    cropState = null;
+  }
+
+  function pageMovedDuringCrop() {
+    if (!cropState) return;
+    cancelCrop();
+    showActions("", []);
+    note("Page moved. Draw the area again.");
+  }
+
+  document.addEventListener("scroll", pageMovedDuringCrop, true);
+  window.addEventListener("resize", pageMovedDuringCrop);
+  window.visualViewport?.addEventListener("scroll", pageMovedDuringCrop);
+  window.visualViewport?.addEventListener("resize", pageMovedDuringCrop);
+
   document.addEventListener("pointerdown", (event) => {
-    if (pickerActive || !event.metaKey || event.button !== 0 || inOverlay(event.target)) return;
+    if (pickerActive || cropState || !event.isPrimary || event.button !== 0 || composer.classList.contains("visible")) return;
+    if (event.target !== areaLayer && (!event.metaKey || inOverlay(event.target))) return;
     event.preventDefault();
     getSelection()?.removeAllRanges();
+    event.target.setPointerCapture(event.pointerId);
     const box = document.createElement("div");
     box.className = "hr-crop";
     overlay.append(box);
-    cropState = { startX: event.clientX, startY: event.clientY, box };
+    resetTouch();
+    cropState = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, scroll: { x: scrollX, y: scrollY }, box };
   }, true);
 
   document.addEventListener("pointermove", (event) => {
-    if (!cropState) return;
+    if (cropState?.pointerId !== event.pointerId) return;
     const rect = cropRect(event);
     Object.assign(cropState.box.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px` });
   }, true);
 
-  document.addEventListener("pointerup", (event) => {
-    if (!cropState) return;
+  for (const type of ["pointercancel", "lostpointercapture"]) {
+    document.addEventListener(type, (event) => {
+      if (cropState?.pointerId === event.pointerId) cancelCrop();
+    }, true);
+  }
+
+  document.addEventListener("pointerup", async (event) => {
+    if (cropState?.pointerId !== event.pointerId) return;
+    if (scrollX !== cropState.scroll.x || scrollY !== cropState.scroll.y) { pageMovedDuringCrop(); return; }
     const rect = cropRect(event);
-    cropState.box.remove();
-    cropState = null;
-    if (rect.w < 8 || rect.h < 8) return;
-    captureRegion(rect).catch((error) => note(`Screenshot failed: ${error.message}`));
+    if (rect.w < 8 || rect.h < 8) { cancelCrop(); return; }
+    const crop = cropState;
+    crop.pointerId = null;
+    showActions("Saving screenshot…", []);
+    try {
+      await captureRegion(rect, crop);
+    } catch (error) {
+      if (cropState === crop) note(`Screenshot failed: ${error.message}`);
+    } finally {
+      if (cropState === crop) {
+        cancelCrop();
+        if (!stagedArea) showActions("", []);
+      }
+    }
   }, true);
 
   async function ensureCaptureStream() {
@@ -855,22 +902,32 @@
   }
 
   // Where screen capture is unavailable (phones, sandboxed artifact frames), redraw the region from the DOM.
+  let rendererReady;
   function loadRenderer() {
     if (window.html2canvas) return Promise.resolve();
-    return new Promise((settle, fail) => {
+    rendererReady ??= new Promise((settle, fail) => {
       const script = document.createElement("script");
       script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      script.integrity = "sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H";
+      script.crossOrigin = "anonymous";
       script.onload = settle;
-      script.onerror = () => fail(new Error("Could not load the page renderer"));
+      script.onerror = () => {
+        script.remove();
+        rendererReady = null;
+        fail(new Error("Could not load the page renderer"));
+      };
       document.head.append(script);
     });
+    return rendererReady;
   }
 
-  async function renderRegion(rect) {
+  async function renderRegion(rect, scroll) {
     await loadRenderer();
     const canvas = await window.html2canvas(document.documentElement, {
-      x: rect.x + scrollX,
-      y: rect.y + scrollY,
+      x: rect.x + scroll.x,
+      y: rect.y + scroll.y,
+      scrollX: scroll.x,
+      scrollY: scroll.y,
       width: rect.w,
       height: rect.h,
       windowWidth: document.documentElement.clientWidth,
@@ -883,15 +940,19 @@
     return new Promise((settle) => canvas.toBlob(settle, "image/png"));
   }
 
-  async function captureRegion(rect) {
+  async function captureRegion(rect, crop) {
+    const scroll = crop.scroll;
     const useStream = HOST === "local" && navigator.mediaDevices?.getDisplayMedia && !COARSE;
-    const blob = useStream ? await streamRegion(rect) : await renderRegion(rect);
+    const blob = useStream ? await streamRegion(rect) : await renderRegion(rect, scroll);
+    if (cropState !== crop) return;
     if (!blob) throw new Error("Could not encode the region");
     if (HOST === "artifact") { await stageArtifactArea(rect, blob); return; }
     {
       const response = await fetch("/shots", { method: "POST", headers: { "content-type": "image/png" }, body: blob });
       if (!response.ok) throw new Error(`Upload failed (${response.status})`);
       const { path } = await response.json();
+      if (cropState !== crop) return;
+      if (COARSE && touchMode === "area") setTouchMode(DEFAULT_MODE);
       pendingSelection = {
         pageId: PAGE_ID,
         section: reviewModel.title,
@@ -902,7 +963,7 @@
         suffix: "",
         contentHash: "",
         screenshot: path,
-        rect: { x: Math.round(rect.x + scrollX), y: Math.round(rect.y + scrollY), w: Math.round(rect.w), h: Math.round(rect.h) },
+        rect: { x: Math.round(rect.x + scroll.x), y: Math.round(rect.y + scroll.y), w: Math.round(rect.w), h: Math.round(rect.h) },
       };
       pendingElementTarget = null;
       if (editingCommentId) $("#hr-text").value = "";
@@ -1003,6 +1064,7 @@
       result = await artifactComments.openComposer(target);
     }
     if (result && result.opened === false) note("Finish or close the open comment first");
+    else if (area) finishArtifactArea();
     else resetTouch();
   }
 
@@ -1025,13 +1087,18 @@
     closeComposer();
   }
 
+  function finishArtifactArea() {
+    if (COARSE) setTouchMode(DEFAULT_MODE);
+    else resetTouch();
+  }
+
   async function stageArtifactArea(rect, blob) {
     const centerX = rect.x + rect.w / 2;
     const centerY = rect.y + rect.h / 2;
     const element = hitTest(document, centerX, centerY) ?? document.body;
     const staged = { rect, element, point: { clientX: centerX, clientY: centerY }, asset: null, covers: coveredText(rect) };
     stagedArea = staged;
-    showActions("Saving…", [["✕", resetTouch, false, "Cancel"]]);
+    showActions("Saving…", [["✕", finishArtifactArea, false, "Cancel"]]);
     try {
       if (artifactAssets) staged.asset = (await artifactAssets.upload(blob)).id;
     } catch {
@@ -1046,7 +1113,7 @@
           area: true,
         }).catch((error) => note(`Comment failed: ${error.code ?? error.message}`));
       }, true],
-      ["✕", resetTouch, false, "Cancel"],
+      ["✕", finishArtifactArea, false, "Cancel"],
     ]);
   }
 
@@ -1086,11 +1153,11 @@
         const element = thread && locateAnchor(thread.anchor);
         element?.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       },
-      composing: (open) => { if (!open && stagedArea) resetTouch(); },
+      composing: (open) => { if (!open && stagedArea) finishArtifactArea(); },
     }).then((controller) => { anchors = controller; placePins(); }, () => { anchors = null; });
   }
 
-  // --- Mode switch, Text by default. Touch uses it alone; desktop also keeps the ⇧ and ⌘ holds. ---
+  // Desktop also keeps the ⇧ and ⌘ holds.
   let touchMode = "text";
 
   // Light the mode a held shortcut stands for, without changing the chosen mode.
@@ -1098,7 +1165,6 @@
     for (const button of overlay.querySelectorAll("[data-mode]")) button.classList.toggle("hr-held", button.dataset.mode === mode);
   }
   let touchPicking = false;
-  let touchCrop = null;
 
   function resetTouch() {
     stagedArea = null;
@@ -1109,10 +1175,14 @@
   }
 
   function setTouchMode(mode) {
+    cancelCrop();
     touchMode = mode;
     for (const button of overlay.querySelectorAll("[data-mode]")) button.setAttribute("aria-checked", String(button.dataset.mode === mode));
     resetTouch();
-    $("#hr-area-layer").hidden = mode !== "area";
+    areaLayer.hidden = mode !== "area";
+    if (mode === "area" && (COARSE || HOST === "artifact")) {
+      loadRenderer().catch(() => {}); // Warm the renderer during the drag. Capture retries a failed load.
+    }
     if (!COARSE) {
       if (mode === "element") startElementPicker();
       else if (pickerActive) stopElementPicker();
@@ -1136,28 +1206,29 @@
   });
 
   if (COARSE) {
-
-    let selectionTimer = null;
-    document.addEventListener("selectionchange", () => {
-      clearTimeout(selectionTimer);
-      selectionTimer = setTimeout(() => {
-        const chip = $("#hr-sel-chip");
-        const selection = getSelection();
-        if (touchMode !== "text" || !selection?.rangeCount || selection.isCollapsed || inOverlay(selection.anchorNode)) { chip.hidden = true; return; }
-        const box = selection.getRangeAt(0).getBoundingClientRect();
-        chip.hidden = false;
-        chip.style.left = `${Math.min(Math.max(8, box.left), innerWidth - chip.offsetWidth - 8)}px`;
-        chip.style.top = `${Math.min(box.bottom + 10, innerHeight - chip.offsetHeight - 80)}px`;
-      }, 150);
-    });
-    $("#hr-sel-chip").addEventListener("pointerdown", (event) => event.preventDefault());
-    $("#hr-sel-chip").addEventListener("click", () => {
-      $("#hr-sel-chip").hidden = true;
-      captureSelection().catch((error) => note(`Selection failed: ${error.message}`));
+    const chip = $("#hr-sel-chip");
+    let touchRange = null;
+    let pressedRange = null;
+    function updateTextAction() {
+      if (pressedRange) return;
+      touchRange = touchMode !== "area" && !composer.classList.contains("visible") ? selectedPageRange() : null;
+      if (touchRange && touchPicking) resetTouch();
+      chip.hidden = !touchRange;
+    }
+    document.addEventListener("selectionchange", updateTextAction);
+    chip.addEventListener("pointerdown", () => { pressedRange = touchRange; });
+    chip.addEventListener("pointercancel", () => { pressedRange = null; updateTextAction(); });
+    chip.addEventListener("click", () => {
+      const range = pressedRange || touchRange;
+      pressedRange = null;
+      chip.hidden = true;
+      captureSelection(range).catch((error) => note(`Selection failed: ${error.message}`));
     });
 
     document.addEventListener("click", (event) => {
-      if (touchMode !== "element" || inOverlay(event.target)) return;
+      if (touchMode !== "element" || inOverlay(event.target) || composer.classList.contains("visible")) return;
+      if (!getSelection()?.isCollapsed || event.composedPath().some(node =>
+        node.isContentEditable || node.matches?.("a[href], button, input, label, select, summary, textarea, [role=button], [role=link]"))) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       pickerDeepest = hitTest(document, event.clientX, event.clientY);
@@ -1166,35 +1237,6 @@
     }, true);
 
   }
-
-  const areaLayer = $("#hr-area-layer");
-  areaLayer.addEventListener("pointerdown", (event) => {
-    areaLayer.setPointerCapture(event.pointerId);
-    const box = document.createElement("div");
-    box.className = "hr-crop";
-    overlay.append(box);
-    showActions("", []);
-    touchCrop = { startX: event.clientX, startY: event.clientY, box };
-  });
-  areaLayer.addEventListener("pointermove", (event) => {
-    if (!touchCrop) return;
-    const x = Math.min(touchCrop.startX, event.clientX);
-    const y = Math.min(touchCrop.startY, event.clientY);
-    Object.assign(touchCrop.box.style, { left: `${x}px`, top: `${y}px`, width: `${Math.abs(event.clientX - touchCrop.startX)}px`, height: `${Math.abs(event.clientY - touchCrop.startY)}px` });
-  });
-  areaLayer.addEventListener("pointerup", (event) => {
-    if (!touchCrop) return;
-    const rect = {
-      x: Math.min(touchCrop.startX, event.clientX),
-      y: Math.min(touchCrop.startY, event.clientY),
-      w: Math.abs(event.clientX - touchCrop.startX),
-      h: Math.abs(event.clientY - touchCrop.startY),
-    };
-    touchCrop.box.remove();
-    touchCrop = null;
-    if (rect.w < 12 || rect.h < 12) return;
-    captureRegion(rect).catch((error) => note(`Screenshot failed: ${error.message}`));
-  });
 
   $("#hr-toggle").addEventListener("click", () => {
     const panel = $("#hr-panel");
@@ -1264,6 +1306,7 @@
     $("#hr-save").textContent = "Saved";
   }
 
+  setTouchMode(DEFAULT_MODE);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize);
   else initialize();
 })();

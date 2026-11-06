@@ -1,6 +1,6 @@
 ---
 name: interactive-html-review
-description: Review a rendered HTML page with Comments anchored to highlighted text, selected elements, or screenshots, in a local browser or as a claude.ai artifact for phone review or sharing. Use when the owner wants to review a rendered HTML mockup, prototype, or page — not its source or a diff.
+description: Review a rendered HTML page on desktop or phone. Anchor comments to text, elements, or screenshots.
 ---
 
 # Interactive HTML review
@@ -13,7 +13,7 @@ Identify the HTML file. Ask only when no exact path or unambiguous document is a
 
 ## 2. Launch the review
 
-Run a local review by default. When the owner asks to review on a phone or share the review, and this agent can publish a claude.ai artifact and read its comment threads, follow [ARTIFACT.md](ARTIFACT.md) instead of the rest of this section and section 4.
+Run the local review by default. For a phone retry, reuse the owner's existing protected Cloudflare link and review state. Verify the forwarded page loads and shows the saved comments. For a claude.ai artifact, follow [ARTIFACT.md](ARTIFACT.md).
 
 Use the launcher arguments below. On macOS, launch through `launchctl` as described immediately after the command; elsewhere, use a persistent foreground command session:
 
@@ -36,15 +36,15 @@ Replace `LAUNCHER_ARGUMENTS` with the arguments above, quoting paths with spaces
 Read the stdout log for the printed URL and `JSON:` path; check stderr on failure. In a **subsequent tool call**, verify the URL responds and `/bin/launchctl list com.owner-operator.review.html.UUID` reports a live PID before reporting success. Record the exact job label with the artifact paths. Use a separate UUID for concurrent reviews; never replace another review job. After reading the owner's Comments, stop only this job with `/bin/launchctl remove com.owner-operator.review.html.UUID`; retain the review artifacts.
 
 
-The launcher serves the page with an injected overlay — a top-right toolbar, a Comments panel, and a selection composer — and serves the document's directory read-only so relative stylesheets, images, and fonts resolve. Page links are intercepted so a click cannot navigate out of the review. Add `--output-dir /absolute/path` only when the owner chose a durable review-state location; otherwise it creates a temporary directory. Use `--no-open` only when browser launch is unavailable or the owner asks not to open it.
+The launcher serves sibling assets and intercepts page links during review. Use `--output-dir` to resume a review or save it in a chosen directory. Use `--no-open` for a phone-only retry.
 
 The launcher binds to `127.0.0.1` on an assigned port, prints the URL, and opens the browser. Report the printed `JSON:` path exactly. Keep the supervised job (or non-macOS foreground session) alive while the owner reviews.
 
 ## 3. Let the owner annotate
 
-The owner can highlight rendered text or hold ⇧ to pick an element, just as holding ⌘ starts a screenshot drag. While ⇧ is held, a viewport ring and crosshair mark the mode and the exact hit-tested element is outlined; ↑ selects its parent, ↓ steps back toward the original target, and click confirms. Releasing ⇧ exits without selecting. Confirmed elements stay outlined with a number that matches their Comment card in the panel.
+On a phone, tap a passage in **Element**, then **Comment**. For an exact quote, choose **Text**, select the words, and tap **Comment** in the dock. For a screenshot, choose **Area** and drag once. Write the note and tap **Add Comment**.
 
-⌘-drag captures a region screenshot instead: the first capture asks the browser to share the tab (the owner should pick **This Tab**), the cropped PNG saves to `shots/` beside `review.json`, and the composer opens with the image attached as the Comment's reference.
+On desktop, highlight text, hold ⇧ and click an element, or ⌘-drag a screenshot. With ⇧ held, ↑ picks the parent and ↓ steps back. For the first screenshot, share **This Tab**.
 
 Comments appear in the toolbar panel and support Edit and Delete. Every mutation atomically autosaves to `review.json`; refreshing reloads it. The owner's message — such as "I'm done; please look" — is the completion signal. The page has no approval workflow or alternate document output.
 

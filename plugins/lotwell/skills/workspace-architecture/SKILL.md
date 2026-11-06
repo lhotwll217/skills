@@ -9,17 +9,25 @@ Workspace architecture makes project-owned durable work continuable by stateless
 
 ## Route the work
 
-For an explicit audit request, apply the cold-open test below to the requested scope.
+For a lookup, return links to the existing authorities. Give any short summary in the reply and finish there. If a missing or broken link prevents discovery and repair is in scope, repair the link on the existing discovery surface.
 
-For a revision — a correction, a superseding decision, or changed understanding — follow [Revision and current state](#revision-and-current-state).
+For an audit, use the [cold-open test](#cold-open-test). For a correction or superseding decision, follow [Revision and current state](#revision-and-current-state).
 
-For artifact placement, start at the nearest stable parent of the artifact. Read the applicable agent instructions, the shallow parent listing, and its README or index when present. Inspect only the artifact, its proposed home, and the direct discovery path needed to decide:
+### Before the first workspace write
 
-- **Healthy home:** an established local pattern makes the artifact's purpose, owner, lifecycle, canonical source, and next reading step clear. Follow the [routine placement branch](#routine-placement).
-- **Misleading home:** existing names, placement, indexes, ownership, or source trail obscure those facts. Use the repair and audit procedure below.
-- **No home:** no established pattern governs durable material, or several related artifacts need a new domain-owned folder. Use the new-chain procedure below.
+Start at the project named in the request, otherwise the working project parent. Read its instructions, shallow listing and index. Decide ownership here before choosing a destination. Descend into an independently owned unit only when the request or an opened source establishes that it owns this deliverable. Available storage or a docs folder alone establishes no ownership.
 
-Externally prescribed layouts remain authoritative. Preserve package, dependency, vendor, framework, SDK, tool, cache, profile, and package-managed configuration boundaries.
+Before choosing a destination or filename, run the mixed-parent check below whenever the task adds project-owned material beside an independently maintained unit, including a save into a parent entry file. Also run it when rearranging units with different roles. Otherwise, for placement into an established single-role home, show the artifact and destination in one line. For the mixed-parent check, show the plan in the conversation before writing. Use one row per immediate content unit and incoming artifact:
+
+```text
+current path or NEW | role | proposed path relative to the project parent
+```
+
+Run `python3 <skill>/scripts/check_layout.py "<project parent>"` with those rows on stdin. An established category folder can stay as its role's home. Put movable units of the same role under one domain-named folder, moving repositories and packages whole. Ordinary entry and instruction files may stay at their scope. For an externally required location append `| fixed=file:line`; for material that belongs inside an independent unit append `| owns=file:line`. Open the cited consumer or ownership source and verify that it supports the exception.
+
+Revise a failing plan before writing. A plan-only request ends after preflight. Otherwise apply the passing plan within the authority given and run the same rows with `--delivered`. Keep rows in the conversation or shell input. Verify moved units and affected references. A reader follows pointers to the single home of each mutable decision, so updating it edits one maintained account.
+
+Use [routine placement](#routine-placement) when the parent already meets these checks. [Repair](#minimal-repair) a misleading parent at this boundary. [Scaffold](#new-chain-scaffolding) a new home when none exists.
 
 Before placing anything, identify:
 
@@ -31,7 +39,6 @@ Before placing anything, identify:
 ## Common rules
 
 - Let domain language name folders and files. Prefix date-bound artifacts with `YYYY-MM-DD-` when the local convention does not already carry chronology.
-- Make kind and scope recognizable from the parent surface: a name, a short parent description, or an index entry lets an agent choose a destination before opening its contents.
 - Keep one canonical source. Label snapshots, downloads, cleaned transcripts, and exports as derived views and link them to that source. Navigation views — indexes, cross-references, alternate groupings — orient; they point at the authoritative copy rather than duplicating it.
 - Keep process metadata, session IDs, audit notes, and agent instructions outside canonical business data.
 - Keep ownership boundaries visible when artifacts have different owners, lifecycles, or discovery paths.
@@ -49,7 +56,7 @@ Persist each statement at the scope its source supports, with that source named 
 
 ## Revision and current state
 
-Each subject or decision has one maintained authority; every other surface links to it. When understanding changes:
+When understanding changes:
 
 1. Update the maintained document for the subject.
 2. Update every discovery surface that still presents the old state as current — indexes, READMEs, parent descriptions, instructions — at the owning boundary in the same pass.
@@ -111,14 +118,14 @@ Begin at the nearest stable parent and answer from the filesystem and its links:
 6. What should I read next?
 7. Where is the originating session when auditability matters?
 
-A healthy pattern answers the applicable questions through names, placement, links, and necessary front doors. A pattern is misleading when generic, process-stage, tool, or role labels hide the domain; ownership boundaries are wrong; an index duplicates rather than orients; a durable artifact lives in a temporary home; a statement carries more authority or wider scope than its source supports; a superseded view still presents as current; or a source is broken, invented, or ambiguous.
+A healthy pattern answers the applicable questions through names, placement, links, and necessary front doors. A pattern is misleading when names hide meaningful distinctions; ownership boundaries are wrong; an index duplicates rather than orients; a durable artifact lives in a temporary home; a statement carries more authority or wider scope than its source supports; a superseded view still presents as current; or a source is broken, invented, or ambiguous.
 
 Tie every failed answer to a concrete gap before editing. The presence of a folder or README is evidence only when it passes this test.
 
 ### Minimal repair
 
 - Repair the existing chain at its owning boundary rather than layering a second organization beside it.
-- Rename for the durable subject or domain, not the process stage, time horizon, tool, or audience role.
+- Name each category in the domain language a reader uses to choose it.
 - Move reusable material from temporary storage into its durable domain home.
 - Restore an over-promoted statement to the scope its source supports, keeping the supported part of the rule.
 - Apply the common, meaning-and-authority, revision, persistence-surface, and project-history rules above.
@@ -132,7 +139,7 @@ Return to the stable parent and repeat the cold-open test using only the filesys
 
 ### 1. Descriptive folders and files
 
-Name the subject and artifact type so a shallow listing provides the first orientation. Create a folder when a common pattern or multi-artifact discovery path is emerging; let one descriptive file orient itself when no grouping is needed. Preserve distinct ownership and lifecycle boundaries.
+Name the subject and artifact type so a shallow listing provides the first orientation. Apply the parent-layout checks above when creating a home.
 
 ### 2. Progressive discovery
 

@@ -43,7 +43,7 @@ When persisting a consequential statement — a decision, correction, instructio
 
 Persist each statement at the scope its source supports, with that source named beside it:
 
-- A recurring rule or operating instruction requires the owner's words or recurring evidence.
+- A recurring rule or operating instruction requires the owner's words or recurring evidence and extends only as far as they state: an approved decision about the work at hand governs that work, and the sources, layout, and format the workspace holds today enter standing instructions as description, leaving room for kinds the source did not rule out.
 - A local correction governs the corrected artifact; it becomes wider governance only when its source says so.
 - An agent hypothesis stays labeled as hypothesis until the owner or evidence confirms it.
 

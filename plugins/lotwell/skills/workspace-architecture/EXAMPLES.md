@@ -1,11 +1,18 @@
-# Chain of Context surface examples
+# Workspace architecture examples
 
-Consult these examples from `SKILL.md` when:
+## Layout plan
 
-1. a README/index, agent-instruction file, daily log, durable topic document, or source package is needed but no healthy local example exists; or
-2. two organizations still satisfy the three layers and cold-open test.
+Inventory the owning project's existing content and incoming files. Show one row per unit, with paths relative to that project:
 
-Every name, date, path, URL, and session identifier below is synthetic. These examples show minimal shapes, not a folder schema.
+```text
+current path or NEW | role | proposed path
+```
+
+Group movable units by role. Keep project entry files at the boundary they serve. If a consumer requires a fixed path, append `| fixed=file:line`. For a file owned by an independently maintained unit, append `| owns=file:line`. Read that line to verify the exception.
+
+Pass the rows on stdin to `python3 <skill>/scripts/check_layout.py "<project parent>"`. Fix rejected rows before writing. When carrying out the plan, check the same rows with `--delivered` afterward.
+
+The remaining examples illustrate individual choices. Follow established local names and formats.
 
 ## One descriptive file is enough
 

@@ -1,6 +1,6 @@
 # Chain of Context origin and source lineage
 
-This is maintainer documentation for preserving Luke Otwell's original Chain of Context framework while evolving the agent skill. All operating rules are in [`SKILL.md`](SKILL.md); concrete examples remain in [`EXAMPLES.md`](EXAMPLES.md).
+This is maintainer documentation for preserving Luke Otwell's original Chain of Context framework while evolving the agent skill. The main workflow lives in [`SKILL.md`](SKILL.md). The mixed-layout procedure and examples live in [`EXAMPLES.md`](EXAMPLES.md).
 
 ## Canonical sources
 
@@ -41,7 +41,7 @@ Primary-source research completed 2026-09-01 converged the cross-harness pattern
 
 1. `README.md` remains folder orientation.
 2. `AGENTS.md` is the canonical shared source for operating directions at the nearest directory boundary where they become true.
-3. A same-scope `CLAUDE.md` containing only `@AGENTS.md` adapts those directions for Claude Code without creating a duplicate source.
+3. Claude Code v2.1.277+ supports native `AGENTS.md` discovery. With default settings, an applicable `CLAUDE.md` or `CLAUDE.local.md` takes precedence. This project uses the `@AGENTS.md` import to share instructions. [Claude Code project instructions](https://code.claude.com/docs/en/memory#agentsmd).
 4. Hosts that do not discover nested AGENTS files should point their loaded instruction surface to the canonical file rather than copy it.
 5. Reusable conditional procedures remain model-invoked skills rather than folder instruction payloads.
 
@@ -51,7 +51,7 @@ Before changing `SKILL.md` or `EXAMPLES.md`:
 
 1. Open both pinned gist revisions, not only the current gist landing page.
 2. Check every framework item above against the proposed text.
-3. Keep all operating rules and procedures in `SKILL.md`, with task-scoped completion criteria.
+3. Keep each procedure reachable from the condition that calls for it in `SKILL.md`.
 4. Keep concrete shapes needed only when creating a persistence surface in `EXAMPLES.md`, behind its explicit trigger in `SKILL.md`.
 5. Preserve source documentation here; do not make a runtime link carry behavior that the skill itself omits.
 6. Validate the description against preservation, history/instructions, organization-change, and audit/repair prompts in a fresh model session.

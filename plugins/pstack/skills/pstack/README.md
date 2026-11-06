@@ -2,8 +2,6 @@
 
 Ported on 2026-09-09 from Lauren Tan’s pstack 0.15.0 (`df3fb15`), then updated to 0.15.21 (`1dcc2ba`) on 2026-10-13 and to [pstack 0.15.36](https://github.com/cursor/plugins/tree/c742dd61706fbacc1b95f1a20b7b988cf096ce6c/pstack) on 2026-11-05. All 58 registered upstream skills, their references, 23 playbooks, helpers, and two agent prompts are included. Copyright © 2026 Lauren Tan; [MIT license](LICENSE). Cursor plugin metadata, branding, the guide, and the dormant Benny automation pack are not installed. The linked upstream tree preserves their provenance. `scripts/port-upstream.py` at the plugin root merges a later upstream range under these conventions, and `scripts/check-port.py` checks the result.
 
-Make local changes here. [lhotwll217/pstack](https://github.com/lhotwll217/pstack) stops at 0.15.21 (`e2f20ce`). The next update merges from the linked 0.15.36 commit, not by subtree pull.
-
 ## Use
 
 Start with `pstack-poteto-mode`, `pstack-create-verification-skill`, or `pstack-maintain-verification-skill`. Ask `pstack-poteto-help` when unsure which workflow fits. In Owner Operator use `/skill:pstack-poteto-mode`; in Codex use `$pstack-poteto-mode`; in Claude Code use `/pstack-poteto-mode` (flat symlink install) or `/pstack:pstack-poteto-mode` (plugin install). `pstack` opens this index. Every upstream skill name has the `pstack-` prefix, so existing skills such as `tdd` remain separate. Prototype is a poteto-mode playbook, not a separate upstream skill.
@@ -16,7 +14,7 @@ Resolve links relative to the containing file, following symlinks. Bare `scripts
 
 ## Policy and capabilities
 
-Owner instructions, task scope, permissions, delegation, session privacy, and model-selection policies take precedence over every workflow and principle. Installation grants no authority to execute workflows, publish, send messages, change model preferences, create automations or scheduled jobs, or enable cloud services. Keep internal planning and decision trails in the owner’s established workspace, outside product PRs unless intentionally shipped documentation is authorized. Follow the local writing-for-agents and Chain of Context guidance when authoring or placing artifacts.
+Owner instructions, task scope, permissions, delegation, session privacy, and model-selection policies take precedence over every workflow and principle. Installation grants no authority to execute workflows, publish, send messages, change model preferences, create automations or scheduled jobs, or enable cloud services. Keep internal planning and decision trails in the owner’s established workspace, outside product PRs unless intentionally shipped documentation is authorized.
 
 - **Delegation and models.** Inspect the current tool catalog before a fan-out. Owner Operator uses its bundled `select-harness-for-delegation` skill and `delegate_agent` lifecycle when exposed; its owner-selected identities, approved baselines, retry rules, and no-poll policy govern. Other harnesses use only their advertised delegation API. The [poteto-agent](agents/poteto-agent.md) and [Comment Sicko](agents/comment-sicko.md) files are prompts to pass to supported workers, not installed subagent types. A child forbidden to delegate completes its task directly. Sequential local passes retain coverage, but cannot claim independent or multi-model review. If that independence is a completion gate, report it unmet. No upstream model default or silent downgrade applies.
 

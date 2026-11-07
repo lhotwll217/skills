@@ -9,16 +9,15 @@ Luke Otwell's agent skills, published as a Claude Code plugin marketplace (`lhot
 plugins/lotwell/                     # plugin "lotwell": the general skills (16)
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
-plugins/pstack/                      # plugin "pstack": the portable pstack port (59)
+plugins/pstack/                      # plugin "pstack": upstream pstack (58), copied from lhotwll217/pstack; edit here
   .claude-plugin/plugin.json
-  skills/pstack/README.md            # index, provenance, capability notes
-  skills/pstack-<name>/SKILL.md
+  skills/<name>/SKILL.md
 plugins/mattpocock-skills/           # plugin "mattpocock-skills": Matt Pocock's skills (27), copied from a fork
   FORK.md                            # source, commit, and Luke's changes
 deprecated/                          # unmaintained, kept for reference
 ```
 
-Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:pstack-poteto-mode`. The pstack folders keep their `pstack-` prefix on purpose so the same folders can be symlinked flat into `~/.claude/skills/` without colliding with other `tdd`, `research`, or `teach` skills; under the plugin that yields the double prefix.
+Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:poteto-mode`. pstack starts as a byte-for-byte copy of upstream through [lhotwll217/pstack](https://github.com/lhotwll217/pstack); upstream updates land there first, then merge into `plugins/pstack`, where local edits are made.
 
 ## Install
 
@@ -81,7 +80,7 @@ claude plugin install lotwell@lhotwll217-skills || true
 
 | Skill | Purpose |
 |---|---|
-| [pstack](plugins/pstack/skills/pstack/README.md) | On-demand, namespaced port of pstack's engineering workflows, with portable capability checks. |
+| [pstack](plugins/pstack/README.md) | Lauren Tan's pstack engineering workflows, from upstream. Start with `/pstack:poteto-mode`. |
 | [align](plugins/lotwell/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
 | [ask-the-right-questions](plugins/lotwell/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
 | [workspace-management](plugins/lotwell/skills/workspace-management/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |

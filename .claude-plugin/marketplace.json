@@ -17,8 +17,8 @@
     {
       "name": "pstack",
       "source": "./plugins/pstack",
-      "description": "Portable, namespaced port of Lauren Tan's pstack engineering workflows. All entry points are user-invoked: /pstack:pstack-poteto-mode and friends.",
-      "version": "0.15.38",
+      "description": "Lauren Tan's pstack, copied verbatim from upstream (cursor/plugins c742dd61) via lhotwll217/pstack, then edited here. Start with /pstack:poteto-mode.",
+      "version": "0.15.39",
       "license": "MIT",
       "category": "workflows"
     },

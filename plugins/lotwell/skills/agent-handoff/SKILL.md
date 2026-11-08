@@ -9,10 +9,10 @@ A **handoff** carries work from a **sender** to a **receiver** on behalf of a **
 
 ## Drafting
 
-1. Recover the requester's words: the original request, later corrections, and the governing agreement. Search the session archive when they span sessions. Keep the speaker and the order of decisions. Trace an agreement to the words that settled it. An answer to one question settles only that question.
-2. Draft the handoff with headings and bullets. When a plan already lives in an issue or spec, give the receiver its purpose and a pointer to the plan. When the requester asks the sender to choose inputs, supply actual items the receiver can use. A category alone leaves that work undone.
-3. Check the draft against every trigger and fix each finding.
-4. Show the requester the exact text before sending.
+1. Recover the requester's words: the original request, later corrections, and the governing agreement. Search the session archive when they span sessions. Keep the speaker and the order of decisions. Only a decision establishes authority. Treat a question as open until its answer is in evidence. An answer to one question settles only that question.
+2. Start with the assignment and the outcome that would satisfy it. If an existing issue or spec holds the plan, link it once. Its decisions, build steps and acceptance checklist stay there. Quote a detail only when it changes this receiver's assignment.
+3. Fill any input the requester asked the sender to choose. Give the receiver an actual item to work on. A category leaves that part of the task undone.
+4. Lint the draft. Remove repeated requirements and your own rationale. Cut any line whose deletion leaves the receiver equally able to own and complete the task. Return the receiver-facing text, with bullets under the applicable headings. Show that text before sending it.
 
 When receiving a handoff, use [align](../align/SKILL.md) to check your understanding with the sender.
 
@@ -66,4 +66,4 @@ The handoff inherits the original request's authority. State a decision boundary
 
 ### The receiver's judgment
 
-- `steered-judgment`: a question, proposed diagnosis, expected finding, or outline predetermines a conclusion the requester delegated. Could the receiver reach a different supported conclusion and still fulfill the request? Apply this test to judgments left open. Fixed facts, assigned inputs, and requester decisions may constrain the answer legitimately.
+- `steered-judgment`: a question, proposed diagnosis, expected finding, or outline predetermines a conclusion the requester delegated. Could the receiver reach a different supported conclusion and still fulfill the request? Apply this test to judgments left open. In a request for independent research, a sender-supplied outline of findings fires this trigger even when each item links to a source. A work sample the requester asked the sender to choose supplies an input; it can leave the finding entirely open.

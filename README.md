@@ -82,6 +82,7 @@ claude plugin install lotwell@lhotwll217-skills || true
 |---|---|
 | [pstack](plugins/pstack/README.md) | Lauren Tan's pstack engineering workflows, from upstream. Start with `/pstack:poteto-mode`. |
 | [align](plugins/lotwell/skills/align/SKILL.md) | Establish and maintain a reviewable agreement before work, with proportionate questioning and independent judgment. |
+| [agent-handoff](plugins/lotwell/skills/agent-handoff/SKILL.md) | Draft a handoff or lint one against the original request and its corrections. |
 | [ask-the-right-questions](plugins/lotwell/skills/ask-the-right-questions/SKILL.md) | Find the few questions that matter most about a problem before anyone answers it, checking each question's presuppositions against the evidence. |
 | [workspace-management](plugins/lotwell/skills/workspace-management/SKILL.md) | Make durable project work navigable to cold-start agents through descriptive names, progressive discovery, and linked sources. |
 | [current-system-audit](plugins/lotwell/skills/current-system-audit/SKILL.md) | Audit the current implementation and produce an evidence-backed safe-to-build-on verdict. |

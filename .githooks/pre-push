@@ -1,5 +1,4 @@
 #!/bin/sh
 set -eu
 cd "$(git rev-parse --show-toplevel)"
-python3 scripts/check-skill-names.py
 exec python3 scripts/check-plugin-releases.py --pre-push

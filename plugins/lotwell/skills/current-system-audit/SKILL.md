@@ -1,5 +1,5 @@
 ---
-name: current-system-audit
+name: lotwell-current-system-audit
 description: Audit the current implementation, dependency source, behavior, tests, and history before proposing work; produce an evidence-backed safe-to-build-on verdict and the smallest justified change. Use when a request may rest on stale premises, duplicate an existing mechanism, or extend an unsound local design.
 ---
 

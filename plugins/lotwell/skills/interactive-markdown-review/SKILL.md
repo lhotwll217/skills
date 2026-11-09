@@ -1,5 +1,5 @@
 ---
-name: interactive-markdown-review
+name: lotwell-interactive-markdown-review
 description: Open a Markdown file for interactive review and collect Comments anchored to highlighted text. Use when the owner wants to review Markdown.
 ---
 

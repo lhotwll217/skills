@@ -1,5 +1,5 @@
 ---
-name: writing-for-agents
+name: pocock-writing-for-agents
 description: Write and review documents agents consume. Use for skills, AGENTS.md or CLAUDE.md, and docs reached through agent-facing pointers.
 ---
 

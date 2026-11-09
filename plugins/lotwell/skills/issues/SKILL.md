@@ -1,5 +1,5 @@
 ---
-name: issues
+name: lotwell-issues
 description: Write or revise an issue without inventing solutions. Use when filing, drafting, or updating an issue.
 ---
 

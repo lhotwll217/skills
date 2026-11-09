@@ -1,5 +1,5 @@
 ---
-name: seo-analytics-research
+name: lotwell-seo-analytics-research
 description: Research SEO questions with live DataForSEO evidence. Use for keyword, demand, trend, intent, SERP, ranking, competitor, link, or on-page analysis.
 ---
 

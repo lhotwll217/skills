@@ -17,7 +17,7 @@ plugins/mattpocock-skills/           # plugin "mattpocock-skills": Matt Pocock's
 deprecated/                          # unmaintained, kept for reference
 ```
 
-Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:poteto-mode`. pstack starts as a byte-for-byte copy of upstream through [lhotwll217/pstack](https://github.com/lhotwll217/pstack); upstream updates land there first, then merge into `plugins/pstack`, where local edits are made.
+Plugin skills load under their plugin namespace: `/lotwell:prior-art`, `/pstack:poteto-mode`. Each skill's `name:` also carries its plugin's prefix (`lotwell-`, `pstack-`, `pocock-`), because Pi and Owner Operator load skills by name with no namespace; folders keep upstream names, so Claude Code commands stay clean. `scripts/check-skill-names.py` enforces the prefix in the pre-push hook and CI. pstack starts as a byte-for-byte copy of upstream through [lhotwll217/pstack](https://github.com/lhotwll217/pstack); upstream updates land there first, then merge into `plugins/pstack`, where local edits are made.
 
 ## Install
 
@@ -47,19 +47,19 @@ codex plugin add mattpocock-skills@lhotwll217-skills
 pi install git:github.com/lhotwll217/skills
 ```
 
-**Owner Operator.** Owner Operator loads skills from its workspace folder, not from Pi packages. It bundles its own copy of `writing-for-agents`, so the loop skips that one. Clone the repo and link the rest:
+**Owner Operator.** Owner Operator loads skills from its workspace folder, not from Pi packages. It bundles its own copy of `writing-for-agents`, so the loop skips that one. Clone the repo and link the rest, each under its prefixed skill name:
 
 ```bash
 git clone https://github.com/lhotwll217/skills.git
-for d in skills/plugins/{lotwell,pstack}/skills/*/ skills/plugins/mattpocock-skills/skills/{engineering,productivity}/*/; do [ "$(basename "$d")" = writing-for-agents ] || ln -sfn "$PWD/${d%/}" "${OO_HOME:-$HOME/.owner-operator}/workspace/skills/$(basename "$d")"; done
+for d in skills/plugins/{lotwell,pstack}/skills/*/ skills/plugins/mattpocock-skills/skills/{engineering,productivity}/*/; do n=$(sed -n 's/^name: *//p' "$d/SKILL.md" | head -1); [ "$n" = pocock-writing-for-agents ] || ln -sfn "$PWD/${d%/}" "${OO_HOME:-$HOME/.owner-operator}/workspace/skills/$n"; done
 ```
 
 **Any other agent.** The `skills` CLI installs named skills. It finds the `lotwell` and `pstack` skills from the repo root. Matt Pocock's skills need the plugin folder, which also holds skills he has not promoted, so name the ones you want:
 
 ```bash
 npx skills add lhotwll217/skills --list
-npx skills add lhotwll217/skills --skill writing-great-evals
-npx skills add https://github.com/lhotwll217/skills/tree/main/plugins/mattpocock-skills --skill tdd
+npx skills add lhotwll217/skills --skill lotwell-writing-great-evals
+npx skills add https://github.com/lhotwll217/skills/tree/main/plugins/mattpocock-skills --skill pocock-tdd
 ```
 
 ## Cloud sessions

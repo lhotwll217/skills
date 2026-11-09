@@ -1,5 +1,5 @@
 ---
-name: agent-handoff
+name: lotwell-agent-handoff
 description: Handoff drafting and linting. Use before sending work to another agent or session, to draft the brief or to lint one for wording that changes the assignment or steers the receiver.
 ---
 

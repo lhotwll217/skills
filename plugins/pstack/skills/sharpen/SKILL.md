@@ -1,5 +1,5 @@
 ---
-name: sharpen
+name: pstack-sharpen
 description: "Make a task deeper, not bigger, then rewrite the prompt. Use for /sharpen."
 disable-model-invocation: true
 ---

@@ -1,5 +1,5 @@
 ---
-name: workspace-management
+name: lotwell-workspace-management
 description: Organize project files for a cold reader. Use when saving or locating work, changing a layout, recording decisions, sources, or standing instructions, or auditing a workspace.
 ---
 

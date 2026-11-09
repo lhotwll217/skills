@@ -1,5 +1,5 @@
 ---
-name: align
+name: lotwell-align
 description: Align before starting work, at a handoff, or when a correction or reframe changes the agreement.
 ---
 

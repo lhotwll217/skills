@@ -1,5 +1,5 @@
 ---
-name: interactive-html-review
+name: lotwell-interactive-html-review
 description: Review a rendered HTML page on desktop or phone. Anchor comments to text, elements, or screenshots.
 ---
 

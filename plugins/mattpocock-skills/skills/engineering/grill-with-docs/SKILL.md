@@ -1,5 +1,5 @@
 ---
-name: grill-with-docs
+name: pocock-grill-with-docs
 description: Grill a repository-backed plan while maintaining its domain glossary and durable decisions. Use when the owner wants to sharpen a plan or design in a working directory.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: updating-prompts
+name: lotwell-updating-prompts
 description: Ship the smallest delta to an existing prompt — fix a behavior, add a rule, or compress. Use when editing or reviewing system prompts, agent prompts, tool descriptions, or other LLM instructions.
 ---
 

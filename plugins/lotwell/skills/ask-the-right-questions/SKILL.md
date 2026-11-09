@@ -1,5 +1,5 @@
 ---
-name: ask-the-right-questions
+name: lotwell-ask-the-right-questions
 description: "Find the few questions that matter most about a problem before anyone answers it."
 disable-model-invocation: true
 ---

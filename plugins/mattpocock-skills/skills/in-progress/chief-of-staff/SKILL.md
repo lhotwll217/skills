@@ -1,5 +1,5 @@
 ---
-name: chief-of-staff
+name: pocock-chief-of-staff
 description: Pursue a long-running goal in a single session by co-ordinating subagents.
 disable-model-invocation: true
 ---

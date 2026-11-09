@@ -1,5 +1,5 @@
 ---
-name: show-me
+name: lotwell-show-me
 description: Help the user understand the current topic visually with concise diagrams, code-shape sketches, and focused HTML artifacts.
 metadata:
   credits:

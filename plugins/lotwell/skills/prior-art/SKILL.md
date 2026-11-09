@@ -1,5 +1,5 @@
 ---
-name: prior-art
+name: lotwell-prior-art
 description: Research external implementations and standards before designing something that may already exist. Every decision-bearing citation must be opened, pinned, quoted, linked to a local copy and upstream source, and backed by credibility facts. Use for prior art, precedent, established practice, or build-versus-adopt decisions.
 ---
 

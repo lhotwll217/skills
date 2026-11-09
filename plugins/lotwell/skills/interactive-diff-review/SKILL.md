@@ -1,5 +1,5 @@
 ---
-name: interactive-diff-review
+name: lotwell-interactive-diff-review
 description: Open a deterministic, interactive side-by-side review for an explicitly targeted Git diff and persist the owner's anchored Comments to JSON. Use when the user asks to see, inspect, or comment on a product diff, selected files, or a base-to-candidate change without unrelated generated artifacts.
 ---
 

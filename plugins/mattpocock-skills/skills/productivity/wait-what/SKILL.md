@@ -1,5 +1,5 @@
 ---
-name: wait-what
+name: pocock-wait-what
 description: "Stop. That last message did not land: re-pitch it."
 disable-model-invocation: true
 ---

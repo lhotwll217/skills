@@ -1,5 +1,5 @@
 ---
-name: workstream-retro
+name: lotwell-workstream-retro
 description: Reconstruct agent-orchestrated workstreams as interactive HTML retrospectives. Use when the user asks to visualize concurrent workstreams, tasks-to-threads, delegated-agent orchestration, human-in-the-loop points, or how work unfolded across sessions.
 ---
 

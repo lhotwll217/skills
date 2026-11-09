@@ -1,5 +1,5 @@
 ---
-name: interactive-implementation-review
+name: lotwell-interactive-implementation-review
 description: Produce and run an evidence-backed Interactive Implementation Review before tickets or implementation. Use when the owner wants to turn grilling, current-system research, and prior art into one reviewable Markdown design document.
 ---
 

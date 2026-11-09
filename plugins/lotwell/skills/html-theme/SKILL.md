@@ -1,5 +1,5 @@
 ---
-name: html-theme
+name: lotwell-html-theme
 description: Luke's house theme for generated HTML. Use whenever generating an HTML page, artifact, report, dashboard, mockup, or review UI for Luke, or when another skill produces styled HTML output.
 ---
 

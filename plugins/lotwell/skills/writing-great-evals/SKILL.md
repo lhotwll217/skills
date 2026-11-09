@@ -1,5 +1,5 @@
 ---
-name: writing-great-evals
+name: lotwell-writing-great-evals
 description: Write and review eval definitions — cases, fixtures, assertions, rubrics, and grader logic. Use when adding or changing an eval, or when deciding whether proposed eval coverage earns its place.
 ---
 

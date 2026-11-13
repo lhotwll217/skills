@@ -22,16 +22,16 @@ To lint an existing handoff, run Drafting step 1 first, then check the handoff's
 
 ## Fields and triggers
 
-**Intent** and **Completion Conditions** are the minimum. Add the other fields only when their rule says so. Each entry states the field's rule, then the triggers that fire on wording breaking it. Two triggers watch the whole handoff:
+**Goal** and **Completion Conditions** are the minimum. Add the other fields only when their rule says so. Each entry states the field's rule, then the triggers that fire on wording breaking it. Two triggers watch the whole handoff:
 
 - `missing-field`: the work or its completion condition cannot be recovered from the handoff.
 - `omitted-requirement`: a requested outcome, a concrete input the receiver needs from the sender, or a still-applicable correction is missing or narrowed. Example: asked to set two research agents real tasks, a brief gave them categories of task; the receivers held none of the sender's context, so the work could not start.
 
-### Intent
+### Goal
 
-The work and why it matters, standing on its own: from this field alone the receiver can say what they own. Write the assignment itself; evidence and history go in Context.
+The work, standing on its own: from this field alone the receiver can say what they own. Write the assignment itself; its purpose can come from Context, and evidence and history go there.
 
-- `dependent-intent`: reading Intent alone, the receiver cannot say what they own or why it matters.
+- `dependent-goal`: reading Goal alone, the receiver cannot say what they own.
 
 ### Completion Conditions
 
@@ -58,9 +58,9 @@ Pointers the receiver can resolve: the original request, the governing agreement
 - `duplicated-source`: the handoff restates content a pointer already covers, so the two copies can drift and agree with each other against the requester. Example: a "settled decisions" section repeating the plan of the issue the handoff had already named as the agreement; the copy had already dropped one of the requester's rules.
 - `sender-narration`: background that fails the include-a-detail rule: it tells the receiver how the sender sees the problem, and the handoff reads as a report. Example: "the user is frustrated because the previous agent kept discussing work without running it," and an unrelated, unverified dev-server note carried into an implementation handoff.
 
-### Authority
+### Local authority
 
-The handoff inherits the original request's authority. State a decision boundary only when plausible readings of the request would give the receiver different decision rights. Method choices inside the delegated work stay with the receiver. A decision nobody has made stays open and named, so the receiver raises it: "Back-navigation is still open," never "back-navigation is your call."
+The decisions this work needs that nobody has made yet, each named so the receiver raises it: "Back-navigation is still open," never "back-navigation is your call." Everything else inherits the original request's authority, and method choices inside the delegated work stay with the receiver.
 
 - `invented-authority`: a grant ("your call," "you decide," "in scope") or a closed decision that does not trace to the requester's words.
 

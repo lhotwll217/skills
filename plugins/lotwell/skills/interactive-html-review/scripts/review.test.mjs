@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { generateReviewHtml, htmlModel, minimalComment, reconcileState } from "./review.mjs";
+import { mkdtemp, readFile, realpath, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { generateReviewHtml, htmlModel, minimalComment, reconcileState, startReviewServer } from "./review.mjs";
 
 function elementAnchor() {
   return {
@@ -107,4 +110,84 @@ test("touch modes are a radio group, so the desktop Shift gesture stays a hold",
   const html = await generateReviewHtml({ model, documentHtml: "<html><body>Hi</body></html>", reviewPath: "/tmp/review.json" });
   assert.match(html, /role="radiogroup"/);
   assert.match(html, /role="radio" data-mode="text" aria-checked="true"/);
+});
+
+test("a link to a sibling page opens it in the same review with its own Comments", async () => {
+  const directory = await realpath(await mkdtemp(join(tmpdir(), "hr-site-")));
+  const output = await mkdtemp(join(tmpdir(), "hr-out-"));
+  const documentPath = join(directory, "index.html");
+  const documentHtml = '<title>Home</title><body><a href="other.html">Other</a></body>';
+  await writeFile(documentPath, documentHtml);
+  await writeFile(join(directory, "other.html"), "<title>Other</title><body>Other page</body>");
+  const model = htmlModel(documentPath, documentHtml);
+  const reviewPath = join(output, "review.json");
+  const html = await generateReviewHtml({ model, documentHtml, reviewPath });
+  const session = await startReviewServer({ html, reviewPath, model, documentDirectory: directory, documentPath });
+  try {
+    const other = await (await fetch(`${session.url}other.html`)).text();
+    assert.match(other, /Other page/);
+    assert.match(other, /"doc":"other.html"/);
+    assert.match(other, /__hr_script/);
+    const home = await (await fetch(`${session.url}index.html`)).text();
+    assert.doesNotMatch(home, /"doc":/);
+    assert.equal((await fetch(`${session.url}missing.html`)).status, 404);
+
+    const comment = elementComment({ comment: "Fix this." });
+    const saved = await (await fetch(`${session.url}review.json?doc=other.html`, {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ comments: [comment] }),
+    })).json();
+    assert.equal(saved.comments.length, 1);
+    assert.equal(saved.review.title, "Other");
+    assert.equal(JSON.parse(await readFile(reviewPath, "utf8")).comments.length, 0);
+    const linkedPath = other.match(/"reviewPath":"([^"]+)"/)[1];
+    assert.match(linkedPath, /pages\/other\.html-[0-9a-f]{8}\/review\.json$/);
+    assert.equal(JSON.parse(await readFile(linkedPath, "utf8")).comments[0].comment, "Fix this.");
+  } finally {
+    await session.close();
+  }
+});
+
+test("a reload serves the page as it is on disk now, and re-anchors its Comments", async () => {
+  const directory = await realpath(await mkdtemp(join(tmpdir(), "hr-edit-")));
+  const output = await mkdtemp(join(tmpdir(), "hr-edit-out-"));
+  const documentPath = join(directory, "index.html");
+  const documentHtml = '<title>Home</title><body><a href="other.html">Other</a> Old home</body>';
+  await writeFile(documentPath, documentHtml);
+  await writeFile(join(directory, "other.html"), "<title>Other</title><body>Old other</body>");
+  const model = htmlModel(documentPath, documentHtml);
+  const reviewPath = join(output, "review.json");
+  const html = await generateReviewHtml({ model, documentHtml, reviewPath });
+  const session = await startReviewServer({ html, reviewPath, model, documentDirectory: directory, documentPath });
+  try {
+    assert.match(await (await fetch(session.url)).text(), /Old home/);
+    assert.match(await (await fetch(`${session.url}other.html`)).text(), /Old other/);
+    await fetch(`${session.url}review.json?doc=other.html`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ comments: [elementComment({ comment: "Fix this." })] }),
+    });
+
+    await writeFile(documentPath, '<title>Home</title><body><a href="other.html">Other</a> New home</body>');
+    await writeFile(join(directory, "other.html"), "<title>Other</title><main><body>New other</body></main>");
+
+    const home = await (await fetch(session.url)).text();
+    assert.match(home, /New home/);
+    assert.doesNotMatch(home, /Old home/);
+    assert.match(await (await fetch(`${session.url}index.html`)).text(), /New home/);
+    const other = await (await fetch(`${session.url}other.html`)).text();
+    assert.match(other, /New other/);
+    assert.match(other, /__hr_script/);
+    const state = await (await fetch(`${session.url}review.json?doc=other.html`)).json();
+    assert.equal(state.comments[0].comment, "Fix this.");
+    assert.equal(state.comments[0].needsElementRelocation, true);
+    assert.equal(state.review.sourceHash, htmlModel(join(directory, "other.html"), "<title>Other</title><main><body>New other</body></main>").sourceHash);
+  } finally {
+    await session.close();
+  }
+});
+
+test("the client lets same-review links navigate and opens links that leave in a new tab", async () => {
+  const client = await readFile(new URL("../assets/review-client.js", import.meta.url), "utf8");
+  assert.match(client, /staysInReview\(anchor\)\) return;/);
+  assert.match(client, /window\.open\(anchor\.href, "_blank", "noopener"\)/);
+  assert.doesNotMatch(client, /Link intercepted|Link leaves the review/);
 });

@@ -235,7 +235,7 @@ async function readRequestJson(request) {
   return JSON.parse((await readRequestBody(request, 1_000_000, "Review state")).toString("utf8"));
 }
 
-export async function generateReviewHtml({ model, documentHtml, reviewPath, host = "local" }) {
+export async function generateReviewHtml({ model, documentHtml, reviewPath, host = "local", doc = "" }) {
   const [overlayCss, clientJavaScript] = await Promise.all([
     readFile(join(assetDirectory, "review.css"), "utf8"),
     readFile(join(assetDirectory, "review-client.js"), "utf8"),
@@ -246,7 +246,7 @@ ${overlayCss}
 </style>
 <script id="__hr_script">window.__INTERACTIVE_HTML_REVIEW__=${scriptJson(host === "artifact"
     ? { host, model: { title: model.title } }
-    : { host, model, reviewPath })};
+    : { host, model, reviewPath, ...(doc ? { doc } : {}) })};
 ${clientJavaScript}
 </script>`;
   if (/<\/body>/i.test(documentHtml)) return documentHtml.replace(/<\/body>/i, `${bootstrap}\n</body>`);
@@ -261,53 +261,121 @@ function staticFilePath(documentDirectory, pathname) {
   return candidate;
 }
 
-export async function startReviewServer({ html, reviewPath, model, documentDirectory, persistReviewState = atomicWriteJson }) {
-  const shotsDirectory = join(dirname(reviewPath), "shots");
-  let existing = null;
-  try {
-    existing = JSON.parse(await readFile(reviewPath, "utf8"));
-  } catch (error) {
-    if (error.code !== "ENOENT") throw error;
+async function fileVersion(path) {
+  const info = await stat(path);
+  return `${info.mtimeMs}:${info.size}`;
+}
+
+export async function startReviewServer({ html, reviewPath, model, documentDirectory, documentPath, htmlPath, persistReviewState = atomicWriteJson }) {
+  // One slot per reviewed page: the document itself, plus each sibling HTML page a link reaches.
+  async function openSlot({ html, reviewPath, model, filePath, doc = "", htmlPath }) {
+    let existing = null;
+    try {
+      existing = JSON.parse(await readFile(reviewPath, "utf8"));
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+    const slot = { html, reviewPath, model, filePath, doc, htmlPath, shotsDirectory: join(dirname(reviewPath), "shots"), queue: Promise.resolve() };
+    slot.version = filePath ? await fileVersion(filePath) : null;
+    slot.state = reconcileState(existing, model);
+    await persistReviewState(reviewPath, slot.state);
+    return slot;
   }
-  let state = reconcileState(existing, model);
-  await persistReviewState(reviewPath, state);
-  let mutationQueue = Promise.resolve();
+
+  // An edited page is re-read before it or its Comments are served, so a reload always shows the file on disk.
+  async function current(slot) {
+    if (!slot.filePath) return slot;
+    const refresh = slot.queue.then(async () => {
+      const version = await fileVersion(slot.filePath);
+      if (version === slot.version) return;
+      const documentHtml = await readFile(slot.filePath, "utf8");
+      const nextModel = htmlModel(slot.filePath, documentHtml);
+      slot.version = version;
+      if (nextModel.sourceHash === slot.model.sourceHash) return;
+      slot.html = await generateReviewHtml({ model: nextModel, documentHtml, reviewPath: slot.reviewPath, doc: slot.doc });
+      slot.state = reconcileState(slot.state, nextModel);
+      slot.model = nextModel;
+      await persistReviewState(slot.reviewPath, slot.state);
+      if (slot.htmlPath) await writeFile(slot.htmlPath, slot.html, { mode: 0o600 });
+    });
+    slot.queue = refresh.then(() => undefined, () => undefined);
+    await refresh;
+    return slot;
+  }
+
+  const primary = await openSlot({ html, reviewPath, model, filePath: documentPath, htmlPath });
+  const slots = new Map([["", Promise.resolve(primary)]]);
+
+  function linkedSlot(pathname) {
+    const filePath = staticFilePath(documentDirectory, pathname);
+    if (!filePath || !/\.html?$/i.test(filePath)) return null;
+    if (documentPath && filePath === documentPath) return slots.get("");
+    const doc = filePath.slice(documentDirectory.length + 1).split(sep).join("/");
+    if (!slots.has(doc)) {
+      const opening = (async () => {
+        const documentHtml = await readFile(filePath, "utf8");
+        const linkedModel = htmlModel(filePath, documentHtml);
+        const directory = join(dirname(reviewPath), "pages", `${doc.replace(/[^A-Za-z0-9._-]+/g, "_")}-${hash(doc).slice(0, 8)}`);
+        await mkdir(directory, { recursive: true });
+        const linkedReviewPath = join(directory, "review.json");
+        const linkedHtml = await generateReviewHtml({ model: linkedModel, documentHtml, reviewPath: linkedReviewPath, doc });
+        return openSlot({ html: linkedHtml, reviewPath: linkedReviewPath, model: linkedModel, filePath, doc });
+      })();
+      opening.catch(() => slots.delete(doc));
+      slots.set(doc, opening);
+    }
+    return slots.get(doc);
+  }
+
   const server = http.createServer(async (request, response) => {
     try {
-      const pathname = new URL(request.url, "http://127.0.0.1").pathname;
-      if (request.method === "GET" && pathname === "/") return send(response, 200, "text/html; charset=utf-8", html);
-      if (request.method === "GET" && pathname === "/review.json") return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify(state)}\n`);
-      if (request.method === "POST" && pathname === "/review.json") {
-        const submitted = readRequestJson(request);
-        const mutation = mutationQueue.then(async () => {
-          const input = await submitted;
-          const nextState = {
-            review: reviewMetadata(model, state.review.createdAt),
-            comments: Array.isArray(input?.comments) ? input.comments.map(minimalComment) : [],
-          };
-          await persistReviewState(reviewPath, nextState);
-          state = nextState;
-          return nextState;
-        });
-        mutationQueue = mutation.then(() => undefined, () => undefined);
-        return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify(await mutation)}\n`);
-      }
-      if (request.method === "POST" && pathname === "/shots") {
-        const body = await readRequestBody(request, 8_000_000, "Screenshot");
-        if (body.length === 0) throw new Error("Empty screenshot");
-        const shotName = `${randomUUID()}.png`;
-        await mkdir(shotsDirectory, { recursive: true });
-        await writeFile(join(shotsDirectory, shotName), body, { mode: 0o600 });
-        return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify({ path: `shots/${shotName}` })}\n`);
+      const url = new URL(request.url, "http://127.0.0.1");
+      const pathname = url.pathname;
+      if (request.method === "GET" && pathname === "/") return send(response, 200, "text/html; charset=utf-8", (await current(primary)).html);
+      if (pathname === "/review.json" || (request.method === "POST" && pathname === "/shots")) {
+        const slot = await slots.get(url.searchParams.get("doc") ?? "");
+        if (!slot) return send(response, 404, "text/plain; charset=utf-8", "Not found");
+        if (request.method === "GET" && pathname === "/review.json") return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify((await current(slot)).state)}\n`);
+        if (request.method === "POST" && pathname === "/review.json") {
+          const submitted = readRequestJson(request);
+          const mutation = slot.queue.then(async () => {
+            const input = await submitted;
+            const nextState = {
+              review: reviewMetadata(slot.model, slot.state.review.createdAt),
+              comments: Array.isArray(input?.comments) ? input.comments.map(minimalComment) : [],
+            };
+            await persistReviewState(slot.reviewPath, nextState);
+            slot.state = nextState;
+            return nextState;
+          });
+          slot.queue = mutation.then(() => undefined, () => undefined);
+          return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify(await mutation)}\n`);
+        }
+        if (request.method === "POST") {
+          const body = await readRequestBody(request, 8_000_000, "Screenshot");
+          if (body.length === 0) throw new Error("Empty screenshot");
+          const shotName = `${randomUUID()}.png`;
+          await mkdir(slot.shotsDirectory, { recursive: true });
+          await writeFile(join(slot.shotsDirectory, shotName), body, { mode: 0o600 });
+          return send(response, 200, "application/json; charset=utf-8", `${JSON.stringify({ path: `shots/${shotName}` })}\n`);
+        }
       }
       if (request.method === "GET" && /^\/shots\/[0-9a-f-]{36}\.png$/.test(pathname)) {
-        try {
-          return send(response, 200, "image/png", await readFile(join(shotsDirectory, basename(pathname))));
-        } catch (error) {
-          if (error.code !== "ENOENT") throw error;
+        for (const opening of slots.values()) {
+          try {
+            return send(response, 200, "image/png", await readFile(join((await opening).shotsDirectory, basename(pathname))));
+          } catch (error) {
+            if (error.code !== "ENOENT") throw error;
+          }
         }
       }
       if (request.method === "GET") {
+        try {
+          const slot = await linkedSlot(pathname);
+          if (slot) return send(response, 200, "text/html; charset=utf-8", (await current(slot)).html);
+        } catch (error) {
+          if (error.code !== "ENOENT" && error.code !== "EISDIR") throw error;
+        }
         const filePath = staticFilePath(documentDirectory, pathname);
         const type = filePath ? STATIC_TYPES[extname(filePath).toLowerCase()] : undefined;
         if (filePath && type) {
@@ -343,7 +411,8 @@ const HELP = `Usage:
   node review.mjs --document <file.html> [options]
 
 Options:
-  --document <file.html>  HTML document to review; sibling assets are served read-only
+  --document <file.html>  HTML document to review; sibling assets are served read-only,
+                          and sibling HTML pages its links reach open in the same review
   --output-dir <path>     Reuse or create a durable review directory
   --no-open               Print the URL without opening a browser
   --artifact <file.html>  Write a self-contained page for a claude.ai artifact instead of serving
@@ -400,8 +469,8 @@ async function runCli(arguments_) {
   const htmlPath = join(outputDirectory, "review.html");
   const html = await generateReviewHtml({ model, documentHtml, reviewPath });
   await writeFile(htmlPath, html, { mode: 0o600 });
-  const session = await startReviewServer({ html, reviewPath, model, documentDirectory: dirname(documentPath) });
-  process.stdout.write(`Interactive HTML review\nURL: ${session.url}\nJSON: ${reviewPath}\nHTML: ${htmlPath}\nStop: Ctrl-C\n`);
+  const session = await startReviewServer({ html, reviewPath, model, documentDirectory: dirname(documentPath), documentPath, htmlPath });
+  process.stdout.write(`Interactive HTML review\nURL: ${session.url}\nJSON: ${reviewPath}\nLinked pages: ${join(outputDirectory, "pages")}/<page>/review.json\nHTML: ${htmlPath}\nStop: Ctrl-C\n`);
   if (options.open) openBrowser(session.url);
   await new Promise((resolveRun, rejectRun) => {
     let closing = false;

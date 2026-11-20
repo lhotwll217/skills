@@ -3,6 +3,8 @@
   const reviewModel = config.model;
   // Host decides where Comments go: the local server's review.json, or a claude.ai artifact's own comment threads.
   const HOST = config.host === "artifact" ? "artifact" : "local";
+  // A page reached by a link during a local review keeps its own Comments, addressed by this query.
+  const DOC_QUERY = config.doc ? `?doc=${encodeURIComponent(config.doc)}` : "";
   // Touch devices get an explicit mode switch; pointer devices keep the hold gestures.
   const COARSE = matchMedia("(pointer: coarse)").matches;
   const DEFAULT_MODE = COARSE ? "element" : "text";
@@ -515,7 +517,7 @@
 
   async function save() {
     $("#hr-save").textContent = "Saving…";
-    const response = await fetch("/review.json", {
+    const response = await fetch(`/review.json${DOC_QUERY}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(state),
@@ -571,12 +573,23 @@
     placeComposer();
   }
 
+  // The local server serves every HTML page beside the document with this overlay, so links between them navigate.
+  function staysInReview(anchor) {
+    if (HOST !== "local") return false;
+    const target = anchor.getAttribute("target");
+    if (target && target !== "_self") return false;
+    let url;
+    try { url = new URL(anchor.getAttribute("href"), location.href); } catch { return false; }
+    if (url.origin !== location.origin) return false;
+    return url.pathname === location.pathname || url.pathname === "/" || /\.html?$/i.test(url.pathname);
+  }
+
   document.addEventListener("click", (event) => {
     const anchor = event.target.closest?.("a[href]");
-    if (anchor && !inOverlay(anchor) && !pickerActive) {
-      event.preventDefault();
-      note(`Link intercepted during review: ${anchor.getAttribute("href")}`);
-    }
+    if (!anchor || inOverlay(anchor) || pickerActive || staysInReview(anchor)) return;
+    // A link out of the review opens in a new tab, so the page under review and its Comments stay put.
+    event.preventDefault();
+    window.open(anchor.href, "_blank", "noopener");
   }, true);
 
   function selectedPageRange() {
@@ -948,7 +961,7 @@
     if (!blob) throw new Error("Could not encode the region");
     if (HOST === "artifact") { await stageArtifactArea(rect, blob); return; }
     {
-      const response = await fetch("/shots", { method: "POST", headers: { "content-type": "image/png" }, body: blob });
+      const response = await fetch(`/shots${DOC_QUERY}`, { method: "POST", headers: { "content-type": "image/png" }, body: blob });
       if (!response.ok) throw new Error(`Upload failed (${response.status})`);
       const { path } = await response.json();
       if (cropState !== crop) return;
@@ -1291,7 +1304,7 @@
 
   async function initialize() {
     if (HOST === "artifact") return initializeArtifact();
-    const response = await fetch("/review.json");
+    const response = await fetch(`/review.json${DOC_QUERY}`);
     state = await response.json();
     let changed = false;
     for (const comment of state.comments) {
